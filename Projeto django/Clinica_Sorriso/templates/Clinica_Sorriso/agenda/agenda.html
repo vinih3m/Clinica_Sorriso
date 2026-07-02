@@ -1,0 +1,1765 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ===== AGENDA ===== */
+.agenda-wrapper {
+    background: white;
+    border-radius: 8px;
+    overflow: auto;
+    border: 1px solid #ddd;
+}
+
+.agenda-header,
+.agenda-body {
+    display: grid;
+    grid-template-columns: 70px repeat(7,1fr);
+}
+
+.agenda-header {
+    background: #f4f6f8;
+    font-weight: 600;
+}
+
+.agenda-header div {
+    padding: 8px;
+    font-size: 13px;
+}
+
+.hora{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    font-size:13px;
+    color:#777;
+    padding:2px 4px;
+}
+
+.hora-cheia {
+    font-weight: 700;
+    color: #2c2c2c;
+}
+
+/* ===== SLOT ===== */
+.slot {
+    border-top:1px solid #f3f3f3;
+    border-right: 1px solid #ececec;
+    height: 22px;
+    padding: 0;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.slot.hora-cheia {
+    border-top: 1px solid #d7d7d7;
+}
+
+.slot-livre {
+    background: #fff;
+    cursor: pointer;
+}
+
+.slot-livre:hover {
+    background: #eef6ff;
+}
+
+/* ===== AGENDAMENTO ===== */
+.agendamento {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.agendamento.status-confirmado {
+    background: #e7f1ff;
+    border-left-color: #0d6efd;
+}
+
+.agendamento.status-atendido {
+    background: #e6f4ea;
+    border-left-color: #198754;
+}
+
+.agendamento.status-cancelado {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+}
+
+.acoes-agenda {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.acoes-agenda button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* ===== DIA ATUAL ===== */
+.dia-hoje {
+    background: #eaf3ff;
+    font-weight: 700;
+    border-bottom: 3px solid #0b5ed7;
+}
+
+/* ===== BOTÃO + ===== */
+.btn-plus {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 999;
+}
+.slot-agendamentos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.agendamento {
+    background: #ffffff;
+    border-left: 4px solid #ccc; /* neutro */
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 999;
+}
+
+.modal-content {
+  background: transparent;
+  margin: auto;
+  padding: 0;
+}
+
+.modal-agendamento {
+  width: 460px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 26px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.25);
+}
+
+.modal-agendamento h2 {
+  margin: 0;
+  color: #0d5ea6;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 18px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.campo input,
+.campo select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn-cancelar {
+  background: #eee;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-salvar {
+  background: #1976d2;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-salvar:hover {
+  background: #155fa0;
+}
+
+.erro-form {
+  margin-top: 12px;
+  color: #c62828;
+  font-size: 13px;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* começa escondido */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-container {
+    background: #ffffff;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 12px;
+    padding: 20px 25px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* ================= MODAL AGENDAMENTO (PADRÃO SIMPLE) ================= */
+
+#overlay-agendamento {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-agendamento {
+    background: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 28px 30px;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+
+
+
+/* HEADER */
+#modalAgendamento h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1976d2;
+    margin-bottom: 20px;
+}
+
+/* FECHAR */
+#modalAgendamento .close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #666;
+}
+
+#modalAgendamento .close:hover {
+    color: #000;
+}
+
+/* CAMPOS */
+#modalAgendamento .campo {
+    margin-bottom: 18px;
+}
+
+/* LABEL */
+#modalAgendamento label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+    display: block;
+}
+
+#modalAgendamento input,
+#modalAgendamento select {
+    width: 100%;
+    height: 38px;
+}
+
+
+#modalAgendamento textarea,
+.modal-agendamento textarea {
+    width: 100%;
+    max-width: 100%;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 140px;
+    box-sizing: border-box;
+}
+
+
+
+/* AÇÕES */
+#modalAgendamento .acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+/* BOTÕES */
+#modalAgendamento button {
+    height: 40px;
+    padding: 0 20px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#modalAgendamento .btn-cancelar {
+    background: #e4e7eb;
+    color: #333;
+}
+
+#modalAgendamento .btn-salvar {
+    background: #1e88e5;
+    color: #fff;
+}
+
+#modalAgendamento .btn-salvar:hover {
+    background: #1565c0;
+}
+.slot.livre {
+    background: #eaf6ff;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.slot.livre:hover {
+    background: #d0ebff;
+    box-shadow: inset 0 0 0 px #0d6efd;
+}
+/* ===== OVERLAY ALERTAS ===== */
+#overlay-alertas {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+/* ===== MODAL ===== */
+.modal-alertas {
+    background: #fff;
+    width: 100%;
+    max-width: 720px;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+
+/* ===== HEADER ===== */
+.alertas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.alertas-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.acoes-header {
+    display: flex;
+    gap: 12px;
+}
+
+.acoes-header .link {
+    background: none;
+    border: none;
+    color: #1a73e8;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.acoes-header .btn-verde {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ===== BODY ===== */
+.alertas-body {
+    padding: 40px 10px;
+    text-align: center;
+}
+
+.alerta-vazio .icone {
+    font-size: 42px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.alerta-vazio p {
+    color: #666;
+    font-size: 14px;
+}
+/* ================= OVERLAY VER TODOS ================= */
+.overlay-alertas {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+/* ================= MODAL PRINCIPAL ================= */
+.modal-ver-todos {
+    background: #fff;
+    width: 100%;
+    max-width: 900px;
+    height: 80vh;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    overflow: hidden;
+}
+
+/* ================= HEADER ================= */
+.ver-todos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.ver-todos-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+
+.ver-todos-acoes {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* FILTRO */
+.filtro {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #555;
+}
+
+.filtro select {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 13px;
+    outline: none;
+}
+
+/* BOTÃO EXPORTAR */
+.btn-exportar {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-exportar:hover {
+    background: #ececec;
+}
+
+/* ================= BODY ================= */
+.ver-todos-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* ================= LINHA DE ALERTA ================= */
+.alerta-linha {
+    display: grid;
+    grid-template-columns: 1fr 180px 90px;
+    align-items: center;
+    padding: 14px 22px;
+    border-bottom: 1px solid #ededed;
+}
+
+.alerta-linha:hover {
+    background: #fafafa;
+}
+
+/* PACIENTE */
+.paciente {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #cfcfcf;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.info strong {
+    font-size: 14px;
+    color: #222;
+}
+
+.info span {
+    font-size: 12px;
+    color: #777;
+}
+
+/* DATA / USUÁRIO */
+.retorno {
+    text-align: left;
+}
+
+.retorno strong {
+    font-size: 13px;
+    color: #222;
+}
+
+.retorno span {
+    font-size: 12px;
+    color: #777;
+}
+
+/* AÇÕES */
+.acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-info,
+.btn-menu {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+}
+
+.btn-info:hover,
+.btn-menu:hover {
+    color: #000;
+}
+
+/* ================= FOOTER ================= */
+.ver-todos-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid #e6e6e6;
+}
+
+/* BOTÕES */
+.btn-fechar {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.btn-adicionar {
+    background: #31c6f3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.btn-fechar:hover {
+    background: #ececec;
+}
+
+.btn-adicionar:hover {
+    background: #28b2db;
+}
+/* ===== FILTRO PERÍODO ===== */
+.filtro-periodo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.filtro-periodo .label {
+    color: #666;
+}
+
+/* Botão */
+.dropdown-periodo {
+    position: relative;
+}
+
+.dropdown-toggle {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dropdown-toggle:hover {
+    background: #f5f5f5;
+}
+
+.dropdown-toggle .seta {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 220px;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+    display: none;
+    z-index: 999;
+}
+
+.dropdown-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.dropdown-menu li:hover {
+    background: #f2f7ff;
+}
+
+.dropdown-menu li.ativo {
+    background: #e6f0ff;
+    color: #1a73e8;
+    font-weight: 500;
+}
+
+.dropdown-menu .divisor {
+    height: 1px;
+    background: #eee;
+    margin: 6px 0;
+    pointer-events: none;
+}
+/* ===== BOTÃO ⋮ ===== */
+.acoes-alerta {
+    position: relative;
+}
+
+.btn-mais {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+    padding: 6px;
+    border-radius: 50%;
+}
+
+.btn-mais:hover {
+    background: #f2f2f2;
+}
+
+/* ===== MENU AÇÕES ===== */
+.menu-acoes {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    width: 220px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.menu-acoes button {
+    background: none;
+    border: none;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.menu-acoes button:hover {
+    background: #f5f5f5;
+}
+
+.menu-acoes .danger {
+    color: #e53935;
+    font-weight: 500;
+}
+/* ================= MODAL ALERTA DE RETORNO ================= */
+
+.modal-alerta-retorno {
+    background: #fff;
+    width: 100%;
+    max-width: 560px;
+    border-radius: 12px;
+    padding: 24px 26px;
+    box-shadow: 0 25px 60px rgba(0,0,0,.35);
+}
+
+.modal-alerta-retorno h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* GRID */
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-full {
+    grid-column: span 2;
+}
+
+/* LABEL */
+.campo label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+/* INPUTS */
+.campo input,
+.campo textarea {
+    height: 40px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+    outline: none;
+}
+
+.campo textarea {
+    height: 90px;
+    resize: none;
+}
+
+/* LINK */
+.campo .link {
+    font-size: 12px;
+    color: #1a73e8;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+/* CONTADOR */
+.contador {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* AÇÕES */
+.acoes-modal {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-fechar {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-salvar {
+    background: #e0e0e0;
+    color: #999;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: not-allowed;
+}
+
+.btn-salvar.ativo {
+    background: #31c6f3;
+    color: #fff;
+    cursor: pointer;
+}
+
+.alerta-retorno {
+    background: #fff3cd;
+}
+
+.topo-agenda {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+
+.grupo-esquerda,
+.grupo-direita {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#inputCalendario {
+    width: auto;
+    padding: 5px 8px;
+}
+
+.alerta-retorno {
+    background: #fff8e1;
+    border-left: 4px solid #ff9800;
+}
+
+.btn-encaixe {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.btn-encaixe:hover {
+    background: #e0e0e0;
+}
+
+.modal-encaixe-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-encaixe {
+    width: 600px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+    animation: aparecer 0.2s ease;
+}
+
+@keyframes aparecer {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-encaixe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-encaixe-header h3 {
+    margin: 0;
+}
+
+.acoes-header {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-ver-todos {
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-adicionar {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-fechar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-encaixe-body {
+    padding: 40px;
+    text-align: center;
+}
+
+.encaixe-vazio .icone-puzzle {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.link-ajuda {
+    color: #1976d2;
+    cursor: pointer;
+}
+
+.btn-topo-agenda {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.btn-topo-agenda:hover {
+    background: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+.btn-topo-agenda:active {
+    transform: scale(0.97);
+}
+
+#inputCalendario {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 6px;
+    height: 32px;
+}
+
+/* ===== BOTÕES PADRÃO SISTEMA ===== */
+.btn-padrao {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Botão cancelar */
+.btn-secundario {
+    background: #f1f3f5;
+    color: #333;
+}
+
+.btn-secundario:hover {
+    background: #e2e6ea;
+}
+
+/* Botão principal (Salvar) */
+.btn-primario {
+    background: #1e88e5;
+    color: #fff;
+}
+
+.btn-primario:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}
+
+.btn-status i {
+    pointer-events: none;
+}
+
+.btn-status {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-menu {
+    display: none;
+}
+
+.dropdown-menu.mostrar {
+    display: block;
+}
+
+.slot.hora-cheia{
+    border-top:2px solid #d6d6d6;
+}
+
+.slot-fechado{
+    background:#f1f1f1;
+    cursor:pointer;
+}
+
+.slot-fechado:hover{
+    background:#e4e4e4;
+}
+
+</style>
+
+
+<h2>Agenda</h2>
+<form style="display:none;">
+    {% csrf_token %}
+</form>
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+
+<div class="topo-agenda">
+
+    <div class="grupo-esquerda">
+        <button id="btnSemanaAnterior" class="btn-topo-agenda">◀</button>
+
+        <button id="btnHoje" class="btn-topo-agenda">HOJE</button>
+
+        <span id="labelDataAtual">
+            {{ dias.0.data|date:"F" }}
+        </span>
+    </div>
+
+    <div class="grupo-direita">
+        <input
+            type="date"
+            id="inputCalendario"
+            value="{{ dias.0.data|date:'Y-m-d' }}"
+        >
+
+        <button id="btnSemanaProxima" class="btn-topo-agenda">▶</button>
+
+        <button id="btnAlertas" class="btn-topo-agenda" title="Alertas de retorno">
+            ⚠
+        </button>
+
+        <button type="button" class="btn-topo-agenda" onclick="abrirGestaoEncaixe()">
+            <i class="fas fa-puzzle-piece"></i>
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="agenda-wrapper">
+
+    <!-- CABEÇALHO -->
+    <div class="agenda-header">
+        <div></div>
+        {% for dia in dias %}
+            <div class="{% if dia.data == today %}dia-hoje{% endif %}">
+                {{ dia.nome }}<br>
+                <small>{{ dia.num }}</small>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- CORPO -->
+    <div class="agenda-body">
+        {% for hora in horas %}
+            <div class="hora {% if hora.cheia %}hora-cheia-label{% endif %}">
+                {{ hora.valor }}
+            </div>
+
+            {% for dia in dias %}
+                <div class="
+                    slot
+                    {% if hora.cheia %}hora-cheia{% endif %}
+                    {% if hora.fechado %}slot-fechado{% endif %}
+                "
+                    data-dia="{{ dia.data|date:'Y-m-d' }}"
+                    data-hora="{{ hora.valor }}">    
+
+                    <div class="slot-agendamentos">
+                        {% for ag in agendamentos %}
+                            {% if ag.data == dia.data and ag.hora_inicio|time:'H:i' == hora.valor %}
+                                <div class="agendamento {% if ag.tipo == 'retorno' %}alerta-retorno{% else %}status-{{ ag.status }}{% endif %}" data-id="{{ ag.id }}">
+    
+                                         <strong>{{ ag.paciente }}</strong><br>
+                                            {{ ag.profissional }}<br>
+
+                                            {% if ag.tipo == "retorno" %}
+                                                <small><strong>RETORNO</strong></small>
+                                            {% else %}
+                                                <small class="texto-status">{{ ag.get_status_display }}</small>
+                                            {% endif %}
+
+                                        {% if ag.tipo != "retorno" %}
+                                        <div class="acoes-agenda">
+                                            <button class="btn-status" data-status="confirmado" title="Confirmar">
+                                                <i class="fas fa-user"></i>
+                                            </button>
+
+                                            <button class="btn-status" data-status="atendido" title="Atendido">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+
+                                            <button class="btn-status" data-status="cancelado" title="Cancelar">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+
+                                        {% endif %}
+                                        
+                                 </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<button id="btnNovoAgendamento" class="btn-plus">+</button>
+
+<!-- MODAL -->
+<!-- MODAL AGENDAMENTO -->
+<div id="overlay-agendamento">
+    <div class="modal-agendamento" onclick="event.stopPropagation()">
+        <div id="modal-corpo"></div>
+    </div>
+</div>
+
+<!-- MODAL ALERTAS -->
+<div id="overlay-alertas">
+    <div class="modal-alertas" onclick="event.stopPropagation()">
+        <div class="alertas-header">
+            <h3>Alertas de retorno</h3>
+
+            <div class="acoes-header">
+                <button class="link" id="btnVerTodosAlertas">VER TODOS</button>
+                <button class="btn-verde" id="btnAbrirAlertaRetorno">
+                    ADICIONAR
+                </button>
+            </div>
+        </div>
+
+        <div class="alertas-body">
+            <div class="alerta-vazio">
+                <span class="icone">📋</span>
+                <p>
+                    Nenhum alerta de retorno encontrado<br>
+                    para os filtros aplicados.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL VER TODOS ALERTAS -->
+<div id="overlay-ver-todos" class="overlay-alertas">
+    <div class="modal-alertas modal-ver-todos" onclick="event.stopPropagation()">
+
+        <!-- HEADER -->
+        <div class="ver-todos-header">
+            <h3>Alertas de Retorno</h3>
+
+            <div class="ver-todos-acoes">
+                <div class="filtro-periodo">
+                    <span class="label">Exibindo</span>
+
+                    <div class="dropdown-periodo">
+                        <button class="dropdown-toggle" id="btnPeriodo">
+                            todo período
+                            <span class="seta">▾</span>
+                        </button>
+
+                        <ul class="dropdown-menu" id="menuPeriodo">
+                            <li data-value="todos" class="ativo">todo período</li>
+                            <li data-value="hoje">de hoje</li>
+                            <li data-value="semana">dessa semana</li>
+                            <li data-value="mes">desse mês</li>
+                            <li data-value="mes-passado">do mês passado</li>
+                            <li data-value="30-dias">dos últimos 30 dias</li>
+                            <li data-value="proximos-30">dos próximos 30 dias</li>
+                            <li class="divisor"></li>
+                            <li data-value="customizado">escolher período</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="btn-exportar">⬇ Exportar</button>
+            </div>
+        </div>
+
+        <!-- LISTA -->
+        <div class="ver-todos-body">
+            <!-- (seus alertas continuam iguais aqui) -->
+        </div>
+
+        <!-- FOOTER -->
+        <div class="ver-todos-footer">
+            <button class="btn-fechar" onclick="fecharVerTodos()">FECHAR</button>
+
+            <button
+                class="btn-adicionar"
+                id="btnAdicionarAlerta"
+                type="button">
+                ADICIONAR
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= MODAL ALERTA DE RETORNO ================= -->
+<!-- ================= MODAL ALERTA DE RETORNO ================= -->
+<div id="overlay-alerta-retorno"
+     class="overlay-alertas"
+     onclick="fecharModalAlertaRetorno()">
+
+    <div class="modal-alerta-retorno" onclick="event.stopPropagation()">
+
+        <h3>Alerta de retorno</h3>
+
+        <form id="formAlertaRetorno" method="post">
+            {% csrf_token %}
+
+            <div class="grid-form">
+
+                <div class="campo">
+                    <label>Paciente*</label>
+                    <input type="text" name="paciente" placeholder="Buscar paciente" required>
+                    <small class="link">Cadastrar paciente</small>
+                </div>
+
+                <div class="campo">
+                    <label>Profissional*</label>
+                    <input type="text" name="profissional" placeholder="Profissional" required>
+                </div>
+
+                <div class="campo">
+                    <label>Data do retorno*</label>
+                    <input type="date" name="dia" required>
+                </div>
+
+                <div class="campo">
+                    <label>Hora do retorno*</label>
+                    <input type="time" name="hora" required>
+                </div>
+
+                <div class="campo campo-full">
+                    <label>Motivo do retorno</label>
+                    <textarea name="motivo" maxlength="500"
+                              placeholder="Descreva o motivo"></textarea>
+                    <span class="contador">0 / 500</span>
+                </div>
+
+            </div>
+
+            <div class="acoes-modal">
+                <button type="button"
+                        class="btn-fechar"
+                        onclick="fecharModalAlertaRetorno()">
+                    FECHAR
+                </button>
+
+                <button type="submit"
+                        class="btn-salvar"
+                        disabled>
+                    SALVAR
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<input type="hidden" id="urlSalvarRetorno" value="{% url 'salvar_retorno' %}">
+<input type="hidden" id="urlCriarAgendamento" value="{% url 'criar_agendamento' %}">
+
+<!-- MODAL GESTÃO DE ENCAIXE -->
+<div id="modalEncaixe" class="modal-encaixe-overlay">
+    <div class="modal-encaixe">
+
+        <div class="modal-encaixe-header">
+            <h3>Gestão de encaixe</h3>
+            <div class="acoes-header">
+                <button class="btn-ver-todos">VER TODOS</button>
+                <button class="btn-adicionar">ADICIONAR</button>
+                <button class="btn-fechar" onclick="fecharGestaoEncaixe()">✖</button>
+            </div>
+        </div>
+
+        <div class="modal-encaixe-body">
+            <div class="encaixe-vazio">
+                <div class="icone-puzzle">🧩</div>
+                <p>Sem encaixes cadastrados.</p>
+                <small>Dúvidas? Saiba tudo sobre <span class="link-ajuda">Gestão de Encaixe</span></small>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+    
+<script>
+console.log("SCRIPT PRINCIPAL CARREGOU");
+
+/* ===============================
+   FUNÇÕES GLOBAIS
+================================ */
+
+function fecharTodosModais() {
+    [
+        "overlay-alertas",
+        "overlay-ver-todos",
+        "overlay-alerta-retorno",
+        "overlay-agendamento"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    const corpo = document.getElementById("modal-corpo");
+    if (corpo) corpo.innerHTML = "";
+}
+
+function abrirModal(id) {
+    fecharTodosModais();
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = "flex";
+}
+
+let controllerAgendamento = null;
+
+function abrirModalAgendamento(dia = null, hora = null) {
+    console.log("Abrindo modal", dia, hora);
+
+    if (controllerAgendamento) {
+        controllerAgendamento.abort();
+    }
+
+    controllerAgendamento = new AbortController();
+
+    const input = document.getElementById("urlCriarAgendamento");
+    if (!input) return;
+
+    let url = input.value;
+
+    if (dia && hora) {
+        url += `?dia=${dia}&hora=${hora}`;
+    }
+
+    console.log(url);
+
+    fetch(url, {
+        signal: controllerAgendamento.signal
+    })
+    .then(r => r.text())
+    .then(html => {
+
+        fecharTodosModais();
+
+        document.getElementById("modal-corpo").innerHTML = html;
+
+        document.getElementById("overlay-agendamento").style.display = "flex";
+
+        controllerAgendamento = null;
+    })
+    .catch(err => {
+
+        if (err.name === "AbortError") return;
+
+        alert("Erro ao abrir agendamento");
+    });
+}
+
+function fecharVerTodos() {
+    document.getElementById("overlay-ver-todos").style.display = "none";
+}
+
+function fecharModalAlertaRetorno() {
+    const modal = document.getElementById("overlay-alerta-retorno");
+    if (modal) modal.style.display = "none";
+}
+
+
+function fecharModalAgendamento() {
+    document.getElementById("overlay-agendamento").style.display = "none";
+}
+
+function abrirGestaoEncaixe() {
+    document.getElementById("modalEncaixe").style.display = "flex";
+}
+
+function fecharGestaoEncaixe() {
+    document.getElementById("modalEncaixe").style.display = "none";
+}
+
+
+/* ===============================
+   DOM READY
+================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ===== MARCAR SLOTS LIVRES ===== */
+    function reaplicarSlotsLivres() {
+
+        document.querySelectorAll(".slot").forEach(slot => {
+
+            slot.classList.remove("slot-livre");
+
+            if (!slot.querySelector(".agendamento") &&
+                !slot.classList.contains("slot-fechado")) {
+
+                slot.classList.add("slot-livre");
+            }
+
+        });
+
+    }
+
+    reaplicarSlotsLivres();
+
+    /* ===== CLICK SLOT LIVRE ===== */
+    document.addEventListener("click", e => {
+
+        if (
+            document.getElementById("overlay-agendamento")?.style.display === "flex" ||
+            document.getElementById("overlay-alertas")?.style.display === "flex" ||
+            document.getElementById("overlay-alerta-retorno")?.style.display === "flex" ||
+            document.getElementById("overlay-ver-todos")?.style.display === "flex"
+        ) return;
+
+        const slot = e.target.closest(".slot.livre");
+        if (!slot) return;
+
+        abrirModalAgendamento(
+            slot.dataset.dia,
+            slot.dataset.hora
+        );
+    });
+
+    /* ===== BOTÃO + ===== */
+    document.getElementById("btnNovoAgendamento")
+        ?.addEventListener("click", () => abrirModalAgendamento());
+
+    /* ===== ALERTAS ===== */
+    document.getElementById("btnAlertas")
+        ?.addEventListener("click", () => abrirModal("overlay-alertas"));
+
+    document.getElementById("btnAbrirAlertaRetorno")
+        ?.addEventListener("click", abrirFormularioAlerta);
+
+    document.getElementById("btnAdicionarAlerta")
+        ?.addEventListener("click", abrirFormularioAlerta);
+
+    function abrirFormularioAlerta(e) {
+        e.preventDefault();
+        fecharTodosModais();
+        document.getElementById("overlay-alerta-retorno").style.display = "flex";
+        ativarContadorAlertaRetorno();
+    }
+
+    /* ===== VER TODOS ===== */
+    document.getElementById("btnVerTodosAlertas")
+        ?.addEventListener("click", () => {
+            fecharTodosModais();
+            document.getElementById("overlay-ver-todos").style.display = "flex";
+        });
+
+    /* ===== SALVAR RETORNO ===== */
+    document.getElementById("formAlertaRetorno")
+        ?.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const url = document.getElementById("urlSalvarRetorno").value;
+            const formData = new FormData(this);
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                },
+                body: formData
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (!resp.ok) {
+                    alert(resp.erro);
+                    return;
+                }
+                alert("Retorno salvo com sucesso!");
+                location.reload();
+            })
+            .catch(() => alert("Erro ao salvar retorno."));
+        });
+
+    /* ===== MUDANÇA DE SEMANA ===== */
+    let semanaAtual = 0;
+
+    function carregarSemana(offset = 0, irHoje = false) {
+        if (irHoje) {
+            semanaAtual = 0;
+        } else {
+            semanaAtual += offset;
+        }
+
+        fetch(`/agenda/parcial/?semana=${semanaAtual}`)
+            .then(r => r.text())
+            .then(html => {
+
+                const agendaWrapper = document.querySelector(".agenda-wrapper");
+
+                const temp = document.createElement("div");
+                temp.innerHTML = html;
+
+                document.getElementById("labelDataAtual").innerHTML =
+                    temp.querySelector("#labelDataAtual").innerHTML;
+
+                agendaWrapper.replaceWith(
+                    temp.querySelector(".agenda-wrapper")
+                );
+
+                reaplicarSlotsLivres();
+            })
+            .catch(() => alert("Erro ao mudar semana"));
+    }
+
+    /* ===== BOTÕES SEMANA (SEM DUPLICAÇÃO) ===== */
+    document.addEventListener("click", function (e) {
+
+        if (e.target.closest("#btnSemanaAnterior")) {
+            carregarSemana(-1);
+        }
+
+        if (e.target.closest("#btnSemanaProxima")) {
+            carregarSemana(1);
+        }
+
+        if (e.target.closest("#btnHoje")) {
+            carregarSemana(0, true);
+        }
+    });
+            /* ===== DROPDOWN PERÍODO ===== */
+        const btnPeriodo = document.getElementById("btnPeriodo");
+        const menuPeriodo = document.getElementById("menuPeriodo");
+
+        btnPeriodo?.addEventListener("click", function (e) {
+            e.stopPropagation();
+            menuPeriodo.classList.toggle("mostrar");
+        });
+
+        /* ===== SELECIONAR PERÍODO ===== */
+        menuPeriodo?.querySelectorAll("li[data-value]").forEach(item => {
+
+            item.addEventListener("click", function () {
+
+                // remove ativo anterior
+                menuPeriodo.querySelectorAll("li").forEach(li => li.classList.remove("ativo"));
+                this.classList.add("ativo");
+
+                // altera texto do botão
+                btnPeriodo.innerHTML = this.innerText + ' <span class="seta">▾</span>';
+
+                // fecha menu
+                menuPeriodo.classList.remove("mostrar");
+
+                // 🔥 AQUI você pode chamar o filtro real depois
+                console.log("Período selecionado:", this.dataset.value);
+
+            });
+
+        });
+
+        /* ===== FECHAR DROPDOWN AO CLICAR FORA ===== */
+        document.addEventListener("click", function () {
+            menuPeriodo?.classList.remove("mostrar");
+        });
+
+        /* ===== EXPORTAR ===== */
+        document.querySelector(".btn-exportar")
+            ?.addEventListener("click", function () {
+
+                alert("Exportar clicado");
+
+                // depois vamos colocar a URL real aqui
+                // window.location.href = "{% url 'exportar_retornos' %}";
+            });
+
+
+});
+
+/* ===============================
+   CONTADOR
+================================ */
+
+function ativarContadorAlertaRetorno() {
+    const overlay = document.getElementById("overlay-alerta-retorno");
+    if (!overlay) return;
+
+    const textarea = overlay.querySelector("textarea");
+    const contador = overlay.querySelector(".contador");
+    const btnSalvar = overlay.querySelector(".btn-salvar");
+
+    contador.textContent = "0 / 500";
+    btnSalvar.disabled = true;
+
+    textarea.oninput = () => {
+        contador.textContent = `${textarea.value.length} / 500`;
+        btnSalvar.disabled = textarea.value.length === 0;
+    };
+}
+
+document.addEventListener("click", function(e){
+
+    const btn = e.target.closest(".btn-status");
+    if(!btn) return;
+
+    const card = btn.closest(".agendamento");
+    const id = card.dataset.id;
+    const novoStatus = btn.dataset.status;
+
+    console.log("ID:", id);
+    console.log("Novo Status:", novoStatus);
+
+    fetch("{% url 'alterar_status_agendamento' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `id=${id}&status=${novoStatus}`
+    })
+    .then(r => r.json())
+    .then(resp => {
+    console.log("RESPOSTA DO BACKEND:", resp); 
+
+    if(!resp.success){
+        alert("Erro ao alterar status");
+        return;
+    }
+
+    // 🔥 Atualiza o texto
+    const texto = card.querySelector(".texto-status");
+    if (texto) {
+        texto.innerText = resp.novo_status;
+    }
+
+    // 🔥 Remove classes antigas
+    card.classList.remove(
+        "status-pendente",
+        "status-confirmado",
+        "status-atendido",
+        "status-cancelado"
+    );
+
+    // 🔥 Adiciona nova classe
+    card.classList.add("status-" + novoStatus);
+    })
+
+    .catch(() => alert("Erro na requisição"));
+
+});
+
+
+</script>
+
+
+
+
+
+{% endblock %}

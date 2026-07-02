@@ -1,0 +1,112 @@
+<div class="resumo-grid">
+
+    <!-- RECEITAS -->
+    <div class="resumo-item">
+
+        <div class="resumo-label">
+            <span class="material-icons resumo-icon receita-icon">
+                trending_up
+            </span>
+
+            <span>RECEITAS</span>
+        </div>
+
+        <div class="resumo-valor positivo">
+            R$ {{ receitas_recebidas|floatformat:2 }}
+        </div>
+
+        <div class="resumo-secundario">
+            <span>A receber</span>
+
+            <strong>
+                R$ {{ receitas_pendentes|floatformat:2 }}
+            </strong>
+        </div>
+
+        <hr>
+
+        <div class="resumo-previsto">
+            <span>Total previsto</span>
+
+            <strong>
+                R$ {{ total_receitas_previsto|floatformat:2 }}
+            </strong>
+        </div>
+
+    </div>
+
+
+
+    <!-- DESPESAS -->
+    <div class="resumo-item">
+
+        <div class="resumo-label">
+            <span class="material-icons resumo-icon despesa-icon">
+                trending_down
+            </span>
+
+            <span>DESPESAS</span>
+        </div>
+
+        <div class="resumo-valor negativo">
+            R$ {{ despesas_pagas|floatformat:2 }}
+        </div>
+
+        <div class="resumo-secundario">
+            <span>A pagar</span>
+
+            <strong>
+                R$ {{ despesas_pendentes|floatformat:2 }}
+            </strong>
+        </div>
+
+        <hr>
+
+        <div class="resumo-previsto">
+            <span>Total previsto</span>
+
+            <strong>
+                R$ {{ total_despesas_previsto|floatformat:2 }}
+            </strong>
+        </div>
+
+    </div>
+
+
+
+    <!-- SALDO -->
+    <div class="resumo-item">
+
+        <div class="resumo-label">
+            <span class="material-icons resumo-icon saldo-icon">
+                account_balance_wallet
+            </span>
+
+            <span>SALDO</span>
+        </div>
+
+        <div class="resumo-valor {% if saldo >= 0 %}positivo{% else %}negativo{% endif %}">
+            R$ {{ saldo|floatformat:2 }}
+        </div>
+
+        <div class="resumo-secundario">
+            <span>Realizado</span>
+
+            <strong>
+                Recebido - Pago
+            </strong>
+        </div>
+
+        <hr>
+
+        <div class="resumo-previsto">
+            <span>Saldo previsto</span>
+
+            <strong>
+                R$ {{ saldo_previsto|floatformat:2 }}
+            </strong>
+        </div>
+
+    </div>
+
+</div>

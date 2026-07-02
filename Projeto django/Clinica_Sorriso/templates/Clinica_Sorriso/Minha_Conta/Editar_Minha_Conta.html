@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Clínica Sorriso & Cia - Editar Minha Conta{% endblock %}
+{% block content %}
+
+<div class="container-md mt-4">
+    <div class="card shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row align-items-center mb-4">
+                <div class="col-md-2 text-center">
+                    {% if request.user.profile.foto %}
+                        <img id="foto_preview" src="{{ request.user.profile.foto.url }}"
+                             class="rounded-circle" width="150" height="150"
+                             style="object-fit: cover; cursor:pointer; position: relative; top: 2rem;"
+                             onclick="document.getElementById('id_foto').click();">
+                    {% else %}
+                        <img id="foto_preview" src="{% static 'img/imagem_default/default.jpg' %}"
+                             class="rounded-circle" width="150" height="150"
+                             style="cursor:pointer; position: relative; top: 2rem;"
+                             onclick="document.getElementById('id_foto').click();">
+                    {% endif %}
+                    <div style="display:none;">{{ foto_form.foto }}</div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Nome de usuário</label>
+                    {{ user_form.username }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Nome</label>
+                    {{ user_form.first_name }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Sobrenome</label>
+                    {{ user_form.last_name }}
+                </div>
+
+                <div class="col-md-2">
+                    <label for="{{ profile_form.sexo.id_for_label }}" class="form-label fw-bold">Sexo</label>
+                    {{ profile_form.sexo }}
+                </div>
+            </div>
+
+            <!-- ===== CPF E DATA NASCIMENTO ===== -->
+            <div class="row g-3 mb-4" style="margin-top:-50px;">
+                <div class="col-md-2 offset-md-2">
+                    <label class="form-label fw-bold">CPF</label>
+                    <input type="text" id="cpf_mask" class="form-control" maxlength="14"
+                           value="{{ profile_form.cpf.value|default_if_none:'' }}">
+                    {{ profile_form.cpf.as_hidden }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Conselho</label>
+                    {{ dentista_form.conselho_tipo }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Nº Conselho</label>
+                    {{ dentista_form.numero_conselho }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">UF</label>
+                    {{ dentista_form.uf_conselho }}
+                </div>
+
+
+            </div>
+
+            <!-- ===== CONTATO ===== -->
+            <div class="d-flex align-items-center mb-2 mt-4">
+                <i class="bi bi-person-lines-fill fs-4 text-primary me-2"></i>
+                <h5 class="mb-0">Contato</h5>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <!-- EMAIL -->
+                <div class="col-md-6">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Email" width="20" class="me-1">
+                    <label class="form-label fw-bold">E-mail</label>
+                    {{ user_form.email }}
+                </div>
+
+                <!-- TELEFONE -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold"><i class="bi bi-telephone-fill"></i> Telefone</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-light border d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" style="width:60px;">
+                            <img id="bandeiraTelefone" src="https://flagcdn.com/24x18/{{ profile_form.instance.codigo_pais_telefone.sigla|lower|default:'br' }}.png">
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for pais in profile_form.fields.codigo_pais_telefone.queryset %}
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2 selecionar-pais-telefone" data-id="{{ pais.id }}" data-sigla="{{ pais.sigla|lower }}">
+                                    <img src="https://flagcdn.com/24x18/{{ pais.sigla|lower }}.png"> {{ pais.nome }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- Hidden real para salvar no Django -->
+                        <input type="hidden" id="id_telefone" name="telefone" value="{{ profile_form.telefone.value|default_if_none:'' }}">
+                        <input type="hidden" id="codigoPaisTelefoneHidden" name="codigo_pais_telefone" value="{{ profile_form.instance.codigo_pais_telefone.id }}">
+
+                        <!-- Campo visível -->
+                        <input type="text" id="telefone_mask" class="form-control" maxlength="15" value="{{ profile_form.telefone.value|default_if_none:'' }}">
+                    </div>
+                </div>
+
+                <!-- WHATSAPP -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold"><i class="bi bi-whatsapp" style="color:#25D366;"></i> WhatsApp</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-light border d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" style="width:60px;">
+                            <img id="bandeiraWhatsapp" src="https://flagcdn.com/24x18/{{ profile_form.instance.codigo_pais_whatsapp.sigla|lower|default:'br' }}.png">
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for pais in profile_form.fields.codigo_pais_whatsapp.queryset %}
+                            <li>
+                                <a href="#" class="dropdown-item d-flex align-items-center gap-2 selecionar-pais-whatsapp" data-id="{{ pais.id }}" data-sigla="{{ pais.sigla|lower }}">
+                                    <img src="https://flagcdn.com/24x18/{{ pais.sigla|lower }}.png"> {{ pais.nome }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- Hidden real para salvar no Django -->
+                        <input type="hidden" id="id_whatsapp" name="whatsapp" value="{{ profile_form.whatsapp.value|default_if_none:'' }}">
+                        <input type="hidden" id="codigoPaisWhatsappHidden" name="codigo_pais_whatsapp" value="{{ profile_form.instance.codigo_pais_whatsapp.id }}">
+
+                        <!-- Campo visível -->
+                        <input type="text" id="whatsapp_mask" class="form-control" maxlength="15" value="{{ profile_form.whatsapp.value|default_if_none:'' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ENDEREÇO ===== -->
+            <div class="d-flex align-items-center mb-2 mt-4">
+                <i class="bi bi-geo-alt-fill fs-4 text-primary me-2"></i>
+                <h5 class="mb-0">Endereço</h5>
+            </div>
+
+            <div class="row g-3 mb-4" style="margin-top: -10px;">
+                <div class="col-md-3"> 
+                    <label class="form-label fw-bold">CEP</label>
+                    {{ profile_form.cep.as_hidden }}
+                    <input type="text" id="cep_mask" class="form-control" maxlength="9" value="{{ profile_form.cep.value|default_if_none:'' }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Rua</label>
+                    {{ profile_form.rua }}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Número</label>
+                    {{ profile_form.numero }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Complemento</label>
+                    {{ profile_form.complemento }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Bairro</label>
+                    {{ profile_form.bairro }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Cidade</label>
+                    {{ profile_form.cidade }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ profile_form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                    {{ profile_form.estado }}
+                </div>
+            </div>
+
+            <!-- ===== BOTÕES ===== -->
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'Minha_Conta' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const inputFoto = document.getElementById('id_foto');
+    const preview = document.getElementById('foto_preview');
+
+    if (!inputFoto || !preview) return;
+
+    inputFoto.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Selecione uma imagem válida');
+            this.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+
+    // SELETOR DE BANDEIRA TELEFONE
+    document.querySelectorAll('.selecionar-pais-telefone').forEach(item => {
+        item.addEventListener('click', function(e){
+            e.preventDefault();
+            const sigla = this.dataset.sigla;
+            const id = this.dataset.id;
+            document.getElementById('bandeiraTelefone').src = `https://flagcdn.com/24x18/${sigla}.png`;
+            document.getElementById('codigoPaisTelefoneHidden').value = id;
+        });
+    });
+
+    // SELETOR DE BANDEIRA WHATSAPP
+    document.querySelectorAll('.selecionar-pais-whatsapp').forEach(item => {
+        item.addEventListener('click', function(e){
+            e.preventDefault();
+            const sigla = this.dataset.sigla;
+            const id = this.dataset.id;
+            document.getElementById('bandeiraWhatsapp').src = `https://flagcdn.com/24x18/${sigla}.png`;
+            document.getElementById('codigoPaisWhatsappHidden').value = id;
+        });
+    });
+
+    // TOOLTIP BOOTSTRAP
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // FORMATAÇÕES
+    function formatarCPF(valor){
+        valor = valor.replace(/\D/g, '').slice(0,11);
+        return valor.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+    }
+
+    function formatarTelefone(valor){
+        valor = valor.replace(/\D/g,'').slice(0,11);
+        if(valor.length <= 10) return valor.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3').replace(/-$/,'');
+        else return valor.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3').replace(/-$/,'');
+    }
+
+    function formatarCEP(valor){
+        valor = valor.replace(/\D/g,'').slice(0,8);
+        return valor.replace(/(\d{5})(\d{0,3})/,'$1-$2').replace(/-$/,'');
+    }
+
+    // Máscara CPF
+    const cpfMask = document.getElementById('cpf_mask');
+    const cpfReal = document.getElementById('id_cpf');
+    if(cpfMask){
+        if(cpfMask.value) cpfMask.value = formatarCPF(cpfMask.value);
+        cpfMask.addEventListener('input', function(){
+            let v = this.value.replace(/\D/g,'').slice(0,11);
+            this.value = formatarCPF(this.value);
+            cpfReal.value = v;
+        });
+    }
+
+    // Máscara Telefone
+    const telefoneMask = document.getElementById('telefone_mask');
+    const telefoneReal = document.getElementById('id_telefone');
+    if(telefoneMask){
+        if(telefoneMask.value) telefoneMask.value = formatarTelefone(telefoneMask.value);
+        telefoneMask.addEventListener('input', function(){
+            let v = this.value.replace(/\D/g,'').slice(0,11);
+            this.value = formatarTelefone(this.value);
+            telefoneReal.value = v;
+        });
+    }
+
+    // Máscara WhatsApp
+    const whatsappMask = document.getElementById('whatsapp_mask');
+    const whatsappReal = document.getElementById('id_whatsapp');
+    if(whatsappMask){
+        if(whatsappMask.value) whatsappMask.value = formatarTelefone(whatsappMask.value);
+        whatsappMask.addEventListener('input', function(){
+            let v = this.value.replace(/\D/g,'').slice(0,11);
+            this.value = formatarTelefone(this.value);
+            whatsappReal.value = v;
+        });
+    }
+
+    // Máscara CEP
+    const cepMask = document.getElementById('cep_mask');
+    const cepReal = document.getElementById('id_cep');
+    if(cepMask){
+        if(cepMask.value) cepMask.value = formatarCEP(cepMask.value);
+        cepMask.addEventListener('input', function(){
+            let v = this.value.replace(/\D/g,'').slice(0,8);
+            this.value = formatarCEP(this.value);
+            cepReal.value = v;
+        });
+    }
+
+    // ViaCEP
+    document.getElementById('cep_mask')?.addEventListener('change', function(){
+        const cep = this.value.replace(/\D/g,'');
+        if(cep.length === 8){
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(r => r.json())
+                .then(data => {
+                    if(!data.erro){
+                        document.getElementById('id_cidade').value = data.localidade || '';
+                        document.getElementById('id_estado').value = data.uf || '';
+                    }
+                });
+        }
+    });
+</script>
+
+{% endblock %}

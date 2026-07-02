@@ -1,0 +1,799 @@
+{% extends "Clinica_Sorriso/financeiro/financeiro_base.html" %}
+{% block financeiro_content %}
+
+<style>
+  .col-acoes{
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .btn-configurar{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid #d9d9d9;
+    cursor: pointer;
+    text-decoration: none;
+    color: #1976d2;
+    font-weight: 600;
+  }
+
+  .btn-mais{
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .menu-mais{
+    position: absolute;
+    right: 0;
+    top: 42px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    overflow: hidden;
+    min-width: 160px;
+    z-index: 9999;
+  }
+
+  .menu-mais .menu-item{
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .menu-mais .menu-item:hover{ background:#f2f2f2; }
+
+  /* ====== NOVO: botão "Escolher período" + popover ====== */
+  .periodo-wrap{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-periodo{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .btn-periodo .ico{
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .range-pop{
+    position: absolute;
+    left: 0;
+    top: 44px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 10px 26px rgba(0,0,0,.14);
+    padding: 12px;
+    z-index: 9999;
+    min-width: 320px;
+  }
+
+  .range-pop .row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .range-pop label{
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .range-pop input[type="date"]{
+    width: 100%;
+    height: 38px;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    padding: 0 10px;
+    background: #fff;
+  }
+
+  .range-pop .actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .range-pop .btn-cancelar{
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .range-pop .btn-aplicar{
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 0;
+    background: #1976d2;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .range-pop[hidden]{ display:none; }
+
+  /* ===== dropdown profissional (estilo SimpleDental) ===== */
+  /* NÃO altera layout: só cria referência pro dropdown flutuante */
+  #wrapProfissional{
+    position: relative;
+    flex: 0 0 auto;  /* ✅ não estica dentro do flex */
+  }
+
+  /* dropdown flutuante sem mexer no tamanho do bloco */
+  .prof-dropdown{
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 100%;            /* ✅ mesma largura do select */
+    max-width: 420px;       /* limite só pra não ficar gigante */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 10px 26px rgba(0,0,0,.14);
+    z-index: 9999;
+    overflow: hidden;
+  }
+
+  .prof-list{
+    max-height: 260px;
+    overflow: auto;
+  }
+
+  .prof-item{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 0;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .prof-item:hover{ background:#f4f6f8; }
+
+  .prof-item .avatar{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    background: #e8f0fe;
+    color: #1976d2;
+    flex: 0 0 36px;
+  }
+
+  .prof-item .nome{
+    font-weight: 600;
+    color: #222;
+  }
+
+  .prof-invite{
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-top: 1px solid #eee;
+    background: #fff;
+    color: #1976d2;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .prof-invite:hover{ background:#f7faff; }
+
+    /* =========================
+    AJUSTE VISUAL DO TOPO (igual ao exemplo)
+    ========================= */
+
+  /* 1) Topo em duas colunas: esquerda (período) e direita (profissional) */
+  .comissoes-topo{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;           /* se a tela for pequena, quebra bonito */
+  }
+
+  /* 2) Lado esquerdo: label + período + botão */
+  .comissoes-filtros{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 420px;          /* evita esmagar */
+  }
+
+  /* mantém o texto igual exemplo */
+  .comissoes-filtros > span{
+    white-space: nowrap;
+  }
+
+  /* 3) “periodo-wrap” continua compacto, sem empurrar nada */
+  .periodo-wrap{
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Deixa o select do período com cara “clean” e tamanho bom */
+  #selectPeriodoComissoes{
+    height: 38px;
+    min-width: 280px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    padding: 0 12px;
+  }
+
+  /* Botão escolher período alinhado e sem deformar */
+  .btn-periodo{
+    height: 38px;
+    white-space: nowrap;
+  }
+
+  /* 4) Lado direito: profissional fixo na direita (igual exemplo) */
+  .comissoes-profissional{
+    display: flex;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    margin-left: auto;
+    min-width: 320px;
+  }
+
+  /* Select profissional com largura semelhante ao exemplo */
+  #selectProfissionalComissoes{
+    height: 38px;
+    min-width: 320px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    padding: 0 12px;
+  }
+
+  /* 5) Popover do período abre abaixo do botão e não mexe no layout */
+  .range-pop{
+    left: 0;
+    top: calc(100% + 8px);
+  }
+
+  /* 6) Dropdown do profissional: abre por cima sem empurrar layout */
+  #wrapProfissional{
+    position: relative;
+  }
+  .prof-dropdown{
+    right: 0;
+    width: 100%;
+  }
+
+    /* =========================================
+    AJUSTE VISUAL DA PARTE DE BAIXO (TABELA)
+    Cole no FINAL do <style>
+  ========================================= */
+
+  /* garante que o card ocupe a largura disponível */
+  .comissoes-card{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 16px;
+  }
+
+  /* se o seu base estiver limitando a largura por container,
+    isso ajuda a não "encolher" o conteúdo */
+  .comissoes-card,
+  .comissoes-tabela{
+    width: 100% !important;
+  }
+
+  /* cabeçalho e linhas como "tabela" (grid) */
+  .comissoes-tabela .t-head,
+  .comissoes-tabela .t-row{
+    display: grid;
+    grid-template-columns: 1fr 160px 220px; /* Profissional | Valor | Ações */
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* melhora espaçamento */
+  .comissoes-tabela .t-head{
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    color: #666;
+  }
+
+  .comissoes-tabela .t-row{
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .comissoes-tabela .t-row:last-child{
+    border-bottom: 0;
+  }
+
+  /* colunas */
+  .comissoes-tabela .col-prof{
+    min-width: 0;
+  }
+
+  .comissoes-tabela .col-valor{
+    text-align: left;
+    font-weight: 600;
+  }
+
+  /* ações sempre alinhadas à direita */
+  .comissoes-tabela .col-acoes{
+    justify-content: flex-end;
+  }
+
+  /* deixa tabs iguais ao estilo "linha" */
+  .comissoes-tabs{
+    padding: 8px 18px 0 18px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .comissoes-tabs .tab{
+    display: inline-block;
+    padding: 12px 18px;
+    font-weight: 700;
+    color: #666;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .comissoes-tabs .tab.active{
+    color: #1976d2;
+    border-bottom-color: #1976d2;
+  }
+</style>
+
+<div class="comissoes-topo">
+  <div class="comissoes-filtros">
+    <span>Exibindo comissões</span>
+
+    <!-- Mantém o SELECT como era -->
+    <div class="periodo-wrap">
+      <select id="selectPeriodoComissoes">
+        <option value="hoje" {% if periodo == "hoje" %}selected{% endif %}>de hoje</option>
+        <option value="semana" {% if periodo == "semana" %}selected{% endif %}>dessa semana</option>
+        <option value="mes" {% if periodo == "mes" %}selected{% endif %}>desse mês</option>
+        <option value="mes_passado" {% if periodo == "mes_passado" %}selected{% endif %}>do mês passado</option>
+        <option value="30" {% if periodo == "30" %}selected{% endif %}>dos últimos 30 dias</option>
+        <option value="todos" {% if periodo == "todos" %}selected{% endif %}>todos</option>
+      </select>
+
+      <!-- Botão separado igual ao exemplo -->
+      <button type="button" id="btnTogglePeriodo" class="btn-periodo">
+        <span class="ico">🗓️</span>
+        <span id="labelPeriodoBtn">Escolher período</span>
+      </button>
+
+      <!-- Popover flutuante -->
+      <div id="rangePopover" class="range-pop" hidden>
+        <div class="row">
+          <div style="flex:1;">
+            <label>De</label>
+            <input type="date" id="dataDe" value="{{ de }}">
+          </div>
+          <div style="flex:1;">
+            <label>Até</label>
+            <input type="date" id="dataAte" value="{{ ate }}">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btnCancelarPeriodo" class="btn-cancelar">Cancelar</button>
+          <button type="button" id="btnAplicarPeriodo" class="btn-aplicar">Aplicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comissoes-profissional" id="wrapProfissional">
+    <!-- select real (continua existindo, usado pelo seu filtro) -->
+    <select id="selectProfissionalComissoes">
+      <option value="">Selecione por profissional</option>
+      {% for u in profissionais %}
+        <option value="{{ u.id }}" {% if profissional == u.id|stringformat:"s" %}selected{% endif %}>
+          {{ u.get_full_name|default:u.username }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <!-- dropdown bonito (abre por cima do select) -->
+    <div id="dropdownProfissional" class="prof-dropdown" hidden>
+      <div class="prof-list" id="profList">
+        {% for u in profissionais %}
+          <button
+            type="button"
+            class="prof-item"
+            data-profissional-id="{{ u.id }}"
+            data-profissional-nome="{{ u.get_full_name|default:u.username }}"
+          >
+            <span class="avatar">{{ u.get_full_name|default:u.username|slice:":1"|upper }}</span>
+            <span class="nome">{{ u.get_full_name|default:u.username }}</span>
+          </button>
+        {% endfor %}
+      </div>
+
+      <button type="button" class="prof-invite" id="btnConvidarProfissional">
+        CONVIDAR PROFISSIONAL
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="comissoes-card">
+
+  <div class="comissoes-tabs">
+    <a class="tab {% if ver == 'aberto' %}active{% endif %}"
+       href="?ver=aberto&periodo={{ periodo }}&profissional={{ profissional }}">EM ABERTO</a>
+
+    <a class="tab {% if ver == 'historico' %}active{% endif %}"
+       href="?ver=historico&periodo={{ periodo }}&profissional={{ profissional }}">HISTÓRICO DE PAGAMENTOS</a>
+  </div>
+
+  <div class="comissoes-tabela">
+    <!-- Cabeçalho alinhado com Flexbox para evitar quebra de layout -->
+    <div class="t-head" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; font-weight: bold; border-bottom: 1px solid #eee;">
+      <div class="col-prof" style="flex: 2;">Profissional</div>
+      <div class="col-valor" style="flex: 1; text-align: right; padding-right: 24px;">
+        {% if ver == "historico" %}Pago{% else %}Valor{% endif %}
+      </div>
+      <div class="col-acoes" style="flex: 1; display: flex; justify-content: flex-end;"></div>
+    </div>
+
+    {% if ver == "historico" %}
+
+      {% for pg in linhas %}
+        <div class="t-row" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f5f5f5;">
+          <div class="col-prof" style="flex: 2;">
+            {% if pg.profissional.first_name %}
+              {{ pg.profissional.first_name }} {{ pg.profissional.last_name }}
+            {% else %}
+              {{ pg.profissional.username|default:"—" }}
+            {% endif %}
+
+            <div style="font-size:12px; color:#777; margin-top:2px;">
+              {{ pg.data_pagamento|date:"d/m/Y" }}
+            </div>
+
+            {% if pg.descricao %}
+              <div style="font-size:12px; color:#777; margin-top:2px;">
+                {{ pg.descricao }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="col-valor" style="flex: 1; text-align: right; padding-right: 24px; font-weight: 500;">
+            R$ {{ pg.valor|floatformat:2 }}
+          </div>
+
+          <div class="col-acoes" style="flex: 1; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn-mais" aria-haspopup="true" aria-expanded="false" data-menu-toggle>⋮</button>
+
+            <div class="menu-mais" hidden>
+              <button type="button" class="menu-item" data-imprimir>Imprimir</button>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div style="padding:18px;">Nenhum pagamento registrado.</div>
+      {% endfor %}
+
+    {% else %}
+
+      {% for row in linhas %}
+        <div class="t-row" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f5f5f5;">
+          <div class="col-prof" style="flex: 2;">
+            {% if row.profissional__first_name %}
+              {{ row.profissional__first_name }} {{ row.profissional__last_name }}
+            {% else %}
+              {{ row.profissional__username|default:"—" }}
+            {% endif %}
+          </div>
+
+          <!-- Coluna do Valor alinhada à direita e com espaçamento seguro -->
+          <div class="col-valor" style="flex: 1; text-align: right; padding-right: 24px; font-weight: bold; color: #333;">
+            R$ {{ row.total|floatformat:2 }}
+          </div>
+
+          <!-- Coluna de Ações isolando o botão de Configurar e adicionando o aviso de integração -->
+          <div class="col-acoes" style="flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+            
+            <!-- Aviso discreto sobre a dependência da outra tela -->
+            <span style="background-color: #eff6ff; color: #1d4ed8; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 500;" 
+                  title="A configuração do valor padrão será definida no módulo de profissionais.">
+              Aviso: Configuração Externa
+            </span>
+
+            <a class="btn-configurar"
+               href="#"
+               data-config-url="/financeiro/comissoes/configurar/{{ row.profissional_id }}/"
+               style="text-decoration: none; color: #007bff; font-weight: 600; font-size: 13px;"
+               title="Clique para acessar as configurações do profissional">
+              CONFIGURAR
+            </a>
+
+            <button type="button" class="btn-mais" aria-haspopup="true" aria-expanded="false" data-menu-toggle>⋮</button>
+
+            <input type="hidden" class="urlExportarComissoes" value="{% url 'exportar_comissoes_pdf' %}">
+
+            <div class="menu-mais" hidden>
+              <button type="button" class="menu-item" data-exportar data-profissional-id="{{ row.profissional_id }}">
+                Exportar
+              </button>
+              <button type="button" class="menu-item" data-imprimir>Imprimir</button>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div style="padding:18px;">Nenhuma comissão encontrada.</div>
+      {% endfor %}
+
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const periodo = document.getElementById("selectPeriodoComissoes");
+  const prof = document.getElementById("selectProfissionalComissoes");
+
+  const btnTogglePeriodo = document.getElementById("btnTogglePeriodo");
+  const pop = document.getElementById("rangePopover");
+  const dataDe = document.getElementById("dataDe");
+  const dataAte = document.getElementById("dataAte");
+  const btnAplicar = document.getElementById("btnAplicarPeriodo");
+  const btnCancelar = document.getElementById("btnCancelarPeriodo");
+  const labelBtn = document.getElementById("labelPeriodoBtn");
+
+  function montarParams() {
+    const params = new URLSearchParams(window.location.search);
+    params.set("ver", params.get("ver") || "{{ ver }}");
+
+    if (periodo?.value) params.set("periodo", periodo.value);
+
+    if (prof?.value) params.set("profissional", prof.value);
+    else params.delete("profissional");
+
+    // Se NÃO estiver em custom, remove de/ate
+    if (params.get("periodo") !== "custom") {
+      params.delete("de");
+      params.delete("ate");
+    }
+    return params;
+  }
+
+  function navegar() {
+    window.location.search = montarParams().toString();
+  }
+
+  // ======== SELECT normal navega e fecha popover ========
+  periodo?.addEventListener("change", function () {
+    if (pop) pop.hidden = true;
+    // voltar pro modo normal (remove custom)
+    const params = montarParams();
+    params.set("periodo", periodo.value);
+    params.delete("de");
+    params.delete("ate");
+    window.location.search = params.toString();
+  });
+
+  prof?.addEventListener("change", navegar);
+
+  // ======== Botão "Escolher período" abre/fecha ========
+  btnTogglePeriodo?.addEventListener("click", function (e) {
+    e.preventDefault();
+    pop.hidden = !pop.hidden;
+  });
+
+  btnCancelar?.addEventListener("click", function(){
+    pop.hidden = true;
+  });
+
+  // Fecha popover clicando fora
+  document.addEventListener("click", function(e){
+    if (!pop || pop.hidden) return;
+    if (e.target.closest("#rangePopover")) return;
+    if (e.target.closest("#btnTogglePeriodo")) return;
+    pop.hidden = true;
+  });
+
+  // ======== Aplicar custom range ========
+  btnAplicar?.addEventListener("click", function () {
+    const de = dataDe?.value || "";
+    const ate = dataAte?.value || "";
+
+    const params = montarParams();
+    params.set("periodo", "custom");
+    if (de) params.set("de", de); else params.delete("de");
+    if (ate) params.set("ate", ate); else params.delete("ate");
+
+    window.location.search = params.toString();
+  });
+
+  // Se já está em custom vindo do backend, atualiza label
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("periodo") === "custom") {
+    const de = urlParams.get("de") || "";
+    const ate = urlParams.get("ate") || "";
+    if (de && ate) labelBtn.textContent = `${de.split("-").reverse().join("/")} – ${ate.split("-").reverse().join("/")}`;
+    else labelBtn.textContent = "Período personalizado";
+  }
+
+  // ===== CONFIGURAR placeholder =====
+  document.addEventListener("click", function(e){
+    const a = e.target.closest(".btn-configurar");
+    if (!a) return;
+    e.preventDefault();
+    const url = a.dataset.configUrl;
+    if (url) window.location.href = url;
+  });
+
+  // ===== MENU ⋮ =====
+  function fecharTodosMenus() {
+    document.querySelectorAll(".menu-mais").forEach(menu => menu.hidden = true);
+    document.querySelectorAll("[data-menu-toggle]").forEach(btn => btn.setAttribute("aria-expanded", "false"));
+  }
+
+  document.addEventListener("click", function (e) {
+    const toggle = e.target.closest("[data-menu-toggle]");
+
+    if (!toggle) {
+      if (!e.target.closest(".menu-mais")) fecharTodosMenus();
+      return;
+    }
+
+    e.stopPropagation();
+    const linha = toggle.closest(".col-acoes");
+    const menu = linha?.querySelector(".menu-mais");
+    if (!menu) return;
+
+    const vaiAbrir = menu.hidden;
+    fecharTodosMenus();
+
+    menu.hidden = !vaiAbrir;
+    toggle.setAttribute("aria-expanded", vaiAbrir ? "true" : "false");
+  });
+
+  // ===== EXPORTAR =====
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-exportar]");
+    if (!btn) return;
+
+    fecharTodosMenus();
+
+    const linha = btn.closest(".col-acoes");
+    const url = linha?.querySelector(".urlExportarComissoes")?.value;
+
+    if (!url) {
+      alert("URL de exportação não encontrada no template.");
+      return;
+    }
+
+    const profissionalId = btn.dataset.profissionalId || "";
+    const params = new URLSearchParams(window.location.search);
+    params.set("ver", params.get("ver") || "{{ ver }}");
+    if (profissionalId) params.set("profissional", profissionalId);
+
+    window.location.href = url + "?" + params.toString();
+  });
+
+  // ===== IMPRIMIR =====
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-imprimir]");
+    if (!btn) return;
+
+    fecharTodosMenus();
+    window.print();
+  });
+
+    // ========= DROPDOWN PROFISSIONAL + "CONVIDAR PROFISSIONAL" =========
+    const wrapProf = document.getElementById("wrapProfissional");
+    const selectProf = document.getElementById("selectProfissionalComissoes");
+    const dropdownProf = document.getElementById("dropdownProfissional");
+    const btnConvidar = document.getElementById("btnConvidarProfissional");
+
+    function abrirDropdownProf() {
+      if (!dropdownProf || !selectProf) return;
+      dropdownProf.style.width = selectProf.offsetWidth + "px"; // ✅ trava largura
+      dropdownProf.hidden = false;
+    }
+
+    function fecharDropdownProf() {
+      if (!dropdownProf) return;
+      dropdownProf.hidden = true;
+    }
+
+    // abre ao clicar no select (impede abrir o select nativo)
+    if (selectProf && dropdownProf) {
+      selectProf.addEventListener("mousedown", function (e) {
+        e.preventDefault();      // impede o dropdown nativo do <select>
+        abrirDropdownProf();
+      });
+
+      // também abre via teclado (Enter/Space)
+      selectProf.addEventListener("keydown", function(e){
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          abrirDropdownProf();
+        }
+        if (e.key === "Escape") {
+          fecharDropdownProf();
+        }
+      });
+    }
+
+    // clicar em um profissional -> seta o select e dispara change
+    document.addEventListener("click", function(e){
+      const item = e.target.closest(".prof-item");
+      if (!item) return;
+
+      const id = item.dataset.profissionalId || "";
+      if (selectProf) {
+        selectProf.value = id;
+        selectProf.dispatchEvent(new Event("change", { bubbles: true })); // usa seu filtro atual
+      }
+      fecharDropdownProf();
+    });
+
+    // botão "Convidar profissional" (placeholder)
+    btnConvidar?.addEventListener("click", function(){
+      fecharDropdownProf();
+      alert("Em breve: tela de convite de profissional. (placeholder)");
+      // depois você troca por: window.location.href = "/rota/real/";
+    });
+
+    // fecha clicando fora
+    document.addEventListener("click", function(e){
+      if (!dropdownProf || dropdownProf.hidden) return;
+
+      const clicouDentro = e.target.closest("#wrapProfissional");
+      if (!clicouDentro) fecharDropdownProf();
+    });
+});
+</script>
+
+{% endblock %}

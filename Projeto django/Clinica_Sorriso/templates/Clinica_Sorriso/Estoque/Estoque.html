@@ -1,0 +1,814 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Estoque{% endblock %}
+
+{% block content %}
+<style>
+/* Seus estilos originais mantidos */
+body { background: #f2f2f2; }
+.estoque-topo { display: flex; align-items: center; gap: 25px; margin-bottom: 20px; }
+.btn-entrada { background: #4CAF50; color: #fff; font-weight: 600; padding: 10px 18px; border-radius: 6px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.15); border: none;  outline: none; }
+.btn-entrada:hover { background: #43a047; color: #fff; }
+.link-historico { font-weight: 600; color: #1e88e5; text-decoration: none !important; border: none;  outline: none; }
+.card-estoque { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+.estoque-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.busca-export { display: flex; gap: 12px; }
+.busca { position: relative; }
+.busca input { padding: 10px 14px 10px 40px; border-radius: 6px; border: 1px solid #ddd; width: 260px; }
+.busca i { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #777; }
+.btn-exportar { background: #2196f3; color: #fff; border: none; border-radius: 6px; padding: 10px 16px; font-weight: 600; }
+.tabela-estoque { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.tabela-estoque th, .tabela-estoque td { padding: 14px 8px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
+.tabela-estoque th { font-weight: 600; color: #777; text-align: left; }
+.tabela-estoque td:last-child { text-align: right; }
+.link-retirada { color: #1e88e5; font-weight: 600; text-decoration: none !important; outline: none !important; border: none; outline: none; background: none !important; }
+.menu-wrapper { position: relative; display: inline-block; }
+.menu-acao { cursor: pointer; color: #757575; font-size: 20px; margin-left: 12px; }
+.menu-dropdown { position: absolute; right: 0; top: 28px; background: #fff; border-radius: 8px; min-width: 160px; box-shadow: 0 8px 20px rgba(0,0,0,.18); z-index: 1000; padding: 6px 0; }
+.menu-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 15px; color: #555; text-decoration: none; border: none; background: none; width: 100%; cursor: pointer; text-align: left; }
+.menu-item i { font-size: 18px; color: #616161; }
+.menu-item:hover { background: #f5f5f5; }
+.d-none { display: none; }
+
+
+/* 1. Mantenha a tabela em auto para o texto não quebrar */
+.tabela-estoque { 
+    width: 100%; 
+    border-collapse: collapse; 
+    table-layout: auto !important; 
+}
+
+/* 2. NOME: Ocupa o espaço que sobrar sem quebrar */
+.nome-prod-tabela { 
+    white-space: nowrap !important; 
+    text-align: left;
+    /* Não colocamos width aqui para ele ser flexível */
+}
+
+/* 3. QUANTIDADE: Largura fixa razoável e alinhamento central */
+.tabela-estoque th.qtd_tela_inicial_estoque, 
+.tabela-estoque td.qtd_tela_inicial_estoque { 
+    width: 120px !important; 
+    text-align: center !important; 
+    white-space: nowrap;
+    padding: 14px 180px !important; /* Padding normal, sem valores absurdos */
+}
+
+/* 4. AÇÕES: Apenas o tamanho necessário, sem forçar 1% ou 550px */
+.tabela-estoque td:last-child { 
+    width: 150px !important; 
+    white-space: nowrap;
+}
+/* Modais Base */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; justify-content: center; align-items: center; z-index: 3000; }
+.modal-card { background: #fff; border-radius: 8px; padding: 32px; width: 90%; max-width: 800px; box-shadow: 0 15px 40px rgba(0,0,0,.3); max-height: 90vh; overflow-y: auto; }
+
+/* ADICIONADO: Estilo do Modal de Exclusão (Vermelho) */
+.modal-confirm-delete { max-width: 550px !important; padding: 30px !important; }
+.delete-title { color: #d32f2f; font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; text-align: left; }
+.delete-text { color: #333; font-size: 1.05rem; line-height: 1.5; margin-bottom: 30px; text-align: left; }
+.btn-excluir-confirm { background-color: #d32f2f; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+
+.nome-prod-tabela { 
+    white-space: nowrap !important; 
+    text-align: left; 
+}
+/* Classes auxiliares para centralização */
+.text-center { text-align: center !important; }
+
+/* Estilos de formulários e outros modais mantidos */
+.modal-title { color: #333; font-size: 1.2rem; margin-bottom: 30px; font-weight: 500; text-align: left; }
+.product-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 20px; }
+.field-group { position: relative; border: 1px solid #ccc; border-radius: 5px; padding: 5px 10px; }
+.field-group label { position: absolute; top: -10px; left: 10px; background: white; padding: 0 5px; font-size: 0.75rem; color: #2196F3; }
+.field-group input, .field-group select { border: none; outline: none; width: 100%; padding: 8px 0; font-size: 1rem; background: transparent; }
+.name-field { flex: 3; border-color: #2196F3; }
+.small-field { flex: 1; }
+.add-another { margin: 20px 0; text-align: center; }
+.add-another a { color: #2196F3; text-decoration: none; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
+.modal-footer-custom { display: flex; justify-content: flex-end; align-items: center; gap: 20px; margin-top: 30px; }
+.btn-cancel { background: none; border: none; color: #2196F3; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+.btn-save { background-color: #5cb85c; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-transform: uppercase; }
+.btn-delete { background: none; border: none; color: #777; margin-top: 15px; cursor: pointer; }
+.alert { padding:10px 15px; border-radius:6px; margin-bottom:10px; transition: opacity 0.5s ease; }
+.alert-success { background-color:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+.alert-error { background-color:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+.modal-opcoes { display: flex; gap: 24px; }
+.opcao-card { flex: 1; border: 1px solid #e0e0e0; border-radius: 6px; padding: 28px; text-align: center; cursor: pointer; transition: .2s; }
+.opcao-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,.15); transform: translateY(-2px); }
+.opcao-card i { font-size: 48px; color: #9e9e9e; margin-bottom: 12px; }
+.opcao-card h5 { color: #1e88e5; font-weight: 600; }
+.opcao-card p { color: #666; }
+.modal-footer { text-align: right; margin-top: 24px; }
+.modal-footer a { color: #1e88e5; font-weight: 600; text-decoration: none; }
+.modal-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.search-modal { position: relative; width: 280px; }
+.search-modal input { width: 100%; padding: 8px 10px 8px 35px; border: 1px solid #ddd; border-radius: 4px; }
+.search-modal i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888; }
+.qty-control { display: flex; align-items: center; gap: 8px; justify-content: center; }
+.qty-control button { background: #757575; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.qty-control input { border: none; border-bottom: 1px solid #ccc; width: 40px; text-align: center; outline: none; }
+.btn-finalizar-disabled { background: #e0e0e0; color: #999; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: not-allowed; }
+.retirada-card {
+    max-width: 720px;
+    padding: 32px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.produto-nome {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.estoque-atual {
+    color: #555;
+    margin-bottom: 24px;
+}
+
+.retirada-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.field label {
+    font-size: 13px;
+    color: #1976d2;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.field input {
+    width: 100%;
+    height: 42px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+}
+
+.field input:disabled {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.btn-link {
+    background: none;
+    text-decoration: none !important; /* Remove a linha embaixo */
+    outline: none !important;
+    border: none;
+    color: #1e88e5;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.btn-exportar {
+    background: #2196f3;
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-weight: 600;
+    text-decoration: none !important; /* ISSO FAZ O CLIQUE FUNCIONAR E TIRA A LINHA */
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn-exportar:hover {
+    background: #1976d2;
+    text-decoration: none !important;
+}
+
+/* Faixa de Alerta no Topo */
+.alert-estoque-critico {
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Cor vermelha na tabela */
+.texto-critico {
+    color: #e53e3e !important;
+    font-weight: 700 !important;
+}
+
+/* Pequena etiqueta ao lado do número */
+.badge-repor {
+    font-size: 9px;
+    background: #e53e3e;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+</style>
+
+<div class="container mt-4">
+    <div class="estoque-topo">
+        <button class="btn-entrada" id="abrirOpcoes">FAZER ENTRADA NO ESTOQUE</button>
+        <button class="link-historico" onclick="abrirModalHistorico(); return false;">HISTÓRICO DE RETIRADAS</button>
+    </div>
+
+<div id="modalHistorico" class="modal-overlay d-none">
+    <div class="modal-card" style="max-width: 1200px;">
+        <h3 class="modal-title">Histórico de retiradas</h3>
+        
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="tabela-estoque">
+                <thead>
+                    <tr style="color: #888; font-size: 13px;">
+                        <th>Produto</th>
+                        <th class="text-center">Qtd retirada</th>
+                        <th class="text-center">Retirado por</th>
+                        <th class="text-center">Autorizado por</th>
+                        <th class="text-center">Data</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo-historico">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer" style="margin-top: 20px;">
+            <button onclick="fecharTudo()" style="background:none; border:none; font-weight:bold; cursor:pointer;">FECHAR</button>
+        </div>
+    </div>
+</div>
+
+    <div id="messages-container-main">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% for message in messages %}
+        {% if 'retirada' in message.tags and message.level_tag == 'success' %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% if total_criticos > 0 %}
+    <div class="alert-estoque-critico">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="bi bi-exclamation-octagon-fill" style="font-size: 24px;"></i>
+            <div>
+                <strong>Atenção ao Estoque:</strong> 
+                Existem {{ total_criticos }} itens abaixo do nível ideal.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card-estoque">
+        <div class="estoque-header">
+            <h3 class="mb-0">Estoque</h3>
+            <div class="busca-export">
+                <div class="busca">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="inputBuscaGeral" placeholder="Digite o nome do produto" onkeyup="filtrarEstoqueGeral()">
+                </div>
+                <a href="{% url 'Exportar_Estoque_Excel' %}" class="btn-exportar">EXPORTAR</a>
+            </div>
+        </div>
+        <table class="tabela-estoque" id="tabelaEstoquePrincipal">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th class="qtd_tela_inicial_estoque">Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr class="linha-produto-estoque">
+                    <td class="nome-prod-tabela">{{ produto.nome }}</td>
+                    <td class="qtd_tela_inicial_estoque">{{ produto.quantidade_atual }}</td>
+                    <td>
+                        <button class="link-retirada" style="margin-right:16px;" onclick="abrirModalRetirada('{{ produto.id }}','{{ produto.nome }}','{{ produto.quantidade_atual }}'); return false;">FAZER RETIRADA</button>
+                        <div class="menu-wrapper">
+                            <span class="menu-acao" onclick="toggleMenu(this)">⋮</span>
+                            <div class="menu-dropdown d-none">
+                                <button type="button" class="menu-item" onclick="abrirModalEditar('{{ produto.id }}','{{ produto.nome }}', '{{ produto.quantidade_ideal }}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button type="button" class="menu-item" onclick="abrirModalExclusao('{{ produto.id }}', '{{ produto.nome }}')">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="modalRetiradaProduto" class="modal-overlay d-none">
+    <div class="modal-card retirada-card">
+
+        {% for message in messages %}
+            {% if 'retirada' in message.tags and message.level_tag == 'error' %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <h3 class="modal-title">Retirar produto do estoque</h3>
+
+        <p class="produto-nome" id="retirada-produto-nome"></p>
+        <p class="estoque-atual">
+            Posição do estoque atual:
+            <strong id="retirada-qtd-atual"></strong>
+        </p>
+
+        <form method="POST" id="form-retirada-produto">
+            {% csrf_token %}
+            <input type="hidden" name="produto" id="retirada-produto-id">
+
+            <div class="retirada-grid">
+                <div class="field">
+                    <label>Quantidade de retirada*</label>
+                    <input type="number"
+                           name="quantidade_retirada"
+                           min="1"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label>Profissional</label>
+                    <input type="text"
+                    value="{{ request.user.get_full_name|default:request.user.username }}"
+                    disabled>
+
+                </div>
+            </div>
+
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-link" onclick="fecharTudo()">
+                    CANCELAR
+                </button>
+                <button type="submit" class="btn-primary">
+                    RETIRAR
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+<div id="modalEditarProduto" class="modal-overlay d-none">
+    <div class="modal-card">
+        <h4 class="modal-title">Editando produto do estoque</h4>
+
+        <form method="POST" id="form-editar-produto">
+            {% csrf_token %}
+
+            <div class="product-row">
+                <div class="field-group name-field">
+                    <label>Produto*</label>
+                    <input type="text" name="nome" id="editar-nome">
+                </div>
+
+                <div class="field-group small-field">
+                    <label>Qtd ideal*</label>
+                    <input type="number" name="quantidade_ideal" id="editar-qtd-ideal">
+                </div>
+            </div>
+
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancel" onclick="fecharTudo()">CANCELAR</button>
+                <button type="submit" class="btn-save">SALVAR</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="modalConfirmarExclusao" class="modal-overlay d-none">
+    <div class="modal-card modal-confirm-delete">
+        <div class="delete-title">Excluir produto</div>
+        <div class="delete-text">
+            O produto <strong id="delete-nome-produto"></strong>, e todo o histórico dele, será excluído permanentemente da sua clínica.
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn-cancel" style="color: black;" onclick="fecharTudo()">CANCELAR</button>
+            <form id="form-excluir-final" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-excluir-confirm">EXCLUIR PRODUTO</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalEntradaEstoque" class="modal-overlay d-none">
+    <div class="modal-card">
+        <h4>Você está fazendo uma nova entrada no estoque</h4>
+        <div class="modal-opcoes">
+            <div class="opcao-card" onclick="abrirModalCadastro()">
+                <i class="bi bi-cart-plus"></i>
+                <h5>É UM PRODUTO QUE EU NÃO TENHO CADASTRADO</h5>
+                <p>Eu ainda não tenho esse produto cadastrado no meu estoque</p>
+            </div>
+            <div class="opcao-card" onclick="abrirModalEntradaExistente()">
+                <i class="bi bi-box-seam"></i>
+                <h5>É UM PRODUTO QUE EU JÁ TENHO CADASTRADO</h5>
+                <p>Eu preciso aumentar a quantidade desse produto no meu estoque</p>
+            </div>
+        </div>
+        <div class="modal-footer"><a href="javascript:void(0)" onclick="fecharTudo()">CANCELAR</a></div>
+    </div>
+</div>
+
+<div id="modalCadastroProduto" class="modal-overlay d-none">
+    <div class="modal-card">
+        <div id="messages-container-modal">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-error">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <h4 class="modal-title">Adicionando produto ao estoque</h4>
+        <form method="POST" id="form-estoque" action="{% url 'Adicionar_Estoque' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form-TOTAL_FORMS" id="id_form-TOTAL_FORMS" value="1">
+            <input type="hidden" name="form-INITIAL_FORMS" id="id_form-INITIAL_FORMS" value="0">
+            <div id="products-container">
+                <div class="product-row">
+                    <div class="field-group name-field"><label>Nome do produto*</label><input type="text" name="form-0-nome"></div>
+                    <div class="field-group small-field"><label>Quantidade*</label><input type="number" name="form-0-quantidade_atual" value="1"></div>
+                    <div class="field-group small-field"><label>Qtd ideal*</label><input type="number" name="form-0-quantidade_ideal" value="1"></div>
+                    <button type="button" class="btn-delete" onclick="removerProduto(this)">🗑️</button>
+                </div>
+            </div>
+            <div class="add-another"><a onclick="adicionarProduto()">ADICIONAR OUTRO PRODUTO</a></div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancel" onclick="fecharTudo()">CANCELAR</button>
+                <button type="submit" class="btn-save">ADICIONAR AO ESTOQUE</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modalEntradaExistente" class="modal-overlay d-none">
+    <div class="modal-card">
+        <div class="modal-header-flex">
+            <h4 class="modal-title" style="margin-bottom:0;">Alterando produto no estoque</h4>
+            <div class="search-modal">
+                <i class="bi bi-search"></i>
+                <input type="text" id="buscaProdutoModal" placeholder="Digite o nome do produto" onkeyup="filtrarProdutosModal()">
+            </div>
+        </div>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="tabela-estoque" style="table-layout: auto;">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th style="text-align: center;">Qtd atual</th>
+                        <th style="text-align: center;">Qtd de entrada</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-produtos-entrada">
+                    {% for p in produtos %}
+                    <tr class="item-produto-modal">
+                        <td class="nome-prod-modal">{{ p.nome }}</td>
+                        <td style="text-align: center;">{{ p.quantidade_atual }}</td>
+                        <td>
+                            <div class="qty-control">
+                                <button type="button" onclick="ajustarQtd('{{ p.id }}', -1)">-</button>
+                                <input type="number" id="qtd-ent-{{ p.id }}" value="0" min="0" 
+                                       data-id="{{ p.id }}" data-nome="{{ p.nome }}" data-atual="{{ p.quantidade_atual }}"
+                                       onchange="validarBotaoFinalizar()">
+                                <button type="button" onclick="ajustarQtd('{{ p.id }}', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer-custom">
+            <button type="button" class="btn-cancel" onclick="fecharTudo()">CANCELAR</button>
+            <button type="button" id="btn-prosseguir-entrada" class="btn-finalizar-disabled" onclick="prepararConfirmacaoMultipla()" disabled>FINALIZAR E ALTERAR ESTOQUE</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalConfirmacaoVisual" class="modal-overlay d-none">
+    <div class="modal-card" style="max-width: 700px;">
+        <h4 class="modal-title">Conferindo quantidade de produto no estoque</h4>
+        <table class="tabela-estoque">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th class="text-center">Qtd Atual</th>
+                    <th class="text-center">Entrada</th>
+                    <th class="text-center">Final</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-confirmacao"></tbody>
+        </table>
+        <div class="modal-footer-custom" style="margin-top: 40px;">
+            <button type="button" class="btn-cancel" onclick="voltarParaEdicao()">VOLTAR</button>
+            <form method="POST" action="{% url 'Confirmar_Entrada_Estoque' %}">
+                {% csrf_token %}
+                <input type="hidden" name="json_dados" id="final-json-dados">
+                <button type="submit" class="btn-save">CONFIRMAR E ADICIONAR</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* Suas funções originais mantidas */
+    window.addEventListener('load', function() {
+        const hasErrors = document.querySelector('#messages-container-modal .alert-error');
+        if (hasErrors) {
+            document.getElementById('modalCadastroProduto').classList.remove('d-none');
+        }
+
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+    });
+
+    /* ADICIONADO: Função para abrir o modal de exclusão */
+    function abrirModalExclusao(id, nome) {
+        fecharTudo();
+        document.getElementById('delete-nome-produto').innerText = nome;
+        // Gera a URL correta dinamicamente
+        const urlBase = "{% url 'Deleta_Produto' 0 %}".replace('0', id);
+        document.getElementById('form-excluir-final').action = urlBase;
+        document.getElementById('modalConfirmarExclusao').classList.remove('d-none');
+    }
+
+    function fecharTudo() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('d-none'));
+        
+        // Mantendo suas limpezas de formulário originais
+        const formEstoque = document.getElementById('form-estoque');
+        if (formEstoque) {
+            formEstoque.reset();
+            const container = document.getElementById('products-container');
+            const rows = container.querySelectorAll('.product-row');
+            for (let i = 1; i < rows.length; i++) { rows[i].remove(); }
+            document.getElementById('id_form-TOTAL_FORMS').value = 1;
+        }
+        document.querySelectorAll('#lista-produtos-entrada input').forEach(input => { input.value = 0; });
+        const buscaModal = document.getElementById('buscaProdutoModal');
+        if(buscaModal) { buscaModal.value = ''; filtrarProdutosModal(); }
+        validarBotaoFinalizar();
+    }
+
+    /* Resto das suas funções originais exatamente como estavam */
+    function abrirModalCadastro() { fecharTudo(); document.getElementById('modalCadastroProduto').classList.remove('d-none'); }
+    function abrirModalEntradaExistente() { fecharTudo(); document.getElementById('modalEntradaExistente').classList.remove('d-none'); }
+    document.getElementById('abrirOpcoes').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('modalEntradaEstoque').classList.remove('d-none'); });
+
+    function ajustarQtd(id, delta) {
+        let input = document.getElementById('qtd-ent-' + id);
+        let novoValor = (parseInt(input.value) || 0) + delta;
+        if (novoValor >= 0) { input.value = novoValor; validarBotaoFinalizar(); }
+    }
+
+    function validarBotaoFinalizar() {
+        let totalEntrada = 0;
+        document.querySelectorAll('#lista-produtos-entrada input').forEach(i => totalEntrada += (parseInt(i.value) || 0));
+        let btn = document.getElementById('btn-prosseguir-entrada');
+        if (totalEntrada > 0) { btn.disabled = false; btn.className = "btn-save"; } 
+        else { btn.disabled = true; btn.className = "btn-finalizar-disabled"; }
+    }
+
+    function prepararConfirmacaoMultipla() {
+        let html = '';
+        let dadosParaEnviar = [];
+        document.querySelectorAll('#lista-produtos-entrada input').forEach(input => {
+            let qtd = parseInt(input.value) || 0;
+            if (qtd > 0) {
+                let nome = input.dataset.nome;
+                let atual = parseInt(input.dataset.atual);
+                let id = input.dataset.id;
+                html += `<tr><td>${nome}</td><td style="text-align:center">${atual}</td><td style="color:#2196F3; font-weight:bold; text-align:center">${qtd}</td><td style="font-weight:bold; text-align:center">${atual + qtd}</td></tr>`;
+                dadosParaEnviar.push({id: id, qtd: qtd});
+            }
+        });
+        document.getElementById('corpo-confirmacao').innerHTML = html;
+        document.getElementById('final-json-dados').value = JSON.stringify(dadosParaEnviar);
+        document.getElementById('modalEntradaExistente').classList.add('d-none');
+        document.getElementById('modalConfirmacaoVisual').classList.remove('d-none');
+    }
+
+    function voltarParaEdicao() {
+        document.getElementById('modalConfirmacaoVisual').classList.add('d-none');
+        document.getElementById('modalEntradaExistente').classList.remove('d-none');
+    }
+
+    function filtrarProdutosModal() {
+        let busca = document.getElementById('buscaProdutoModal').value.toLowerCase();
+        document.querySelectorAll('.item-produto-modal').forEach(tr => {
+            let nome = tr.querySelector('.nome-prod-modal').innerText.toLowerCase();
+            tr.style.display = nome.includes(busca) ? "" : "none";
+        });
+    }
+
+    function filtrarEstoqueGeral() {
+        let input = document.getElementById('inputBuscaGeral');
+        let filtro = input.value.toLowerCase();
+        document.querySelectorAll('.linha-produto-estoque').forEach(linha => {
+            let nome = linha.querySelector('.nome-prod-tabela').innerText.toLowerCase();
+            linha.style.display = nome.includes(filtro) ? "" : "none";
+        });
+    }
+
+    function adicionarProduto() {
+        const container = document.getElementById('products-container');
+        const rows = container.querySelectorAll('.product-row');
+        const newRow = rows[0].cloneNode(true);
+        newRow.querySelectorAll('input').forEach(i => i.value = i.type === 'number' ? 1 : '');
+        container.appendChild(newRow);
+        atualizarIndices();
+    }
+    
+    function removerProduto(btn) {
+        const rows = document.querySelectorAll('.product-row');
+        if(rows.length > 1) { btn.closest('.product-row').remove(); atualizarIndices(); }
+    }
+    
+    function atualizarIndices() {
+        const rows = document.querySelectorAll('.product-row');
+        rows.forEach((row, i) => {
+            row.querySelectorAll('input').forEach(input => {
+                input.name = input.name.replace(/form-\d+-/, `form-${i}-`);
+            });
+        });
+        document.getElementById('id_form-TOTAL_FORMS').value = rows.length;
+    }
+
+    function toggleMenu(el) { 
+        document.querySelectorAll('.menu-dropdown').forEach(d => {
+            if(d !== el.nextElementSibling) d.classList.add('d-none');
+        });
+        el.nextElementSibling.classList.toggle('d-none'); 
+    }
+</script>
+
+<script>
+function abrirModalEditar(id, nome, qtdIdeal) {
+    fecharTudo();
+
+    document.getElementById('editar-nome').value = nome;
+    document.getElementById('editar-qtd-ideal').value = qtdIdeal;
+
+    const form = document.getElementById('form-editar-produto');
+    form.action = "{% url 'Editar_Produto_Estoque' 0 %}".replace('0', id);
+
+    document.getElementById('modalEditarProduto').classList.remove('d-none');
+}
+</script>
+<script>
+function abrirModalRetirada(id, nome, qtdAtual) {
+    fecharTudo();
+
+    document.getElementById('retirada-produto-id').value = id;
+    document.getElementById('retirada-produto-nome').innerText = nome;
+    document.getElementById('retirada-qtd-atual').innerText = qtdAtual;
+
+    const urlBase = "{% url 'Retirar_Produto' 0 %}".replace('0', id);
+    document.getElementById('form-retirada-produto').action = urlBase;
+
+    document.getElementById('modalRetiradaProduto').classList.remove('d-none');
+}
+</script>
+<script>
+window.addEventListener('load', function () {
+
+    const erroRetirada = document.querySelector('#modalRetiradaProduto .alert');
+
+    if (erroRetirada) {
+        document.getElementById('modalRetiradaProduto').classList.remove('d-none');
+    }
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const produtoId = params.get("produto");
+    const produtoNome = params.get("nome");
+    const produtoQtd = params.get("quantidade");
+
+    if (produtoId) {
+        abrirModalRetirada(produtoId, produtoNome, produtoQtd);
+    }
+});
+
+</script>
+<script>
+function abrirModalHistorico() {
+    fecharTudo();
+    const corpoTabela = document.getElementById('tabela-corpo-historico');
+    corpoTabela.innerHTML = '<tr><td colspan="5" class="text-center">Carregando...</td></tr>';
+    
+    document.getElementById('modalHistorico').classList.remove('d-none');
+
+    fetch("{% url 'Historico_De_Retiradas' %}")
+        .then(response => response.json())
+        .then(data => {
+            corpoTabela.innerHTML = ''; 
+            
+            data.historico.forEach(item => {
+                // VERIFIQUE OS NOMES ABAIXO: devem ser iguais aos da View
+                corpoTabela.innerHTML += `
+                    <tr>
+                        <td>${item.produto}</td>
+                        <td class="text-center">${item.quantidade}</td>
+                        <td class="text-center">${item.retirado_nome}</td>
+                        <td class="text-center">${item.autorizado_nome}</td>
+                        <td class="text-center">${item.data}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            corpoTabela.innerHTML = '<tr><td colspan="5" class="text-center" style="color:red;">Erro ao carregar dados.</td></tr>';
+        });
+}
+</script>
+<script>
+function toggleMenu(elemento) {
+    // Evita que o clique no ícone propague para o fechamento automático
+    event.stopPropagation();
+    
+    // Encontra o dropdown dentro do mesmo "menu-wrapper"
+    const menuDropdown = elemento.parentElement.querySelector('.menu-dropdown');
+    
+    // Fecha todos os outros menus que estiverem abertos antes de abrir este
+    document.querySelectorAll('.menu-dropdown').forEach(menu => {
+        if (menu !== menuDropdown) {
+            menu.classList.add('d-none');
+        }
+    });
+
+    // Alterna a exibição do menu clicado
+    menuDropdown.classList.toggle('d-none');
+}
+
+// Fechar o menu ao clicar em qualquer lugar fora dele
+window.onclick = function(event) {
+    if (!event.target.matches('.menu-acao')) {
+        const dropdowns = document.querySelectorAll('.menu-dropdown');
+        dropdowns.forEach(openDropdown => {
+            if (!openDropdown.classList.contains('d-none')) {
+                openDropdown.classList.add('d-none');
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

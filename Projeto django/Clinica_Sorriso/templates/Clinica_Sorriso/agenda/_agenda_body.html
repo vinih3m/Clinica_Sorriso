@@ -1,0 +1,19 @@
+<div class="agenda-grid">
+    {% for hora in horas %}
+        <div class="hora">{{ hora }}:00</div>
+
+        {% for dia in dias %}
+            <div class="slot"
+                 data-dia="{{ dia.data }}"
+                 data-hora="{{ hora }}">
+                {% for ag in agendamentos %}
+                    {% if ag.data == dia.data and ag.hora|time:"H" == hora %}
+                        <div class="agendamento">
+                            {{ ag.paciente.nome }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>

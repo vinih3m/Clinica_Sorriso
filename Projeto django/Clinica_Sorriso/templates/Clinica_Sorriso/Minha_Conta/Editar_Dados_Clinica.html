@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Editar Clínica{% endblock %}
+
+{% block content %}
+<div class="container-md mt-4">
+    <div class="card shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- DADOS DA CLÍNICA -->
+            <div class="row align-items-start mb-4">
+                <div class="col-md-10">
+                    <h5 class="mt-4 mb-3">
+                        <i class="bi bi-heart-pulse fs-5 text-primary me-2"></i>
+                        Dados da Clínica</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nome da Clínica</label>
+                            {{ clinica_form.nome_clinica }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">CNPJ da Clínica</label>
+                            {{ clinica_form.cnpj }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nome utilizado nas comunicações</label>
+                            {{ clinica_form.nome_comunicacoes }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Responsável pela Clínica</label>
+                            {{ clinica_form.responsavel_clinica }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOGO -->
+                <div class="col-md-2 text-center" style="margin-top: 40px;">
+                    <div class="position-relative d-inline-block"
+                         style="width:150px; height:150px; cursor:pointer;"
+                         onclick="document.getElementById('id_logo').click();">
+
+                        <img id="logo_preview"
+                             src="{% if clinica_form.instance.logo %}{{ clinica_form.instance.logo.url }}{% else %}{% static 'img/placeholder.png' %}{% endif %}"
+                             class="rounded-circle shadow-sm"
+                             width="150" height="150"
+                             style="object-fit: cover;">
+
+                        {% if not clinica_form.instance.logo %}
+                        <div id="camera_icon"
+                             class="position-absolute top-0 start-0 w-100 h-100 rounded-circle
+                                    d-flex align-items-center justify-content-center
+                                    bg-light border">
+                            <i class="bi bi-camera fs-1 text-secondary"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <input type="file"
+                           id="id_logo"
+                           name="logo"
+                           accept="image/*"
+                           style="display:none"
+                           onchange="previewLogo(this)">
+                           <small>Alterar Logo da Clínica</small>
+                </div>
+            </div>
+
+            <!-- HORÁRIO DE FUNCIONAMENTO -->
+            <h5 class="mt-4 mb-3">
+                <i class="bi bi-clock fs-5 text-primary me-2"></i>
+                Horário de Funcionamento
+            </h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Horário inicial da clínica</label>
+                    {{ clinica_form.horario_inicio }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Horário final da clínica</label>
+                    {{ clinica_form.horario_fim }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Fuso Horário</label>
+                    {{ clinica_form.fuso_horario }}
+                </div>
+            </div>
+
+            <!-- FISCAL -->
+            <h5 class="mt-4 mb-3">
+                <i class="bi bi-receipt fs-5 text-primary me-2"></i>
+                Fiscal
+            </h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Emitir Recibo em Nome de</label>
+                    {{ clinica_form.emitir_recibo_em_nome_de }}
+                </div>
+            </div>
+
+            <!-- CONTATO -->
+            <h5 class="mt-4 mb-3">
+                <i class="bi bi-telephone fs-5 text-primary me-2"></i>
+                Contato
+            </h5>
+
+            <div class="row g-3 mb-4">
+
+                <!-- E-mail -->
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">E-mail</label>
+                    {{ clinica_form.email_clinica }}
+                </div>
+
+                <!-- TELEFONE -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Telefone</label>
+                    <div class="input-group">
+
+                        <button type="button"
+                                class="btn btn-light border dropdown-toggle p-0"
+                                data-bs-toggle="dropdown"
+                                style="width:60px;">
+                            <img id="bandeiraTelefone"
+                                src="{% if clinica_form.instance.codigo_pais_telefone_clinica %}
+                                        https://flagcdn.com/24x18/{{ clinica_form.instance.codigo_pais_telefone_clinica.sigla|lower }}.png
+                                    {% endif %}">
+                        </button>
+
+                        <ul class="dropdown-menu">
+                            {% for pais in clinica_form.fields.codigo_pais_telefone_clinica.queryset %}
+                            <li>
+                                <a class="dropdown-item selecionar-pais-telefone"
+                                data-id="{{ pais.id }}"
+                                data-sigla="{{ pais.sigla|lower }}">
+                                    <img src="https://flagcdn.com/24x18/{{ pais.sigla|lower }}.png">
+                                    {{ pais.nome }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        {{ clinica_form.telefone }}
+                        {{ clinica_form.codigo_pais_telefone_clinica.as_hidden }}
+
+                    </div>
+                </div>
+
+                <!-- CELULAR -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Celular</label>
+                    <div class="input-group">
+
+                        <button type="button"
+                                class="btn btn-light border dropdown-toggle p-0"
+                                data-bs-toggle="dropdown"
+                                style="width:60px;">
+                            <img id="bandeiraCelular"
+                                src="{% if clinica_form.instance.codigo_pais_celular_clinica %}
+                                        https://flagcdn.com/24x18/{{ clinica_form.instance.codigo_pais_celular_clinica.sigla|lower }}.png
+                                    {% endif %}">
+                        </button>
+
+                        <ul class="dropdown-menu">
+                            {% for pais in clinica_form.fields.codigo_pais_celular_clinica.queryset %}
+                            <li>
+                                <a class="dropdown-item selecionar-pais-celular"
+                                data-id="{{ pais.id }}"
+                                data-sigla="{{ pais.sigla|lower }}">
+                                    <img src="https://flagcdn.com/24x18/{{ pais.sigla|lower }}.png">
+                                    {{ pais.nome }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        {{ clinica_form.celular }}
+                        {{ clinica_form.codigo_pais_celular_clinica.as_hidden }}
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOCALIZAÇÃO -->
+            <h5 class="mt-4 mb-3">
+                <i class="bi bi-geo-alt-fill fs-5 text-primary me-2"></i>
+                Localização
+            </h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">CEP</label>
+                    {{ clinica_form.cep }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Rua</label>
+                    {{ clinica_form.rua }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Número</label>
+                    {{ clinica_form.numero }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Complemento</label>
+                    {{ clinica_form.complemento }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Bairro</label>
+                    {{ clinica_form.bairro }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Cidade</label>
+                    {{ clinica_form.cidade }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Estado</label>
+                    {{ clinica_form.estado }}
+                </div>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'dados_clinica' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+function previewLogo(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const img = document.getElementById('logo_preview');
+            img.src = e.target.result;
+
+            // remove o ícone da câmera se existir
+            const cameraIcon = document.getElementById('camera_icon');
+            if (cameraIcon) {
+                cameraIcon.style.display = 'none';
+            }
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    document.querySelectorAll('.selecionar-pais-telefone').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('bandeiraTelefone').src =
+                `https://flagcdn.com/24x18/${this.dataset.sigla}.png`;
+            document.getElementById('id_codigo_pais_telefone_clinica').value =
+                this.dataset.id;
+        });
+    });
+
+    document.querySelectorAll('.selecionar-pais-celular').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('bandeiraCelular').src =
+                `https://flagcdn.com/24x18/${this.dataset.sigla}.png`;
+            document.getElementById('id_codigo_pais_celular_clinica').value =
+                this.dataset.id;
+        });
+    });
+
+});
+</script>
+
+{% endblock %}

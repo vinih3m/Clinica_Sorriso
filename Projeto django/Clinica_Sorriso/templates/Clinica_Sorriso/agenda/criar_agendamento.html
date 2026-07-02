@@ -1,0 +1,129 @@
+<h2>Novo Agendamento</h2>
+
+<form method="POST" action="{% url 'criar_agendamento' %}">
+
+    {% csrf_token %}
+
+    <div class="campo">
+        <label>Paciente</label>
+        {{ form.paciente_nome }}
+    </div>
+
+    <div class="campo">
+        <label>Profissional</label>
+        {{ form.profissional }}
+    </div>
+
+    <div class="campo">
+        <label>Data</label>
+        {{ form.data }}
+    </div>
+
+    <div class="campo">
+        <label>Hora início</label>
+        {{ form.hora_inicio }}
+    </div>
+
+    <div class="campo">
+        <label>Hora fim</label>
+        {{ form.hora_fim }}
+    </div>
+
+    <div class="campo">
+        <label>Observações</label>
+        {{ form.observacoes }}
+    </div>
+
+    <div class="acoes">
+        <button type="button"
+                class="btn-padrao btn-secundario"
+                onclick="fecharModalAgendamento()">
+            Cancelar
+        </button>
+
+        <button type="submit"
+                class="btn-padrao btn-primario">
+            Salvar
+        </button>
+    </div>
+
+</form>
+
+
+<style>
+/* ===== OVERLAY ===== */
+#overlay-agendamento {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* ===== MODAL ===== */
+.modal-agendamento {
+    background: #fff;
+    width: 100%;
+    max-width: 520px;
+    height: 80vh;                 /* 🔒 altura fixa */
+    border-radius: 16px;
+    padding: 24px 24px 16px;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+
+/* ===== CORPO ROLÁVEL (ESSENCIAL) ===== */
+#modal-corpo {
+    flex: 1;              /* 🔑 ocupa o espaço do modal */
+    overflow-y: auto;     /* 🔑 ativa scroll interno */
+    min-height: 0;        /* 🔥 CORREÇÃO CRÍTICA */
+    padding-right: 6px;
+}
+
+/* ===== CAMPOS ===== */
+.campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== OBSERVAÇÕES ===== */
+textarea {
+    min-height: 90px;
+    max-height: 130px;
+    resize: none;   /* 🔒 impede quebrar o modal */
+}
+
+/* ===== AÇÕES ===== */
+.acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+/* ===== FECHAR ===== */
+.fechar-modal {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: #666;
+}
+</style>

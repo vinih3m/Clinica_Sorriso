@@ -1,0 +1,273 @@
+{% load static %}
+{% block content %}
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+    :root {
+        --clinic-blue: #0077b6;
+        --clinic-light: #00b4d8;
+        --accent-cyan: #00f5d4;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(rgba(0, 50, 100, 0.75), rgba(2, 62, 138, 0.85)), 
+        url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        margin-left: 50px;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .container {
+        display: flex;
+        width: 90%;
+        max-width: 1250px;
+        align-items: center;
+        gap: 80px;
+    }
+
+    /* Lado Esquerdo - Foco na Logo Grande */
+    .info-section {
+        flex: 1.2;
+        color: white;
+        animation: fadeInRight 1s ease-out;
+    }
+
+    .info-section img.logo {
+        width: 350px; /* Logo bem maior agora */
+        height: auto;
+        margin-bottom: 30px;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    .info-section h1 {
+        font-size: 3.5rem;
+        line-height: 1.1;
+        margin-bottom: 25px;
+        font-weight: 700;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .info-section p {
+        font-size: 1.3rem;
+        font-weight: 300;
+        line-height: 1.6;
+        max-width: 500px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Lado Direito - Card de Login Robusto */
+    .login-container {
+        width: 450px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        padding: 60px 50px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .login-container h2 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .login-container p.subtitle {
+        color: var(--accent-cyan);
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 30px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #fff;
+        font-size: 14px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    /* Inputs Estilizados */
+    .form-group input {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: 15px;
+        border: 2px solid transparent;
+        box-sizing: border-box;
+        font-size: 16px;
+        background: white;
+        color: #222;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+        transform: scale(1.02);
+    }
+
+    /* Botão de Ação */
+    .btn-acessar {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(45deg, var(--clinic-blue), var(--clinic-light));
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.3s all ease;
+        text-transform: uppercase;
+        box-shadow: 0 10px 30px rgba(0, 119, 182, 0.3);
+    }
+
+    .btn-acessar:hover {
+        background: linear-gradient(45deg, var(--clinic-light), var(--accent-cyan));
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 245, 212, 0.4);
+        color: #003264;
+    }
+
+    /* Rodapé do Sistema */
+    .system-footer {
+        margin-top: 40px;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+
+    /* Animações */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Mobile */
+    @media (max-width: 1000px) {
+        .info-section { display: none; }
+        .container { justify-content: center; }
+        .login-container { width: 100%; max-width: 400px; }
+    }
+
+    /* CORREÇÃO DO OLHO DA SENHA */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 48px; /* espaço pro olho */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 22px;
+    color: #555;
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: #000;
+}
+
+</style>
+
+<div class="container">
+    <div class="info-section">
+        <img src="{% static 'ico/logo.png' %}" alt="Logo Clínica Sorriso & Cia" class="logo">
+        <h1>Clínica Sorriso e Cia</h1>
+        <p>Sistema interno de gestão odontológica. <br>Acesso exclusivo para profissionais autorizados</p>
+    </div>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <p class="subtitle">Sistema Odontológico</p>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="form-group">
+                <label for="id_username">Usuário</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Senha</label>
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        required
+                    >
+                    <span class="material-icons toggle-password" id="togglePassword">
+                        visibility
+                    </span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-acessar">Acessar</button>
+        </form>
+
+
+        <div class="system-footer">
+           Clínica Sorriso & Cia © 2026
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('id_password');
+
+    toggle.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggle.textContent = 'visibility_off';
+        } else {
+            passwordInput.type = 'password';
+            toggle.textContent = 'visibility';
+        }
+    });
+});
+</script>
+{% endblock %}

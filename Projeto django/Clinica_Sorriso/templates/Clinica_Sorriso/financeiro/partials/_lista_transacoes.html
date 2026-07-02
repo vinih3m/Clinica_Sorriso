@@ -1,0 +1,246 @@
+{% if transacoes %}
+    {% for t in transacoes %}
+    <div class="linha-transacao" data-id="{{ t.id }}">
+
+        <!-- CHECKBOX -->
+        <div class="col-check">
+            <input type="checkbox" class="checkbox-transacao">
+        </div>
+
+        <!-- ÍCONE SETA -->
+        <div class="col-tipo">
+            {% if t.tipo == 'receita' %}
+                <span class="icon receita text-success">↓</span>
+            {% else %}
+                <span class="icon despesa text-danger">↑</span>
+            {% endif %}
+        </div>
+
+        <!-- CONTEÚDO (DATA E NOME) -->
+        <div class="col-conteudo">
+            <div class="col-data">
+                <span class="valor text-muted small">{{ t.data|date:"d/m/Y" }}</span>
+            </div>
+            <div class="col-nome">
+                <div class="fw-bold" style="color: #333;">{{ t.paciente_nome|default:"Paciente Avulso" }}</div>
+                <small class="text-muted">{{ t.descricao }}</small>
+            </div>
+        </div>
+
+        <!-- DIREITA (VALOR E BOTÕES DE AÇÃO) -->
+        <div class="col-direita d-flex align-items-center justify-content-end gap-3 flex-grow-1">
+            <div class="valor">
+                {% if t.tipo == 'receita' %}
+                    <span class="receita text-success fw-bold">R$ {{ t.valor|floatformat:2 }}</span>
+                {% else %}
+                    <span class="despesa text-danger fw-bold">R$ {{ t.valor|floatformat:2 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="acao">
+                {% if t.pago %}
+                    <span class="pago text-success fw-bold">✔</span>
+                {% else %}
+                    {% if t.tipo == 'receita' %}
+                        <button class="btn-acao btn-receber btn btn-sm btn-outline-primary" 
+                                data-bs-toggle="modal" data-bs-target="#modalReceber"
+                                data-id="{{ t.id }}" data-valor="{{ t.valor|floatformat:2 }}"
+                                data-descricao="{{ t.descricao }}" data-paciente="{{ t.paciente_nome|default:'Paciente' }}" 
+                                data-data="{{ t.data|date:'d/m/Y' }}">
+                            Receber
+                        </button>
+                    {% else %}
+                        <!-- 🚀 BOTÃO PAGAR PRINCIPAL CORRIGIDO COM DESTRAVA-GATILHO -->
+                        <button class="btn-acao btn-pagar-despesa btn btn-sm btn-outline-danger"
+                            data-id="{{ t.id }}"
+                            data-descricao="{{ t.descricao }}"
+                            data-valor="{{ t.valor|floatformat:2 }}"
+                            data-data="{{ t.data|date:'Y-m-d' }}"
+                            data-categoria="{{ t.categoria.id|default:'' }}"
+                            data-caixa="{{ t.caixa }}"
+                            data-meio="{{ t.meio_pagamento|default:'' }}"
+                            data-obs="{{ t.observacao|default:'' }}"
+                            onclick="setTimeout(function(){ const inp = document.getElementById('input-busca-categoria-pagar'); if(inp){ inp.readOnly=false; inp.disabled=false; inp.removeAttribute('readonly'); inp.removeAttribute('disabled'); } }, 150);">
+                        Pagar
+                    </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- TRÊS PONTINHOS -->
+        <!-- TRÊS PONTINHOS -->
+        <div class="col-acoes ms-2">
+
+            <div class="dropdown">
+
+                <button
+                    class="btn-acoes border-0 bg-transparent text-muted"
+                    type="button"
+                    data-bs-toggle="dropdown">
+                    ⋮
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
+                    {% if not t.pago %}
+
+                        <!-- EDITAR -->
+                        <a class="dropdown-item py-2
+                            {% if t.tipo == 'receita' %}
+                                btn-editar-receita
+                            {% else %}
+                                btn-editar-despesa
+                            {% endif %}"
+
+                            href="#"
+
+                            data-id="{{ t.id }}"
+                            data-descricao="{{ t.descricao }}"
+                            data-valor="{{ t.valor }}"
+                            data-data="{{ t.data|date:'Y-m-d' }}"
+                            data-categoria="{{ t.categoria.id|default:'' }}"
+                            data-caixa="{{ t.caixa }}"
+                            data-meio="{{ t.meio_pagamento }}"
+                            data-obs="{{ t.observacao }}"
+                            data-paciente="{{ t.paciente_nome|default:'' }}"
+                            data-profissional-id="{{ t.profissional.id|default:'' }}"> <!-- 🚀 ADICIONADO AQUI: ID do Dentista -->
+
+                            <i class="bi bi-pencil me-2"></i>
+                            Editar
+
+                        </a>
+
+                        {% if t.tipo == "receita" %}
+
+                            <!-- RECEBER -->
+
+                            <li>
+
+                                <a class="dropdown-item py-2 btn-receber"
+
+                                href="#"
+
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalReceber"
+
+                                data-id="{{ t.id }}"
+                                data-valor="{{ t.valor|floatformat:2 }}"
+                                data-descricao="{{ t.descricao }}"
+                                data-paciente="{{ t.paciente_nome|default:'Paciente' }}"
+                                data-data="{{ t.data|date:'d/m/Y' }}">
+
+                                    <i class="bi bi-cash me-2"></i>
+                                    Receber
+
+                                </a>
+
+                            </li>
+
+                        {% else %}
+
+                            <!-- PAGAR -->
+
+                            <li>
+
+                                <a class="dropdown-item py-2 btn-pagar-despesa"
+
+                                href="#"
+
+                                data-id="{{ t.id }}"
+                                data-descricao="{{ t.descricao }}"
+                                data-valor="{{ t.valor|floatformat:2 }}"
+                                data-data="{{ t.data|date:'Y-m-d' }}"
+                                data-categoria="{{ t.categoria.id|default:'' }}"
+                                data-caixa="{{ t.caixa }}"
+                                data-meio="{{ t.meio_pagamento|default:'' }}"
+                                data-obs="{{ t.observacao|default:'' }}">
+
+                                    <i class="bi bi-cash me-2"></i>
+                                    Pagar
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        {% if t.tipo == "receita" %}
+
+                            <!-- CANCELAR RECEBIMENTO -->
+
+                            <li>
+
+                                <a class="dropdown-item py-2"
+
+                                href="#"
+
+                                onclick="cancelarRecebimento('{{ t.id }}')">
+
+                                    <i class="bi bi-arrow-counterclockwise me-2"></i>
+                                    Cancelar recebimento
+
+                                </a>
+
+                            </li>
+
+                        {% else %}
+
+                            <!-- CANCELAR PAGAMENTO -->
+
+                            <li>
+
+                                <a class="dropdown-item py-2"
+
+                                href="#"
+
+                                onclick="cancelarPagamento('{{ t.id }}')">
+
+                                    <i class="bi bi-arrow-counterclockwise me-2"></i>
+                                    Cancelar pagamento
+
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <!-- EXCLUIR -->
+
+                    <li>
+
+                        <a class="dropdown-item py-2 text-danger"
+
+                        href="#"
+
+                        onclick="confirmarExcluirDespesa('{{ t.id }}')">
+
+                            <i class="bi bi-trash me-2"></i>
+
+                            Excluir
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="lista-vazia">
+        <h3>Nenhuma transação encontrada</h3>
+        <p>Não existem registros com os filtros selecionados.</p>
+    </div>
+{% endif %}

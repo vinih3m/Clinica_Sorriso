@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <p><label>Usuário:</label><br>{{ form.username }}</p>
+    <p><label>Nome:</label><br>{{ form.first_name }}</p>
+    <p><label>Sobrenome:</label><br>{{ form.last_name }}</p>
+    <p><label>Email:</label><br>{{ form.email }}</p>
+    <p><label>Tipo de usuário:</label><br>{{ form.grupo }}</p>
+    <p><label>Senha:</label><br>{{ form.password1 }}</p>
+    <p><label>Confirmar senha:</label><br>{{ form.password2 }}</p>
+
+    <button type="submit" class="btn btn-primary">Criar Usuário</button>
+</form>
+{% endblock %}

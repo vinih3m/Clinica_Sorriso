@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Clínica Sorriso & Cia - Minha Conta{% endblock %}
+
+{% block content %}
+<style>
+    .campo-normal{
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+    }
+
+    .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 500px;
+    animation: fadeScale 0.25s ease;
+}
+
+@keyframes fadeScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.campo-senha {
+    position: relative;
+}
+
+.campo-senha input {
+    width: 100%;
+    height: 44px;
+    padding-right: 44px; /* espaço para o olho */
+}
+
+.eye-inside {
+    position: absolute;
+    right: 12px;
+    top: 45px; /* ajusta alinhamento vertical */
+    cursor: pointer;
+    font-size: 22px;
+    color: #6c757d;
+}
+
+.eye-inside:hover {
+    color: #0d6efd;
+}
+
+.toast-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 280px;
+    max-width: 380px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2000;
+    animation: slideIn 0.4s ease;
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #198754, #28a745);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+}
+
+.toast-alert button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.4s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(120%);
+    }
+}
+
+.password-rules {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+}
+
+.password-rules .rule {
+    color: #dc3545;
+    transition: 0.2s;
+}
+
+.password-rules .rule.valid {
+    color: #198754;
+}
+
+</style>
+<div class="container-md mt-4">
+    <div class="card shadow-sm p-4 mx-auto" style="max-width: 1000px;">
+
+        <div class="row align-items-center mb-4">
+
+            <div class="col-md-2 text-center">
+                {% if request.user.profile.foto %}
+                    <img src="{{ request.user.profile.foto.url }}"
+                         class="rounded-circle"
+                         width="150" height="150"
+                         style="object-fit: cover; position: relative; top: 2rem;">
+                {% else %}
+                    <img src="{% static 'img/imagem_default/default.jpg' %}"
+                         class="rounded-circle"
+                         width="150" height="150"
+                         style="position: relative; top: 2rem;">
+                {% endif %}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Nome de usuário</label>
+                <div class="form-control bg-light campo-normal">
+                    {{ request.user.username }}
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <label class="form-label fw-bold">Nome Completo</label>
+                <div class="form-control bg-light campo-normal">
+                    {{ request.user.get_full_name }}
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-bold">Sexo</label>
+                <div class="form-control bg-light campo-normal">
+                    {% if request.user.profile.sexo %}
+                        {{ request.user.profile.get_sexo_display }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+       <div class="row g-3 mb-4" style="margin-top: -50px;">
+
+            <div class="col-md-2 offset-md-2">
+                <label class="form-label fw-bold">CPF</label>
+                <div class="form-control bg-light campo-normal">
+                    {% if request.user.profile.cpf %}
+                        {{ request.user.profile.cpf_formatado }}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if is_admin or is_dentista %}
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Conselho</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if dentista %}
+                            {{ dentista.get_conselho_tipo_display }}
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Nº Conselho</label>
+                    <div class="form-control bg-light campo-normal">
+                        {{ dentista.numero_conselho|default:"" }}
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">UF</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if dentista.conselho_tipo %}
+                            {{ dentista.get_conselho_tipo_display }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="toast-alert toast-{{ message.tags }}">
+        <span>{{ message }}</span>
+        <button onclick="fecharAlerta(this)">×</button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+
+
+        <div style="margin-top: -30px;">
+            <div class="d-flex align-items-center mb-2 mt-4">
+                <i class="bi bi-person-lines-fill fs-4 text-primary me-2"></i>
+                <h5 class="mb-0">Contato</h5>
+            </div>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Email" width="20" class="me-1">
+                    <label class="form-label fw-bold">E-mail</label>
+                    <div class="form-control bg-light campo-normal">
+                        {{ request.user.email }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <i class="bi bi-telephone-fill" style="color: #34495e !important;"></i>
+                    <label class="form-label fw-bold">Telefone</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.telefone %}
+                        <img src="https://flagcdn.com/24x18/{{ request.user.profile.codigo_pais_telefone.sigla|lower }}.png"
+                            alt="{{ request.user.profile.codigo_pais_telefone.nome }}" class="me-2">
+                        {{ request.user.profile.telefone_formatado }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+
+                <div class="col-md-3">
+                    <i class="bi bi-whatsapp" style="color: #25D366;"></i>
+                    <label class="form-label fw-bold">WhatsApp</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.whatsapp %}
+                        <img src="https://flagcdn.com/24x18/{{ request.user.profile.codigo_pais_whatsapp.sigla|lower }}.png"
+                            alt="{{ request.user.profile.codigo_pais_whatsapp.nome }}" class="me-2">
+                        {{ request.user.profile.whatsapp_formatado }}
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: -30px;">
+            <div class="mt-4">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-lock-fill fs-4 text-primary me-2"></i>
+                    <h5 class="mb-0">Senha</h5>
+                </div>
+
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm ms-4"
+                        onclick="abrirSenha()">
+                    Alterar Senha
+                </button>
+
+<div id="overlaySenha" class="overlay d-none">
+    <div class="modal-card">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <strong>Alterar Senha</strong>
+            </div>
+
+            <div class="card-body px-5 py-4">
+                <form method="POST" action="{% url 'alterar_senha' %}">
+                    {% csrf_token %}
+
+                    <!-- SENHA ATUAL -->
+                    <div class="mb-3 campo-senha position-relative">
+                        <label class="form-label">{{ form.old_password.label }}</label>
+
+                        {{ form.old_password }}
+
+                        <span class="material-icons eye-inside"
+                            id="toggle_old_password"
+                            data-target="id_old_password">
+                            visibility
+                        </span>
+                    </div>
+
+                    <!-- NOVA SENHA -->
+                    <div class="mb-3 campo-senha position-relative">
+                        <label class="form-label">{{ form.new_password1.label }}</label>
+
+                        {{ form.new_password1 }}
+
+                        <span class="material-icons eye-inside"
+                            id="toggle_new_password1"
+                            data-target="id_new_password1">
+                            visibility
+                        </span>
+                    </div>
+
+                    <!-- CONFIRMAR SENHA -->
+                    <div class="mb-3 campo-senha position-relative">
+                        <label class="form-label">{{ form.new_password2.label }}</label>
+
+                        {{ form.new_password2 }}
+
+                        <span class="material-icons eye-inside"
+                            id="toggle_new_password2"
+                            data-target="id_new_password2">
+                            visibility
+                        </span>
+                    </div>
+
+                    <div class="password-rules mt-2">
+                    <small class="d-block rule" data-rule="length">❌ Sua senha não pode ser muito parecida com o resto das suas informações pessoais.</small>
+                    <small class="d-block rule" data-rule="number">❌ Sua senha precisa conter pelo menos 8 caracteres.</small>
+                    <small class="d-block rule" data-rule="letter">❌ Sua senha não pode ser uma senha comumente utilizada.</small>
+                    <small class="d-block rule" data-rule="common">❌ Sua senha não pode ser inteiramente numérica.</small>
+                </div>
+
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="fecharSenha()">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            Salvar
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+            <div class="d-flex align-items-center mb-2 mt-4">
+                <i class="bi bi-geo-alt-fill fs-4 text-primary me-2"></i>
+                <h5 class="mb-0">Endereço</h5>
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">CEP</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.cep %}
+                            {{ request.user.profile.cep_formatado }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Rua</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.rua %}
+                            {{ request.user.profile.rua }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Número</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.numero %}
+                            {{ request.user.profile.numero }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Complemento</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.complemento %}
+                            {{ request.user.profile.complemento }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Bairro</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.bairro %}
+                            {{ request.user.profile.bairro }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Cidade</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.cidade %}
+                            {{ request.user.profile.cidade }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Estado</label>
+                    <div class="form-control bg-light campo-normal">
+                        {% if request.user.profile.estado %}
+                            {{ request.user.profile.get_estado_display }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="{% url 'Editar_Minha_Conta' %}" class="btn btn-outline-primary">
+                        Editar Dados
+                    </a>
+                </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+function abrirSenha() {
+    document.getElementById('overlaySenha')
+        .classList.remove('d-none');
+}
+
+function fecharSenha() {
+    document.getElementById('overlaySenha')
+        .classList.add('d-none');
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('[id^="toggle_"]').forEach(function (toggle) {
+
+        toggle.addEventListener('click', function () {
+            const inputId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(inputId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                this.textContent = 'visibility';
+            }
+        });
+
+    });
+
+});
+</script>
+
+<script>
+function fecharAlerta(btn) {
+    const alert = btn.parentElement;
+    alert.classList.add('fade-out');
+    setTimeout(() => alert.remove(), 400);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toast-alert').forEach(alert => {
+        setTimeout(() => {
+            alert.classList.add('fade-out');
+            setTimeout(() => alert.remove(), 400);
+        }, 10000); // 4 segundos
+    });
+});
+</script>
+
+
+{% endblock %}
