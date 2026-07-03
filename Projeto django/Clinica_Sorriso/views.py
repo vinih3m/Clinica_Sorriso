@@ -541,17 +541,13 @@ def Exportar_Estoque_Excel(request):
     
     return response
 
-
-from datetime import date, timedelta, datetime
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import Agendamento
-
+from .models import Agendamento, Paciente, Profissional
 
 @login_required
 def agenda(request):
     semana = int(request.GET.get("semana", 0))
     data_str = request.GET.get("data")
+    profissional_id = request.GET.get("profissional") or ""
 
     if data_str:
         data_base = datetime.strptime(data_str, "%Y-%m-%d").date()
@@ -561,37 +557,26 @@ def agenda(request):
     inicio_semana = data_base - timedelta(days=data_base.weekday())
     fim_semana = inicio_semana + timedelta(days=6)
 
+    # ================= PROFISSIONAIS =================
+    profissionais = (
+        Profissional.objects
+        .all()
+        .order_by("nome")
+    )
+
+    profissional_selecionado = None
+
+    if profissional_id:
+        profissional_selecionado = (
+            profissionais
+            .filter(id=profissional_id)
+            .first()
+        )
+
     # ================= HORÁRIOS =================
-    horas = []
-
-    inicio_expediente = "08:00"
-    fim_expediente = "18:00"
-
-    for h in range(8, 19):
-
-        # Hora cheia
-        hora = f"{h:02}:00"
-
-        horas.append({
-            "valor": hora,
-            "cheia": True,
-            "fechado": hora < inicio_expediente or hora >= fim_expediente
-        })
-
-        # Intervalos de 15 minutos
-        if h < 18:
-            for minuto in ("15", "30", "45"):
-
-                hora = f"{h:02}:{minuto}"
-
-                horas.append({
-                    "valor": hora,
-                    "cheia": False,
-                    "fechado": hora < inicio_expediente or hora >= fim_expediente
-                })
+    horas = gerar_horas()
 
     # ================= DIAS =================
-
     nomes_dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
 
     dias = []
@@ -606,12 +591,16 @@ def agenda(request):
         })
 
     # ================= AGENDAMENTOS =================
-
     agendamentos = (
         Agendamento.objects
         .select_related("paciente", "profissional")
         .filter(data__range=[inicio_semana, fim_semana])
     )
+
+    if profissional_id:
+        agendamentos = agendamentos.filter(profissional_id=profissional_id)
+
+    agendamentos = preparar_agendamentos_grid(agendamentos, horas)
 
     return render(
         request,
@@ -623,19 +612,26 @@ def agenda(request):
             "agendamentos": agendamentos,
             "semana": semana,
             "data_base": data_base,
+            "inicio_expediente": "08:00",
+            "fim_expediente": "18:00",
+
+            # profissionais
+            "profissionais": profissionais,
+            "profissional_id": profissional_id,
+            "profissional_selecionado": profissional_selecionado,
         }
     )
 
-
 @login_required
 def criar_agendamento(request):
+    profissional_id = request.GET.get("profissional") or request.POST.get("profissional")
+
     if request.method == "POST":
         form = AgendamentoForm(request.POST)
 
         if form.is_valid():
             nome_paciente = form.cleaned_data["paciente_nome"].strip()
 
-            # 🔹 Busca paciente ignorando maiúsculas/minúsculas
             paciente = Paciente.objects.filter(
                 nome__iexact=nome_paciente
             ).first()
@@ -652,24 +648,27 @@ def criar_agendamento(request):
             return redirect("agenda")
 
         else:
-            print("FORM INVALIDO:", form.errors)  # ajuda a debuggar
+            print("FORM INVALIDO:", form.errors)
 
     else:
-        form = AgendamentoForm(
-            initial={
-                "data": request.GET.get("dia"),
-                "hora_inicio": request.GET.get("hora"),
-            }
-        )
+        initial = {
+            "data": request.GET.get("dia"),
+            "hora_inicio": request.GET.get("hora"),
+        }
+
+        if profissional_id:
+            initial["profissional"] = profissional_id
+
+        form = AgendamentoForm(initial=initial)
 
     return render(
         request,
         "Clinica_Sorriso/agenda/criar_agendamento.html",
-        {"form": form}
+        {
+            "form": form,
+            "profissional_id": profissional_id,
+        }
     )
-
-
-
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -760,6 +759,7 @@ def salvar_retorno(request):
 def agenda_parcial(request):
     semana = int(request.GET.get("semana", 0))
     data_str = request.GET.get("data")
+    profissional_id = request.GET.get("profissional") or ""
 
     if data_str:
         data_base = datetime.strptime(data_str, "%Y-%m-%d").date()
@@ -769,32 +769,50 @@ def agenda_parcial(request):
     inicio_semana = data_base - timedelta(days=data_base.weekday())
     fim_semana = inicio_semana + timedelta(days=6)
 
-    horas = []
+    # ================= PROFISSIONAIS =================
+    profissionais = (
+        Profissional.objects
+        .all()
+        .order_by("nome")
+    )
 
-    for h in range(8, 19):
-        horas.append(f"{h:02}:00")
-        
-        if h < 18:
-            horas.append(f"{h:02}:15")
-            horas.append(f"{h:02}:30")
-            horas.append(f"{h:02}:45")
+    profissional_selecionado = None
 
+    if profissional_id:
+        profissional_selecionado = (
+            profissionais
+            .filter(id=profissional_id)
+            .first()
+        )
+
+    # ================= HORÁRIOS =================
+    horas = gerar_horas()
+
+    # ================= DIAS =================
     nomes_dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
 
     dias = []
+
     for i in range(7):
         dia = inicio_semana + timedelta(days=i)
+
         dias.append({
             "data": dia,
             "nome": nomes_dias[dia.weekday()],
             "num": dia.day,
         })
 
+    # ================= AGENDAMENTOS =================
     agendamentos = (
         Agendamento.objects
         .select_related("paciente", "profissional")
         .filter(data__range=[inicio_semana, fim_semana])
     )
+
+    if profissional_id:
+        agendamentos = agendamentos.filter(profissional_id=profissional_id)
+
+    agendamentos = preparar_agendamentos_grid(agendamentos, horas)
 
     return render(
         request,
@@ -805,11 +823,91 @@ def agenda_parcial(request):
             "today": date.today(),
             "agendamentos": agendamentos,
             "semana": semana,
-            "data_base": data_base,  # 👈 ADICIONE ISSO
+            "data_base": data_base,
             "inicio_expediente": "08:00",
             "fim_expediente": "18:00",
+
+            # profissionais
+            "profissionais": profissionais,
+            "profissional_id": profissional_id,
+            "profissional_selecionado": profissional_selecionado,
         }
     )
+
+
+def gerar_horas():
+    horas = []
+
+    for h in range(8, 19):
+
+        horas.append({
+            "valor": f"{h:02}:00",
+            "cheia": True,
+            "fechado": False,
+        })
+
+        if h < 18:
+            for minuto in ("15", "30", "45"):
+                horas.append({
+                    "valor": f"{h:02}:{minuto}",
+                    "cheia": False,
+                    "fechado": False,
+                })
+
+    return horas
+
+
+import math
+from datetime import date, timedelta, datetime
+
+def preparar_agendamentos_grid(agendamentos, horas):
+    mapa_horas = {
+        h["valor"]: index + 1
+        for index, h in enumerate(horas)
+    }
+
+    for ag in agendamentos:
+        hora_inicio = ag.hora_inicio.strftime("%H:%M")
+        hora_fim = ag.hora_fim.strftime("%H:%M") if ag.hora_fim else None
+
+        ag.grid_row = mapa_horas.get(hora_inicio, 1) + 1
+
+        # coluna 1 é a coluna das horas, então os dias começam na coluna 2
+        ag.grid_col = ag.data.weekday() + 2
+
+        if ag.hora_fim:
+            inicio_dt = datetime.combine(ag.data, ag.hora_inicio)
+            fim_dt = datetime.combine(ag.data, ag.hora_fim)
+
+            minutos = (fim_dt - inicio_dt).total_seconds() / 60
+
+            if minutos <= 0:
+                minutos = 15
+        else:
+            minutos = 15
+
+        ag.grid_span = max(1, math.ceil(minutos / 15))
+
+    return agendamentos
+
+from django.shortcuts import get_object_or_404
+@login_required
+def detalhes_agendamento(request, id):
+
+    agendamento = get_object_or_404(
+        Agendamento,
+        id=id
+    )
+
+    return render(
+        request,
+        "Clinica_Sorriso/agenda/detalhes_agendamento.html",
+        {
+            "ag": agendamento
+        }
+    )
+
+
 
 from django.http import HttpResponse
 def exportar_retornos(request):

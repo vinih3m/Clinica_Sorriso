@@ -5,83 +5,49 @@
 <div class="agenda-wrapper">
 
     <div class="agenda-header">
-        <div></div>
-        {% for dia in dias %}
-            <div class="{% if dia.data == today %}dia-hoje{% endif %}">
-                {{ dia.nome }}<br>
-                <small>{{ dia.num }}</small>
-            </div>
-        {% endfor %}
-    </div>
-
-    <div class="agenda-body">
-        {% for hora in horas %}
-
-            <div class="hora {% if hora.cheia %}hora-cheia-label{% endif %}">
-                {{ hora.valor }}
-            </div>
-
+        <div>
             {% for dia in dias %}
+                <div class="{% if dia.data == today %}dia-hoje{% endif %}">
+                    {{ dia.nome }}<br>
+                    <small>{{ dia.num }}</small>
+                </div>
+            {% endfor %}
+        </div>
 
-                <div class="slot{% if hora.cheia %} hora-cheia{% endif %}{% if hora.fechado %} slot-fechado{% endif %}"
-                    data-dia="{{ dia.data|date:'Y-m-d' }}"
-                    data-hora="{{ hora.valor }}">
-
-                    <div class="slot-agendamentos">
-
-                        {% for ag in agendamentos %}
-
-                            {% if ag.data == dia.data and ag.hora_inicio|time:'H:i' == hora.valor %}
-
-                                <div class="agendamento {% if ag.tipo == 'retorno' %}alerta-retorno{% else %}status-{{ ag.status }}{% endif %}"
-                                    data-id="{{ ag.id }}">
-
-                                    <strong>{{ ag.paciente }}</strong><br>
-
-                                    {{ ag.profissional }}<br>
-
-                                    {% if ag.tipo == "retorno" %}
-                                        <small><strong>RETORNO</strong></small>
-                                    {% else %}
-                                        <small class="texto-status">
-                                            {{ ag.get_status_display }}
-                                        </small>
-                                    {% endif %}
-
-                                    {% if ag.tipo != "retorno" %}
-                                        <div class="acoes-agenda">
-                                            <button class="btn-status"
-                                                    data-status="confirmado"
-                                                    title="Confirmar">
-                                                <i class="fas fa-user"></i>
-                                            </button>
-
-                                            <button class="btn-status"
-                                                    data-status="atendido"
-                                                    title="Atendido">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-
-                                            <button class="btn-status"
-                                                    data-status="cancelado"
-                                                    title="Cancelar">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    {% endif %}
-
-                                </div>
-
-                            {% endif %}
-
-                        {% endfor %}
-
-                    </div>
-
+        <div class="agenda-body">
+            {% for hora in horas %}
+                <div class="hora {% if hora.cheia %}hora-cheia-label{% endif %}"
+                    style="grid-column: 1; grid-row: {{ forloop.counter|add:1 }};">
+                    {{ hora.valor }}
                 </div>
 
+                {% for dia in dias %}
+                    <div class="slot
+                        {% if hora.cheia %}hora-cheia{% endif %}
+                        {% if hora.fechado %}slot-fechado{% endif %}"
+                        style="grid-column: {{ forloop.counter|add:1 }}; grid-row: {{ forloop.parentloop.counter|add:1 }};"
+                        data-dia="{{ dia.data|date:'Y-m-d' }}"
+                        data-hora="{{ hora.valor }}">
+                    </div>
+                {% endfor %}
             {% endfor %}
 
+        {% for ag in agendamentos %}
+            <div class="agendamento status-{{ ag.status }}"
+                data-id="{{ ag.id }}"
+                style="grid-column: {{ ag.grid_col }}; grid-row: {{ ag.grid_row }} / span {{ ag.grid_span }};"
+                onclick="event.stopPropagation(); abrirDetalhesAgendamento({{ ag.id }});">
+
+                <strong>
+                    {{ ag.paciente }}
+
+                    {% if not profissional_id and ag.profissional %}
+                        - Dr(a). {{ ag.profissional }}
+                    {% endif %}
+                </strong>
+
+                <small>{{ ag.hora_inicio|time:"H:i" }} - {{ ag.hora_fim|time:"H:i" }}</small>
+            </div>
         {% endfor %}
     </div>
 </div>

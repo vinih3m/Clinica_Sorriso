@@ -1,0 +1,81 @@
+<div class="detalhes-card">
+
+    <div class="detalhes-topo">
+
+        <div class="avatar-paciente">
+            <i class="fas fa-user"></i>
+        </div>
+
+        <div class="detalhes-info">
+            <h2>{{ ag.paciente }}</h2>
+            <p>{{ ag.data|date:"l, d \\d\\e F" }} • {{ ag.hora_inicio|time:"H:i" }} - {{ ag.hora_fim|time:"H:i" }}</p>
+        </div>
+
+        <div class="detalhes-acoes-topo">
+            <button type="button" title="Duplicar">
+                <i class="fas fa-copy"></i>
+            </button>
+
+            <button type="button" title="Editar">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+
+            <button type="button" title="Fechar" onclick="fecharDetalhesAgendamento()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="detalhes-body">
+
+        <div class="campo-status">
+            <i class="far fa-calendar"></i>
+
+            <select>
+                <option {% if ag.status == "pendente" %}selected{% endif %}>Agendada</option>
+                <option {% if ag.status == "confirmado" %}selected{% endif %}>Confirmada</option>
+                <option {% if ag.status == "atendido" %}selected{% endif %}>Finalizada</option>
+                <option {% if ag.status == "cancelado" %}selected{% endif %}>Cancelada pelo profissional</option>
+                <option>Paciente aguardando</option>
+                <option>Em atendimento</option>
+                <option>Falta</option>
+            </select>
+        </div>
+
+        <div class="whatsapp-box">
+            <i class="fab fa-whatsapp"></i>
+            <span>Confirmar por WhatsApp Web</span>
+
+            <button type="button">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+        </div>
+
+        <div class="linha-info">
+            <span class="bolinha-profissional">
+                {{ ag.profissional|slice:":1"|upper }}
+            </span>
+
+            <span>Dr(a) {{ ag.profissional }}</span>
+
+            <i class="fas fa-info-circle info-azul"></i>
+        </div>
+
+        <div class="linha-info">
+            <i class="far fa-clipboard"></i>
+            <span>Alerta de retorno</span>
+        </div>
+
+        <div class="linha-info">
+            <i class="fas fa-align-left"></i>
+            <em>{{ ag.observacoes|default:"Observação da consulta" }}</em>
+        </div>
+
+        <div class="campo-rotulo">
+            <input type="text" placeholder="Rótulo da consulta">
+        </div>
+
+    </div>
+
+</div>

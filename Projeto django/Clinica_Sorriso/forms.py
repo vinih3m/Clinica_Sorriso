@@ -207,11 +207,13 @@ class ProdutoEstoqueForm(forms.ModelForm):
 
         return nome
     
+
 # ============================
 # FORMULÁRIO DE AGENDAMENTO
 # ============================
 from django import forms
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.db.models import Q
 from .models import Agendamento
 
 
@@ -229,8 +231,10 @@ class AgendamentoForm(forms.ModelForm):
         required=False,
         widget=forms.Textarea(
             attrs={
-                "rows": 4,              # 🔑 altura correta no modal
-                "style": "resize:none;" # 🔒 impede estourar o layout
+                "rows": 4,
+                "style": "resize:none;",
+                "maxlength": "500",
+                "placeholder": "Observação"
             }
         )
     )
@@ -250,3 +254,26 @@ class AgendamentoForm(forms.ModelForm):
             "hora_inicio": forms.TimeInput(attrs={"type": "time"}),
             "hora_fim": forms.TimeInput(attrs={"type": "time"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        profissionais = (
+            User.objects
+            .filter(is_active=True)
+            .filter(
+                Q(groups__name__iexact="Medico") |
+                Q(groups__name__iexact="Médico") |
+                Q(groups__name__iexact="Administrador") |
+                Q(is_superuser=True)
+            )
+            .order_by("first_name", "username")
+            .distinct()
+        )
+
+        self.fields["profissional"].queryset = profissionais
+        self.fields["profissional"].empty_label = "---------"
+
+        self.fields["profissional"].widget.attrs.update({
+            "class": "select-profissional-agendamento"
+        })

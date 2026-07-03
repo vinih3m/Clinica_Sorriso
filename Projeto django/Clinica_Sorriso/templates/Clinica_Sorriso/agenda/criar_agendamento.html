@@ -1,129 +1,213 @@
-<h2>Novo Agendamento</h2>
+<div class="modal-novo-agendamento">
 
-<form method="POST" action="{% url 'criar_agendamento' %}">
-
-    {% csrf_token %}
-
-    <div class="campo">
-        <label>Paciente</label>
-        {{ form.paciente_nome }}
+    <div class="abas-agendamento">
+        <button type="button" class="aba ativa">Consulta</button>
+        <button type="button" class="aba">Compromisso</button>
     </div>
 
-    <div class="campo">
-        <label>Profissional</label>
-        {{ form.profissional }}
-    </div>
+    <form method="POST" action="{% url 'criar_agendamento' %}" id="formNovoAgendamento">
+        {% csrf_token %}
 
-    <div class="campo">
-        <label>Data</label>
-        {{ form.data }}
-    </div>
+        <div class="campo campo-destaque">
+            <label>Paciente*</label>
+            {{ form.paciente_nome }}
+            <a href="#" class="link-cadastrar">Cadastrar novo paciente</a>
+        </div>
 
-    <div class="campo">
-        <label>Hora início</label>
-        {{ form.hora_inicio }}
-    </div>
+        <div class="campo">
+            <label>Profissional*</label>
+            {{ form.profissional }}
+        </div>
 
-    <div class="campo">
-        <label>Hora fim</label>
-        {{ form.hora_fim }}
-    </div>
+        <div class="linha-3">
+            <div class="campo">
+                <label>Data da consulta*</label>
+                {{ form.data }}
+            </div>
 
-    <div class="campo">
-        <label>Observações</label>
-        {{ form.observacoes }}
-    </div>
+            <div class="campo">
+                <label>Hora de início*</label>
+                {{ form.hora_inicio }}
+            </div>
 
-    <div class="acoes">
-        <button type="button"
-                class="btn-padrao btn-secundario"
-                onclick="fecharModalAgendamento()">
-            Cancelar
-        </button>
+            <div class="campo">
+                <label>Duração da consulta (min)*</label>
+                <input type="number" id="duracaoConsulta" value="30" min="15" step="15">
+            </div>
+        </div>
 
-        <button type="submit"
-                class="btn-padrao btn-primario">
-            Salvar
-        </button>
-    </div>
+        <input type="hidden" name="hora_fim" id="id_hora_fim">
 
-</form>
+        <a href="#" class="link-horario">Encontrar horário livre</a>
+
+        <div class="campo">
+            <label>Observação</label>
+            {{ form.observacoes }}
+            <span class="contador-observacao">0 / 500</span>
+        </div>
+
+        <div class="linha-retorno-agendamento" id="linhaRetornoAgendamento">
+
+            <div class="campo campo-retorno">
+                <label>Retornar em</label>
+
+                <select name="retorno_tipo" id="retornoTipoSelect">
+                    <option value="">Sem retorno</option>
+                    <option value="7_dias">7 dias</option>
+                    <option value="15_dias">15 dias</option>
+                    <option value="30_dias">30 dias</option>
+                    <option value="60_dias">60 dias</option>
+                    <option value="1_mes">1 mês</option>
+                    <option value="6_meses">6 meses</option>
+                    <option value="12_meses">12 meses</option>
+                    <option value="outro_mes">Outro mês</option>
+                    <option value="data_especifica">Data específica</option>
+                </select>
+            </div>
+
+            <div class="campo campo-retorno-extra campo-escondido" id="campoDataRetorno">
+                <label>Data aproximada para retorno*</label>
+                <input type="date" name="retorno_data" id="retornoData">
+            </div>
+
+            <div class="campo campo-retorno-extra campo-escondido" id="campoMesesRetorno">
+                <label>Meses*</label>
+                <input type="number" name="retorno_meses" id="retornoMeses" min="1">
+            </div>
+
+        </div>
+
+        <div class="campo campo-motivo-retorno campo-escondido" id="campoMotivoRetorno">
+            <label>Motivo do retorno</label>
+            <textarea name="motivo_retorno" id="motivoRetorno" maxlength="500" placeholder="Motivo do retorno"></textarea>
+            <span class="contador-retorno">0 / 500</span>
+        </div>
+
+        <div class="linha-switch-agendamento">
+            <label class="switch-agendamento">
+                <input type="checkbox" name="enviar_lembrete">
+                <span></span>
+            </label>
+
+            <span class="texto-switch-agendamento">
+                Enviar confirmação e lembrete de consulta automático
+            </span>
+        </div>
+
+        <div class="rodape-agendamento">
+            <input type="text" name="rotulo" placeholder="Selecione um rótulo">
+
+            <div class="botoes">
+                <button type="button" class="btn-fechar" onclick="fecharModalAgendamento()">FECHAR</button>
+                <button type="submit" class="btn-marcar">MARCAR</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script>
+window.calcularHoraFimAgendamento = function(){
+    const horaInicio = document.getElementById("id_hora_inicio");
+    const horaFim = document.getElementById("id_hora_fim");
+    const duracao = document.getElementById("duracaoConsulta");
+
+    if (!horaInicio || !horaFim || !duracao || !horaInicio.value) return;
+
+    const [h, m] = horaInicio.value.split(":").map(Number);
+    const data = new Date();
+
+    data.setHours(h);
+    data.setMinutes(m + Number(duracao.value || 30));
+
+    horaFim.value =
+        String(data.getHours()).padStart(2, "0") + ":" +
+        String(data.getMinutes()).padStart(2, "0");
+};
 
 
-<style>
-/* ===== OVERLAY ===== */
-#overlay-agendamento {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+window.atualizarRetornoAgendamento = function(){
+    const select = document.getElementById("retornoTipoSelect");
 
-/* ===== MODAL ===== */
-.modal-agendamento {
-    background: #fff;
-    width: 100%;
-    max-width: 520px;
-    height: 80vh;                 /* 🔒 altura fixa */
-    border-radius: 16px;
-    padding: 24px 24px 16px;
-    position: relative;
+    const linhaRetorno = document.getElementById("linhaRetornoAgendamento");
+    const campoDataRetorno = document.getElementById("campoDataRetorno");
+    const campoMesesRetorno = document.getElementById("campoMesesRetorno");
+    const campoMotivoRetorno = document.getElementById("campoMotivoRetorno");
 
-    display: flex;
-    flex-direction: column;
+    const retornoData = document.getElementById("retornoData");
+    const retornoMeses = document.getElementById("retornoMeses");
+    const motivoRetorno = document.getElementById("motivoRetorno");
+    const contadorRetorno = document.querySelector(".contador-retorno");
 
-    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-}
+    if (!select) return;
 
-/* ===== CORPO ROLÁVEL (ESSENCIAL) ===== */
-#modal-corpo {
-    flex: 1;              /* 🔑 ocupa o espaço do modal */
-    overflow-y: auto;     /* 🔑 ativa scroll interno */
-    min-height: 0;        /* 🔥 CORREÇÃO CRÍTICA */
-    padding-right: 6px;
-}
+    const valor = select.value;
 
-/* ===== CAMPOS ===== */
-.campo {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 14px;
-}
+    console.log("Retorno selecionado:", valor);
 
-input,
-select,
-textarea {
-    width: 100%;
-    box-sizing: border-box;
-}
+    linhaRetorno?.classList.remove("com-extra");
 
-/* ===== OBSERVAÇÕES ===== */
-textarea {
-    min-height: 90px;
-    max-height: 130px;
-    resize: none;   /* 🔒 impede quebrar o modal */
-}
+    campoDataRetorno?.classList.add("campo-escondido");
+    campoMesesRetorno?.classList.add("campo-escondido");
+    campoMotivoRetorno?.classList.add("campo-escondido");
 
-/* ===== AÇÕES ===== */
-.acoes {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 16px;
-}
+    if (retornoData) retornoData.value = "";
+    if (retornoMeses) retornoMeses.value = "";
+    if (motivoRetorno) motivoRetorno.value = "";
+    if (contadorRetorno) contadorRetorno.textContent = "0 / 500";
 
-/* ===== FECHAR ===== */
-.fechar-modal {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 26px;
-    cursor: pointer;
-    color: #666;
-}
-</style>
+    if (valor === "") {
+        return;
+    }
+
+    if (valor === "data_especifica") {
+        linhaRetorno?.classList.add("com-extra");
+        campoDataRetorno?.classList.remove("campo-escondido");
+        campoMotivoRetorno?.classList.remove("campo-escondido");
+        return;
+    }
+
+    if (valor === "outro_mes") {
+        linhaRetorno?.classList.add("com-extra");
+        campoMesesRetorno?.classList.remove("campo-escondido");
+        campoMotivoRetorno?.classList.remove("campo-escondido");
+        return;
+    }
+
+    campoMotivoRetorno?.classList.remove("campo-escondido");
+};
+
+
+document.addEventListener("change", function(e){
+    if (e.target.matches("#retornoTipoSelect")) {
+        window.atualizarRetornoAgendamento();
+    }
+
+    if (e.target.matches("#id_hora_inicio") || e.target.matches("#duracaoConsulta")) {
+        window.calcularHoraFimAgendamento();
+    }
+});
+
+
+document.addEventListener("input", function(e){
+    if (e.target.matches("#id_observacoes")) {
+        const contador = document.querySelector(".contador-observacao");
+
+        if (contador) {
+            contador.textContent = `${e.target.value.length} / 500`;
+        }
+    }
+
+    if (e.target.matches("#motivoRetorno")) {
+        const contadorRetorno = document.querySelector(".contador-retorno");
+
+        if (contadorRetorno) {
+            contadorRetorno.textContent = `${e.target.value.length} / 500`;
+        }
+    }
+
+    if (e.target.matches("#id_hora_inicio") || e.target.matches("#duracaoConsulta")) {
+        window.calcularHoraFimAgendamento();
+    }
+});
+</script>

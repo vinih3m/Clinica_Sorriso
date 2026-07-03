@@ -63,14 +63,11 @@ urlpatterns = [
     # AGENDA
     path("agenda/", views.agenda, name="agenda"),
     path("agenda/novo/", views.criar_agendamento, name="criar_agendamento"),
-    path(
-        "agenda/alterar-status/",
-        views.alterar_status_agendamento,
-        name="alterar_status_agendamento"
-    ),
+    path("agenda/alterar-status/",views.alterar_status_agendamento,name="alterar_status_agendamento"),
     path("agenda/salvar-retorno/", views.salvar_retorno, name="salvar_retorno"),
     path("agenda/parcial/", views.agenda_parcial, name="agenda_parcial"),
     path("exportar-retornos/", views.exportar_retornos, name="exportar_retornos"),
+    path("agenda/detalhes/<int:id>/",views.detalhes_agendamento,name="detalhes_agendamento"),
 
     # Financeiro
     path("financeiro/", views.fluxo_caixa, name="financeiro"),
