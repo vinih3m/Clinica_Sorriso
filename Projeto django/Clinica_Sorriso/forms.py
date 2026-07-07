@@ -212,10 +212,8 @@ class ProdutoEstoqueForm(forms.ModelForm):
 # FORMULÁRIO DE AGENDAMENTO
 # ============================
 from django import forms
-from django.contrib.auth.models import User
-from django.db.models import Q
-from .models import Agendamento
 
+from .models import Agendamento, Profissional, Paciente, Etiqueta
 
 class AgendamentoForm(forms.ModelForm):
 
@@ -244,11 +242,13 @@ class AgendamentoForm(forms.ModelForm):
         fields = [
             "paciente_nome",
             "profissional",
+            "etiqueta",
             "data",
             "hora_inicio",
             "hora_fim",
             "observacoes",
         ]
+
         widgets = {
             "data": forms.DateInput(attrs={"type": "date"}),
             "hora_inicio": forms.TimeInput(attrs={"type": "time"}),
@@ -259,16 +259,9 @@ class AgendamentoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         profissionais = (
-            User.objects
-            .filter(is_active=True)
-            .filter(
-                Q(groups__name__iexact="Medico") |
-                Q(groups__name__iexact="Médico") |
-                Q(groups__name__iexact="Administrador") |
-                Q(is_superuser=True)
-            )
-            .order_by("first_name", "username")
-            .distinct()
+            Profissional.objects
+            .all()
+            .order_by("nome")
         )
 
         self.fields["profissional"].queryset = profissionais
@@ -277,3 +270,25 @@ class AgendamentoForm(forms.ModelForm):
         self.fields["profissional"].widget.attrs.update({
             "class": "select-profissional-agendamento"
         })
+
+        self.fields["etiqueta"].queryset = (
+            Etiqueta.objects
+            .all()
+            .order_by("nome")
+        )
+
+        self.fields["etiqueta"].required = False
+        self.fields["etiqueta"].empty_label = "Selecione um rótulo"
+
+        self.fields["etiqueta"].widget.attrs.update({
+            "class": "select-etiqueta-agendamento"
+        })
+
+# ============================
+# FORMULÁRIO DE PACIENTE
+# ============================
+
+class PacienteForm(forms.ModelForm):
+    class Meta:
+        model = Paciente
+        fields = "__all__"

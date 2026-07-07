@@ -261,6 +261,23 @@ class Profissional(models.Model):
 
 
 
+class Etiqueta(models.Model):
+    nome = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name="Nome da Etiqueta"
+    )
+
+    cor = models.CharField(
+        max_length=7,
+        default="#28a745",
+        verbose_name="Código Hex da Cor"
+    )
+
+    def __str__(self):
+        return self.nome
+
+
 class Agendamento(models.Model):
     TIPO_CHOICES = (
         ("consulta", "Consulta"),
@@ -286,6 +303,15 @@ class Agendamento(models.Model):
         on_delete=models.CASCADE
     )
 
+    etiqueta = models.ForeignKey(
+        "Etiqueta",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="agendamentos",
+        verbose_name="Etiqueta"
+    )
+
     data = models.DateField()
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
@@ -302,7 +328,10 @@ class Agendamento(models.Model):
         default="pendente"
     )
 
-    observacoes = models.TextField(blank=True, null=True)
+    observacoes = models.TextField(
+        blank=True,
+        null=True
+    )
 
     def clean(self):
         if self.hora_inicio >= self.hora_fim:
@@ -328,8 +357,7 @@ class Agendamento(models.Model):
 
     def __str__(self):
         return f"{self.paciente} - {self.data} ({self.tipo})"
-
-
+    
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -461,9 +489,3 @@ class PagamentoComissao(models.Model):
         return f"{self.profissional} - {self.valor} em {self.data_pagamento}"
     
 
-class Etiqueta(models.Model):
-    nome = models.CharField(max_length=50, unique=True, verbose_name="Nome da Etiqueta")
-    cor = models.CharField(max_length=7, default="#28a745", verbose_name="Código Hex da Cor")
-
-    def __str__(self):
-        return self.nome

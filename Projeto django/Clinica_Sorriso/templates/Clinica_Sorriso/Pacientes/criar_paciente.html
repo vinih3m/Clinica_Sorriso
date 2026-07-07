@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar paciente</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #333;
+        }
+
+        .pagina-paciente {
+            max-width: 760px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 28px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.08);
+        }
+
+        .topo-paciente {
+            margin-bottom: 24px;
+        }
+
+        .topo-paciente h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .topo-paciente p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-paciente p {
+            margin-bottom: 16px;
+        }
+
+        .form-paciente label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-paciente input,
+        .form-paciente select,
+        .form-paciente textarea {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 0 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-paciente textarea {
+            height: 90px;
+            padding-top: 10px;
+            resize: vertical;
+        }
+
+        .botoes-paciente {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn-cancelar-paciente,
+        .btn-salvar-paciente {
+            border: 0;
+            border-radius: 4px;
+            padding: 11px 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-cancelar-paciente {
+            background: #eee;
+            color: #333;
+        }
+
+        .btn-salvar-paciente {
+            background: #1e88e5;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pagina-paciente">
+
+        <div class="topo-paciente">
+            <h1>Cadastrar paciente</h1>
+            <p>Preencha os dados básicos do paciente.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="form-paciente">
+            {% csrf_token %}
+
+            <input type="hidden" name="origem" value="{{ origem }}">
+
+            {{ form.as_p }}
+
+            <div class="botoes-paciente">
+                <a href="{% url 'agenda' %}" class="btn-cancelar-paciente">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn-salvar-paciente">
+                    Salvar paciente
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>

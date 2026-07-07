@@ -1968,6 +1968,1645 @@
 #overlay-alerta-retorno {
     z-index: 30000 !important;
 }
+
+.campo-paciente-agendamento {
+    position: relative;
+}
+
+.paciente-autocomplete {
+    position: relative;
+}
+
+.lista-pacientes-agendamento {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.22);
+    z-index: 12000;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.lista-pacientes-agendamento.aberta {
+    display: block;
+}
+
+.item-paciente-agendamento {
+    width: 100%;
+    border: 0;
+    background: #fff;
+    padding: 12px 14px;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.item-paciente-agendamento:hover {
+    background: #f5f5f5;
+}
+
+.nome-item-paciente {
+    display: block;
+    font-weight: 600;
+    color: #222;
+}
+
+.info-item-paciente {
+    display: block;
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
+.item-paciente-vazio {
+    padding: 14px;
+    color: #777;
+    font-size: 14px;
+}
+
+/* ===============================
+   AJUSTE CAMPO PACIENTE AGENDAMENTO
+================================ */
+
+.campo-paciente-agendamento {
+    position: relative;
+    margin-top: 8px;
+}
+
+.campo-paciente-agendamento > label {
+    position: absolute;
+    top: -9px;
+    left: 14px;
+    z-index: 3;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.campo-paciente-agendamento input {
+    padding-top: 2px;
+}
+
+.item-criar-paciente-agendamento {
+    display: block;
+    padding: 14px;
+    background: #fff;
+    color: #1e88e5;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border-top: 1px solid #eee;
+    cursor: pointer;
+}
+
+.item-criar-paciente-agendamento:hover {
+    background: #f5f9ff;
+}
+
+.campo-paciente-agendamento {
+    position: relative;
+    margin-top: 12px;
+}
+
+.campo-paciente-agendamento > label {
+    position: absolute;
+    top: -9px;
+    left: 14px;
+    z-index: 4;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.paciente-autocomplete {
+    position: relative;
+}
+
+.lista-pacientes-agendamento {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.22);
+    z-index: 12000;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.lista-pacientes-agendamento.aberta {
+    display: block;
+}
+
+.item-paciente-agendamento {
+    width: 100%;
+    border: 0;
+    background: #fff;
+    padding: 13px 16px;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.item-paciente-agendamento:hover {
+    background: #f5f5f5;
+}
+
+.nome-item-paciente {
+    display: block;
+    font-weight: 600;
+    color: #222;
+}
+
+.info-item-paciente {
+    display: block;
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
+.lista-pacientes-agendamento {
+    z-index: 20000 !important;
+    pointer-events: auto !important;
+}
+
+.item-paciente-agendamento {
+    position: relative;
+    z-index: 20001 !important;
+    pointer-events: auto !important;
+    cursor: pointer;
+}
+
+.bloco-horarios-livres {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -6px;
+    margin-bottom: 14px;
+}
+
+.lista-horarios-livres {
+    display: none;
+    position: absolute;
+    top: 26px;
+    right: 0;
+    width: 420px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.22);
+    z-index: 20000;
+    padding: 10px;
+}
+
+.lista-horarios-livres.aberta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.item-horario-livre {
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+    padding: 9px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.item-horario-livre:hover {
+    background: #f5f9ff;
+    border-color: #1e88e5;
+    color: #1e88e5;
+}
+
+.horario-livre-vazio {
+    grid-column: 1 / -1;
+    padding: 12px;
+    color: #777;
+    font-size: 14px;
+}
+
+.link-horario {
+    border: 0;
+    background: transparent;
+    color: #1e88e5;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    text-decoration: none;
+}
+
+.link-horario:hover {
+    text-decoration: underline;
+}
+
+/* ===============================
+   MODAL SUGESTÃO DE HORÁRIOS
+================================ */
+
+.overlay-horarios-livres {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 25000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-horarios-livres {
+    width: 980px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 60px);
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.28);
+    padding: 28px 32px 20px;
+    overflow-y: auto;
+}
+
+.topo-modal-horarios {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.topo-modal-horarios h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    color: #222;
+}
+
+.campo-data-horarios {
+    position: relative;
+    width: 260px;
+}
+
+.campo-data-horarios label {
+    position: absolute;
+    top: -9px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 2;
+}
+
+.campo-data-horarios input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 16px;
+}
+
+.conteudo-horarios-livres {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    min-height: 360px;
+}
+
+.coluna-horarios {
+    border: 1px solid #eee;
+    background: #fff;
+}
+
+.titulo-coluna-horarios {
+    background: #f5f5f5;
+    padding: 18px;
+    font-size: 20px;
+    color: #222;
+}
+
+.grid-horarios {
+    padding: 16px 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.item-horario-livre {
+    height: 42px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+    font-size: 15px;
+    color: #333;
+    cursor: pointer;
+}
+
+.item-horario-livre:hover {
+    border-color: #2196f3;
+    color: #2196f3;
+    background: #f5f9ff;
+}
+
+.item-horario-livre.selecionado {
+    background: #2196f3;
+    color: #fff;
+    border-color: #2196f3;
+}
+
+.horario-livre-vazio {
+    grid-column: 1 / -1;
+    padding: 20px;
+    color: #777;
+    font-size: 15px;
+}
+
+.rodape-modal-horarios {
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.btn-fechar-horarios {
+    border: 0;
+    background: transparent;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    padding: 10px 14px;
+}
+
+.btn-escolher-horario {
+    border: 0;
+    background: #4caf50;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 12px 22px;
+    cursor: pointer;
+}
+
+.btn-escolher-horario:disabled {
+    background: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* ===============================
+   LINK ENCONTRAR HORÁRIO LIVRE
+================================ */
+
+.bloco-horarios-livres {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -6px;
+    margin-bottom: 12px;
+}
+
+.link-horario {
+    border: 0;
+    background: transparent;
+    color: #1e88e5;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    text-decoration: none;
+}
+
+.link-horario:hover {
+    text-decoration: underline;
+}
+
+.overlay-horarios-livres {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 30000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-horarios-livres {
+    width: 980px;
+    max-width: calc(100vw - 40px);
+    background: #fff;
+    border-radius: 4px;
+    padding: 28px 32px 20px;
+}
+
+.navegacao-data-horarios {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-dia-horario {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-dia-horario:hover {
+    background: #f5f9ff;
+    border-color: #2196f3;
+    color: #2196f3;
+}
+
+/* ===============================
+   ETIQUETA / RÓTULO AGENDAMENTO
+================================ */
+
+.campo-etiqueta-agendamento {
+    position: relative;
+    width: 50%;
+    margin-top: 18px;
+}
+
+.select-etiqueta-custom {
+    position: relative;
+}
+
+.btn-select-etiqueta {
+    width: 100%;
+    height: 48px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 15px;
+    color: #777;
+}
+
+.menu-etiquetas-agendamento {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 52px;
+    width: 430px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 40000;
+}
+
+.menu-etiquetas-agendamento.aberto {
+    display: block;
+}
+
+.item-etiqueta-agendamento {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    background: #fff;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    font-size: 15px;
+    text-align: left;
+}
+
+.item-etiqueta-agendamento:hover {
+    background: #f5f5f5;
+}
+
+.bolinha-etiqueta {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.btn-novo-rotulo {
+    width: 100%;
+    height: 44px;
+    border: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    color: #1e88e5;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-novo-rotulo:hover {
+    background: #f5f9ff;
+}
+
+.item-etiqueta-vazio {
+    padding: 14px;
+    color: #777;
+}
+
+/* ===============================
+   MODAL NOVA ETIQUETA
+================================ */
+
+.overlay-nova-etiqueta {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 60000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-nova-etiqueta {
+    width: 460px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 24px 26px 18px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.35);
+}
+
+.modal-nova-etiqueta h2 {
+    margin: 0 0 24px;
+    font-size: 22px;
+    font-weight: 500;
+    color: #222;
+}
+
+.linha-nova-etiqueta {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 14px;
+    align-items: center;
+}
+
+.campo-cor-etiqueta,
+.campo-nome-etiqueta {
+    position: relative;
+}
+
+.campo-cor-etiqueta label,
+.campo-nome-etiqueta label {
+    position: absolute;
+    top: -9px;
+    left: 10px;
+    background: #fff;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #555;
+    z-index: 2;
+}
+
+.btn-cor-etiqueta {
+    width: 92px;
+    height: 48px;
+    border: 0;
+    background: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+}
+
+#previewCorEtiqueta {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.campo-nome-etiqueta input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #2196f3;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 15px;
+}
+
+.paleta-cores-etiqueta {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 48px;
+    width: 128px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 61000;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.paleta-cores-etiqueta.aberta {
+    display: grid;
+}
+
+.paleta-cores-etiqueta button,
+.cores-extras-etiqueta button {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.paleta-cores-etiqueta button:hover,
+.cores-extras-etiqueta button:hover {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+}
+
+.cores-extras-etiqueta.aberta {
+    display: grid;
+}
+
+.rodape-nova-etiqueta {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.btn-fechar-etiqueta {
+    border: 0;
+    background: transparent;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 12px;
+}
+
+.btn-salvar-etiqueta {
+    border: 0;
+    background: #4caf50;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 11px 20px;
+    cursor: pointer;
+}
+
+/* ===============================
+   PALETA DE CORES DA ETIQUETA
+================================ */
+
+.paleta-cores-etiqueta {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 48px;
+    width: 126px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 61000;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.paleta-cores-etiqueta.aberta {
+    display: grid;
+}
+
+.paleta-cores-etiqueta > button:not(.btn-mais-cores-texto) {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+}
+
+.paleta-cores-etiqueta > button:not(.btn-mais-cores-texto):hover {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+}
+
+.btn-mais-cores-texto {
+    grid-column: 1 / -1;
+    width: 100% !important;
+    height: 34px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #1e88e5 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    padding: 6px 4px !important;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.btn-mais-cores-texto:hover {
+    background: #f5f9ff !important;
+    outline: none !important;
+}
+
+
+/* ===============================
+   PAINEL MAIS CORES
+================================ */
+
+.painel-mais-cores {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 178px;
+    width: 230px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.28);
+    z-index: 62000;
+    overflow: hidden;
+}
+
+.painel-mais-cores.aberto {
+    display: block;
+}
+
+.titulo-painel-cores {
+    height: 46px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #555;
+}
+
+.icone-balde {
+    font-size: 20px;
+    color: #555;
+}
+
+.area-cor-livre {
+    padding: 12px 14px;
+}
+
+#inputCorLivreEtiqueta {
+    width: 100%;
+    height: 145px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+#inputCorLivreEtiqueta::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+#inputCorLivreEtiqueta::-webkit-color-swatch {
+    border: 0;
+    border-radius: 2px;
+}
+
+.rodape-painel-cores {
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    border-top: 1px solid #eee;
+    padding: 12px 14px;
+}
+
+.rodape-painel-cores button {
+    border: 0;
+    background: transparent;
+    color: #1e88e5;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+.rodape-painel-cores button:hover {
+    text-decoration: underline;
+}
+
+/* ===============================
+   ABAS CONSULTA / COMPROMISSO
+================================ */
+
+.abas-agendamento {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.aba-agendamento {
+    border: 0;
+    background: #e0e0e0;
+    color: #222;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 24px;
+    cursor: pointer;
+}
+
+.aba-agendamento.ativa {
+    background: #2196f3;
+    color: #fff;
+}
+
+
+/* ===============================
+   COMPROMISSO
+================================ */
+
+.campo-titulo-compromisso input {
+    border-color: #e53935;
+}
+
+.contador-titulo-compromisso {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
+
+.separador-compromisso {
+    height: 1px;
+    background: #e5e5e5;
+    margin: 28px 0 14px;
+}
+
+
+.checkbox-compromisso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 18px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.checkbox-compromisso input {
+    width: 18px;
+    height: 18px;
+}
+
+.grid-data-hora-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 18px;
+}
+
+.grid-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 22px;
+    overflow: hidden;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 18px 22px 22px;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 18px;
+}
+
+.campo-alerta-personalizado {
+    max-width: 220px;
+}
+
+/* ===============================
+   COMPROMISSO - AJUSTES VISUAIS
+================================ */
+
+#conteudoCompromissoAgendamento {
+    padding-top: 4px;
+}
+
+.titulo-secao-compromisso {
+    margin: 0 0 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e88e5;
+}
+
+.separador-compromisso {
+    height: 1px;
+    background: #e5e5e5;
+    margin: 30px 0 18px;
+}
+
+.grid-data-hora-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.checkbox-compromisso {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 18px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #222;
+}
+
+.checkbox-compromisso input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-repetir-compromisso {
+    margin-top: 22px;
+    margin-bottom: 14px;
+}
+
+.area-repeticao-compromisso {
+    display: none;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block;
+}
+
+.grid-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: end;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 22px;
+    overflow: hidden;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 18px 22px 22px;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 18px;
+}
+
+/* ===============================
+   COMPROMISSO - CHECKBOXES
+================================ */
+
+.checkbox-compromisso {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px;
+    margin: 18px 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.checkbox-compromisso input[type="checkbox"] {
+    position: static !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    appearance: auto !important;
+}
+
+.checkbox-compromisso span {
+    line-height: 18px;
+}
+
+
+/* ===============================
+   CONFIGURAÇÕES EXTRAS - CAMPOS
+================================ */
+
+.grid-configuracoes-compromisso .campo {
+    position: relative;
+}
+
+.grid-configuracoes-compromisso select,
+.grid-configuracoes-compromisso input {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+}
+
+.grid-configuracoes-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #777;
+    z-index: 2;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
+.box-configuracoes-compromisso {
+    margin-bottom: 25px;
+}
+
+/* ===============================
+   CHECKBOXES COMPROMISSO
+================================ */
+
+.linha-check-compromisso {
+    display: flex;
+    align-items: center;
+    margin: 14px 0 18px;
+    position: relative;
+}
+
+.linha-repetir-compromisso {
+    margin-top: 22px;
+    margin-bottom: 14px;
+}
+
+.check-compromisso-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #222;
+    position: relative;
+}
+
+.check-compromisso-custom input[type="checkbox"] {
+    display: none !important;
+}
+
+.caixa-check-compromisso {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #999;
+    border-radius: 2px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso {
+    background: #2196f3;
+    border-color: #2196f3;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso::after {
+    content: "✓";
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.texto-check-compromisso {
+    line-height: 20px;
+}
+
+
+/* ===============================
+   REPETIÇÃO COMPROMISSO
+================================ */
+
+.area-repeticao-compromisso {
+    display: none;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block;
+}
+
+.grid-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: end;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+
+/* ===============================
+   CONFIGURAÇÕES EXTRAS COMPROMISSO
+================================ */
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
+.grid-configuracoes-compromisso .campo-config-compromisso {
+    position: relative;
+    margin: 0;
+}
+
+.grid-configuracoes-compromisso .campo-config-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #777;
+    z-index: 3;
+}
+
+.grid-configuracoes-compromisso .campo-config-compromisso select,
+.grid-configuracoes-compromisso .campo-config-compromisso input {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    box-sizing: border-box;
+}
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 22px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 18px 22px 22px;
+}
+
+/* ===============================
+   COMPROMISSO - CHECKBOX CORRIGIDO
+================================ */
+
+.linha-check-compromisso {
+    display: flex !important;
+    align-items: center !important;
+    margin: 18px 0 20px !important;
+    width: 100%;
+    clear: both;
+}
+
+.linha-repetir-compromisso {
+    margin-top: 24px !important;
+    margin-bottom: 16px !important;
+}
+
+.check-compromisso-custom {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer;
+    font-size: 16px;
+    color: #222;
+    line-height: 20px;
+    width: auto;
+}
+
+.check-compromisso-custom input[type="checkbox"] {
+    display: none !important;
+}
+
+.caixa-check-compromisso {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    border: 2px solid #999;
+    border-radius: 2px;
+    background: #fff;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso {
+    background: #2196f3;
+    border-color: #2196f3;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso::after {
+    content: "✓";
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.texto-check-compromisso {
+    display: inline-block;
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+
+/* ===============================
+   DATA E HORA - DIA INTEIRO
+================================ */
+
+.grid-data-hora-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 22px 18px;
+    margin-bottom: 20px;
+}
+
+.grid-data-hora-compromisso.modo-dia-inteiro {
+    grid-template-columns: 1fr;
+}
+
+.grid-data-hora-compromisso.modo-dia-inteiro .campo-data-compromisso {
+    width: 100%;
+}
+
+.campo-hora-compromisso-js {
+    display: block;
+}
+
+/* ==================================================
+   CORREÇÃO GERAL DOS CAMPOS DA ABA COMPROMISSO
+================================================== */
+
+#conteudoCompromissoAgendamento .campo {
+    position: relative !important;
+    margin: 0 !important;
+}
+
+#conteudoCompromissoAgendamento .campo label {
+    position: absolute !important;
+    top: -8px !important;
+    left: 12px !important;
+    background: #fff !important;
+    padding: 0 5px !important;
+    font-size: 12px !important;
+    color: #777 !important;
+    z-index: 5 !important;
+    line-height: 14px !important;
+}
+
+#conteudoCompromissoAgendamento input,
+#conteudoCompromissoAgendamento select,
+#conteudoCompromissoAgendamento textarea {
+    width: 100% !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    color: #222 !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+}
+
+#conteudoCompromissoAgendamento input,
+#conteudoCompromissoAgendamento select {
+    height: 50px !important;
+    padding: 0 14px !important;
+}
+
+#conteudoCompromissoAgendamento textarea {
+    min-height: 90px !important;
+    padding: 14px !important;
+    resize: none !important;
+}
+
+/* ==================================================
+   REPETIÇÃO DO COMPROMISSO
+================================================== */
+
+.area-repeticao-compromisso {
+    display: none !important;
+    margin-top: 8px !important;
+    margin-bottom: 28px !important;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block !important;
+}
+
+.grid-repeticao-compromisso {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1.15fr !important;
+    gap: 18px !important;
+    align-items: end !important;
+}
+
+.grid-repeticao-compromisso .campo {
+    position: relative !important;
+}
+
+.grid-repeticao-compromisso .campo select,
+.grid-repeticao-compromisso .campo input {
+    height: 50px !important;
+    padding: 0 14px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    font-size: 16px !important;
+}
+
+.grid-repeticao-compromisso .campo label {
+    position: absolute !important;
+    top: -8px !important;
+    left: 12px !important;
+    background: #fff !important;
+    padding: 0 5px !important;
+    font-size: 12px !important;
+    color: #777 !important;
+    z-index: 5 !important;
+}
+
+.campo-finaliza-repeticao {
+    display: none !important;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block !important;
+}
+
+/* ==================================================
+   CONFIGURAÇÕES EXTRAS DO COMPROMISSO
+================================================== */
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee !important;
+    border-radius: 4px !important;
+    margin-top: 28px !important;
+    margin-bottom: 30px !important;
+    overflow: hidden !important;
+    background: #fff !important;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px !important;
+    background: #f5f5f5 !important;
+    color: #1e88e5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 22px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 22px !important;
+    background: #fff !important;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px 18px !important;
+    align-items: start !important;
+}
+
+.grid-configuracoes-compromisso .campo,
+.grid-configuracoes-compromisso .campo-config-compromisso {
+    position: relative !important;
+    margin: 0 !important;
+}
+
+.grid-configuracoes-compromisso label {
+    position: absolute !important;
+    top: -8px !important;
+    left: 12px !important;
+    background: #fff !important;
+    padding: 0 5px !important;
+    font-size: 12px !important;
+    color: #777 !important;
+    z-index: 5 !important;
+}
+
+.grid-configuracoes-compromisso select,
+.grid-configuracoes-compromisso input {
+    width: 100% !important;
+    height: 50px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    padding: 0 14px !important;
+    font-size: 16px !important;
+    color: #222 !important;
+    box-sizing: border-box !important;
+}
+
+/* ==================================================
+   CAMPOS ISOLADOS DA ABA COMPROMISSO
+================================================== */
+
+.campo-limpo-compromisso {
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.campo-limpo-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 4;
+    line-height: 14px;
+    pointer-events: none;
+}
+
+.campo-limpo-compromisso select,
+.campo-limpo-compromisso input {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.campo-limpo-compromisso select:focus,
+.campo-limpo-compromisso input:focus {
+    border-color: #2196f3;
+}
+
+
+/* repetição */
+
+.area-repeticao-compromisso {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 28px;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block;
+}
+
+.linha-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: end;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+
+/* configurações extras */
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 28px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 22px;
+    background: #fff;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
 </style>
 
 
@@ -2327,7 +3966,172 @@ MODAL DETALHES AGENDAMENTO
 
 </div>
 
+<div id="overlayHorariosLivres" class="overlay-horarios-livres">
 
+    <div class="modal-horarios-livres">
+
+        <div class="topo-modal-horarios">
+            <h2>Sugestão de horários</h2>
+
+            <div class="navegacao-data-horarios">
+
+                <button
+                    type="button"
+                    class="btn-dia-horario"
+                    onclick="window.mudarDiaSugestaoHorario(-1)"
+                    title="Dia anterior"
+                >
+                    ‹
+                </button>
+
+                <div class="campo-data-horarios">
+                    <label>Data da consulta</label>
+                    <input type="date" id="dataSugestaoHorario">
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-dia-horario"
+                    onclick="window.mudarDiaSugestaoHorario(1)"
+                    title="Próximo dia"
+                >
+                    ›
+                </button>
+
+            </div>
+        </div>
+
+        <div class="conteudo-horarios-livres">
+
+            <div class="coluna-horarios">
+                <div class="titulo-coluna-horarios">Manhã</div>
+                <div class="grid-horarios" id="horariosManha"></div>
+            </div>
+
+            <div class="coluna-horarios">
+                <div class="titulo-coluna-horarios">Tarde</div>
+                <div class="grid-horarios" id="horariosTarde"></div>
+            </div>
+
+        </div>
+
+        <div class="rodape-modal-horarios">
+            <button type="button" class="btn-fechar-horarios" onclick="fecharModalHorariosLivres()">
+                FECHAR
+            </button>
+
+            <button type="button" class="btn-escolher-horario" id="btnEscolherHorarioLivre" disabled>
+                ESCOLHER HORÁRIO
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<div id="overlayNovaEtiqueta" class="overlay-nova-etiqueta">
+
+    <div class="modal-nova-etiqueta">
+
+        <h2>Nova etiqueta</h2>
+
+        <div class="linha-nova-etiqueta">
+
+            <div class="campo-cor-etiqueta">
+                <label>Cor *</label>
+
+                <button type="button" class="btn-cor-etiqueta" onclick="window.abrirPaletaEtiqueta(event)">
+                    <span id="previewCorEtiqueta" style="background:#28a745;"></span>
+                    <span>▾</span>
+                </button>
+
+                <div class="paleta-cores-etiqueta" id="paletaCoresEtiqueta">
+
+                    <button type="button" data-cor="#2e7d32" style="background:#2e7d32" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#26a69a" style="background:#26a69a" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#7cb342" style="background:#7cb342" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+
+                    <button type="button" data-cor="#1565c0" style="background:#1565c0" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#29a9e0" style="background:#29a9e0" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#c62828" style="background:#c62828" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+
+                    <button type="button" data-cor="#ef5350" style="background:#ef5350" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#f9a825" style="background:#f9a825" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#f0ad4e" style="background:#f0ad4e" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+
+                    <button type="button" data-cor="#7b1fa2" style="background:#7b1fa2" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#8e63d9" style="background:#8e63d9" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#e040fb" style="background:#e040fb" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+
+                    <button type="button" data-cor="#000000" style="background:#000000" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#555555" style="background:#555555" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+                    <button type="button" data-cor="#e0e0e0" style="background:#e0e0e0" onclick="window.selecionarCorEtiqueta(event, this)"></button>
+
+                    <button
+                        type="button"
+                        class="btn-mais-cores-texto"
+                        onclick="window.abrirPainelMaisCores(event)"
+                    >
+                        MAIS CORES
+                    </button>
+
+                </div>
+
+                <div class="painel-mais-cores" id="painelMaisCoresEtiqueta">
+
+                    <div class="titulo-painel-cores">
+                        <span class="icone-balde">◩</span>
+                        <span>Cores</span>
+                    </div>
+
+                    <div class="area-cor-livre">
+                        <input type="color" id="inputCorLivreEtiqueta" value="#28a745">
+                    </div>
+
+                    <div class="rodape-painel-cores">
+                        <button
+                            type="button"
+                            class="btn-cancelar-cor"
+                            onclick="window.cancelarMaisCoresEtiqueta(event)"
+                        >
+                            CANCELAR
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-aplicar-cor"
+                            onclick="window.aplicarMaisCoresEtiqueta(event)"
+                        >
+                            APLICAR
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="campo-nome-etiqueta">
+                <label>Nome etiqueta*</label>
+                <input type="text" id="nomeNovaEtiqueta">
+            </div>
+
+        </div>
+
+        <div class="rodape-nova-etiqueta">
+            <button type="button" class="btn-fechar-etiqueta" onclick="window.fecharModalNovaEtiqueta()">
+                FECHAR
+            </button>
+
+            <button type="button" class="btn-salvar-etiqueta" onclick="window.salvarNovaEtiquetaAgendamento(event)">
+                SALVAR
+            </button>
+        </div>
+
+    </div>
+
+</div>
     
 <script>
 console.log("SCRIPT PRINCIPAL CARREGOU");
@@ -2855,6 +4659,1056 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
+    let timerBuscaPaciente = null;
+
+    document.addEventListener("input", function(e) {
+
+        if (!e.target.matches("#id_paciente_nome")) return;
+
+        const input = e.target;
+        const lista = document.getElementById("listaPacientesAgendamento");
+
+        if (!lista) return;
+
+        const termo = input.value.trim();
+
+        clearTimeout(timerBuscaPaciente);
+
+        if (termo.length < 2) {
+            lista.classList.remove("aberta");
+            lista.innerHTML = "";
+            return;
+        }
+
+        timerBuscaPaciente = setTimeout(function() {
+
+            fetch(`/agenda/buscar-pacientes/?q=${encodeURIComponent(termo)}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    lista.innerHTML = "";
+
+                    if (!data.pacientes || data.pacientes.length === 0) {
+                        const nomeDigitado = termo;
+
+                        lista.innerHTML = `
+                            <div class="item-paciente-vazio">
+                                Nenhum paciente encontrado
+                            </div>
+
+                            <a
+                                href="/pacientes/novo/?origem=agenda&nome=${encodeURIComponent(nomeDigitado)}"
+                                class="item-criar-paciente-agendamento"
+                            >
+                                + Cadastrar "${nomeDigitado}"
+                            </a>
+                        `;
+
+                        lista.classList.add("aberta");
+                        return;
+                    }
+
+                    data.pacientes.forEach(function(paciente) {
+
+                        const item = document.createElement("button");
+                        item.type = "button";
+                        item.className = "item-paciente-agendamento";
+                        item.dataset.id = paciente.id;
+                        item.dataset.nome = paciente.nome;
+
+                        let info = "";
+
+                        if (paciente.cpf) {
+                            info += `CPF: ${paciente.cpf}`;
+                        }
+
+                        if (paciente.celular) {
+                            info += info ? ` • ${paciente.celular}` : paciente.celular;
+                        }
+
+                        item.innerHTML = `
+                            <span class="nome-item-paciente">${paciente.nome}</span>
+                            ${info ? `<span class="info-item-paciente">${info}</span>` : ""}
+                        `;
+
+                        lista.appendChild(item);
+                    });
+
+                    lista.classList.add("aberta");
+                })
+                .catch(function(error) {
+                    console.error("Erro ao buscar pacientes:", error);
+                });
+
+        }, 300);
+    });
+
+
+    /* ===== SELECIONAR PACIENTE NO AGENDAMENTO ===== */
+    document.addEventListener("mousedown", function(e) {
+
+        const itemPaciente = e.target.closest(".item-paciente-agendamento");
+
+        if (!itemPaciente) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const inputPaciente = document.getElementById("id_paciente_nome");
+        const listaPacientes = document.getElementById("listaPacientesAgendamento");
+
+        const nomePaciente = itemPaciente.dataset.nome || "";
+        const idPaciente = itemPaciente.dataset.id || "";
+
+        if (inputPaciente) {
+            inputPaciente.value = nomePaciente;
+            inputPaciente.dataset.pacienteId = idPaciente;
+
+            inputPaciente.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        if (listaPacientes) {
+            listaPacientes.classList.remove("aberta");
+            listaPacientes.innerHTML = "";
+        }
+
+});
+
+    /* ===== SALVAR NOVO AGENDAMENTO ===== */
+    document.addEventListener("submit", function(e) {
+
+        const form = e.target.closest("#formNovoAgendamento");
+
+        if (!form) return;
+
+        e.preventDefault();
+
+        calcularHoraFimAgendamento();
+
+        const botaoMarcar = form.querySelector(".btn-marcar");
+
+        if (botaoMarcar) {
+            botaoMarcar.disabled = true;
+            botaoMarcar.textContent = "SALVANDO...";
+        }
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(async response => {
+            const data = await response.json();
+
+            if (!response.ok || !data.ok) {
+                console.log("Erros:", data.erros);
+                alert("Não foi possível salvar o agendamento. Confira os campos obrigatórios.");
+                return;
+            }
+
+            fecharModalAgendamento();
+
+            const profissionalId =
+                document.getElementById("profissionalAgendaSelecionado")?.value || "";
+
+            const url = new URL(window.location.href);
+
+            url.searchParams.set("semana", semanaAtual);
+
+            if (profissionalId) {
+                url.searchParams.set("profissional", profissionalId);
+            } else {
+                url.searchParams.delete("profissional");
+            }
+
+            window.location.href = url.pathname + "?" + url.searchParams.toString();
+        })
+        .catch(error => {
+            console.error("Erro ao salvar agendamento:", error);
+            alert("Erro ao salvar agendamento.");
+        })
+        .finally(() => {
+            if (botaoMarcar) {
+                botaoMarcar.disabled = false;
+                botaoMarcar.textContent = "MARCAR";
+            }
+        });
+
+    });
+
+    /* ===== FECHAR LISTA DE PACIENTES AO CLICAR FORA ===== */
+    document.addEventListener("click", function(e) {
+
+        if (!e.target.closest(".paciente-autocomplete")) {
+            const listaPacientes = document.getElementById("listaPacientesAgendamento");
+
+            if (listaPacientes) {
+                listaPacientes.classList.remove("aberta");
+            }
+        }
+
+    });
+
+    /* ===== CONTADORES COMPROMISSO ===== */
+    document.addEventListener("input", function(e) {
+        if (e.target.matches("#tituloCompromisso")) {
+            const contador = document.getElementById("contadorTituloCompromisso");
+            if (contador) {
+                contador.textContent = `${e.target.value.length} / 255`;
+            }
+        }
+
+        if (e.target.matches("#descricaoCompromisso")) {
+            const contador = document.getElementById("contadorDescricaoCompromisso");
+            if (contador) {
+                contador.textContent = `${e.target.value.length} / 500`;
+            }
+        }
+    });
+
+
+    /* ===== DIA INTEIRO COMPROMISSO ===== */
+    document.addEventListener("change", function(e) {
+        if (!e.target.matches("#compromissoDiaInteiro")) return;
+
+        const camposHora = document.querySelectorAll(".campo-hora-compromisso-js");
+        const horaInicio = document.getElementById("compromissoHoraInicio");
+        const horaFim = document.getElementById("compromissoHoraFim");
+        const grid = document.getElementById("gridDataHoraCompromisso");
+
+        if (e.target.checked) {
+            camposHora.forEach(campo => {
+                campo.style.display = "none";
+            });
+
+            if (horaInicio) {
+                horaInicio.value = "";
+                horaInicio.disabled = true;
+            }
+
+            if (horaFim) {
+                horaFim.value = "";
+                horaFim.disabled = true;
+            }
+
+            if (grid) {
+                grid.classList.add("modo-dia-inteiro");
+            }
+        } else {
+            camposHora.forEach(campo => {
+                campo.style.display = "block";
+            });
+
+            if (horaInicio) {
+                horaInicio.disabled = false;
+            }
+
+            if (horaFim) {
+                horaFim.disabled = false;
+            }
+
+            if (grid) {
+                grid.classList.remove("modo-dia-inteiro");
+            }
+
+            preencherCompromissoComDadosDaConsulta();
+        }
+    });
+
+
+    /* ===== REPETIR COMPROMISSO ===== */
+    document.addEventListener("change", function(e) {
+        if (!e.target.matches("#repetirCompromisso")) return;
+
+        const opcoes = document.getElementById("opcoesRepeticaoCompromisso");
+        const terminar = document.getElementById("terminarRepeticaoCompromisso");
+        const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
+
+        if (!opcoes) return;
+
+        if (e.target.checked) {
+            opcoes.classList.add("aberta");
+        } else {
+            opcoes.classList.remove("aberta");
+
+            if (terminar) {
+                terminar.value = "nunca";
+            }
+
+            if (campoData) {
+                campoData.classList.remove("aberto");
+            }
+        }
+    });
+
+
+    /* ===== TERMINAR REPETIÇÃO ===== */
+    document.addEventListener("change", function(e) {
+        if (!e.target.matches("#terminarRepeticaoCompromisso")) return;
+
+        const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
+
+        if (!campoData) return;
+
+        if (e.target.value === "data_especifica") {
+            campoData.classList.add("aberto");
+        } else {
+            campoData.classList.remove("aberto");
+        }
+    });
+
+
+    /* ===== ALERTA PERSONALIZADO ===== */
+    document.addEventListener("change", function(e) {
+        if (!e.target.matches("#alertaCompromisso")) return;
+
+        const campoQuantidade = document.getElementById("campoAlertaPersonalizado");
+        const campoUnidade = document.getElementById("campoUnidadeAlertaPersonalizado");
+
+        const personalizado = e.target.value === "personalizar";
+
+        if (campoQuantidade) {
+            campoQuantidade.style.display = personalizado ? "block" : "none";
+        }
+
+        if (campoUnidade) {
+            campoUnidade.style.display = personalizado ? "block" : "none";
+        }
+    });
+
+    let horarioLivreSelecionado = null;
+
+    window.abrirModalHorariosLivresAgendamento = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        console.log("Clicou em encontrar horário livre");
+
+        const dataInput = document.getElementById("id_data");
+        const profissionalInput = document.getElementById("id_profissional");
+        const duracaoInput = document.getElementById("duracaoConsulta");
+        const overlay = document.getElementById("overlayHorariosLivres");
+
+        if (!dataInput || !profissionalInput || !duracaoInput || !overlay) {
+            console.log("Campos não encontrados:", {
+                dataInput,
+                profissionalInput,
+                duracaoInput,
+                overlay
+            });
+
+            alert("Erro ao localizar os campos do agendamento.");
+            return false;
+        }
+
+        if (!dataInput.value) {
+            alert("Informe a data da consulta.");
+            return false;
+        }
+
+        if (!profissionalInput.value) {
+            alert("Selecione um profissional.");
+            return false;
+        }
+
+        const dataSugestao = document.getElementById("dataSugestaoHorario");
+
+        if (dataSugestao) {
+            dataSugestao.value = dataInput.value;
+        }
+
+        overlay.style.display = "flex";
+
+        carregarHorariosLivresAgendamento();
+
+        return false;
+    };
+
+    window.fecharModalHorariosLivres = function() {
+        const overlay = document.getElementById("overlayHorariosLivres");
+
+        if (overlay) {
+            overlay.style.display = "none";
+        }
+
+        horarioLivreSelecionado = null;
+    };
+
+    window.mudarDiaSugestaoHorario = function(dias) {
+        const inputData = document.getElementById("dataSugestaoHorario");
+
+        if (!inputData || !inputData.value) {
+            return;
+        }
+
+        const partes = inputData.value.split("-");
+        const data = new Date(
+            Number(partes[0]),
+            Number(partes[1]) - 1,
+            Number(partes[2])
+        );
+
+        data.setDate(data.getDate() + dias);
+
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, "0");
+        const dia = String(data.getDate()).padStart(2, "0");
+
+        inputData.value = `${ano}-${mes}-${dia}`;
+
+        carregarHorariosLivresAgendamento();
+    };
+
+    window.abrirMenuEtiquetasAgendamento = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        console.log("Clicou no campo de etiqueta");
+
+        const menu = document.getElementById("menuEtiquetasAgendamento");
+
+        if (!menu) {
+            console.log("Menu de etiquetas não encontrado");
+            alert("Menu de etiquetas não encontrado.");
+            return false;
+        }
+
+        menu.classList.toggle("aberto");
+
+        return false;
+    };
+
+
+    window.selecionarEtiquetaAgendamento = function(event, elemento) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (!elemento) return false;
+
+        const id = elemento.dataset.id || "";
+        const nome = elemento.dataset.nome || "";
+        const cor = elemento.dataset.cor || "#28a745";
+
+        console.log("Etiqueta selecionada:", id, nome, cor);
+
+        const inputEtiqueta = document.getElementById("id_etiqueta");
+        const textoSelecionado = document.querySelector(".texto-etiqueta-selecionada");
+        const menu = document.getElementById("menuEtiquetasAgendamento");
+
+        if (inputEtiqueta) {
+            inputEtiqueta.value = id;
+        }
+
+        if (textoSelecionado) {
+            textoSelecionado.innerHTML = `
+                <span class="bolinha-etiqueta" style="background:${cor}; width:18px; height:18px;"></span>
+                ${nome}
+            `;
+
+            textoSelecionado.style.display = "flex";
+            textoSelecionado.style.alignItems = "center";
+            textoSelecionado.style.gap = "8px";
+            textoSelecionado.style.color = "#333";
+        }
+
+        if (menu) {
+            menu.classList.remove("aberto");
+        }
+
+        return false;
+    };
+
+
+    let corEtiquetaSelecionada = "#28a745";
+
+
+    window.abrirModalNovaEtiqueta = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        console.log("Abrindo modal nova etiqueta");
+
+        const overlay = document.getElementById("overlayNovaEtiqueta");
+        const menu = document.getElementById("menuEtiquetasAgendamento");
+        const nomeInput = document.getElementById("nomeNovaEtiqueta");
+        const preview = document.getElementById("previewCorEtiqueta");
+        const paleta = document.getElementById("paletaCoresEtiqueta");
+        const painelMaisCores = document.getElementById("painelMaisCoresEtiqueta");
+
+        if (menu) {
+            menu.classList.remove("aberto");
+        }
+
+        if (paleta) {
+            paleta.classList.remove("aberta");
+        }
+
+        if (painelMaisCores) {
+            painelMaisCores.classList.remove("aberto");
+        }
+
+        corEtiquetaSelecionada = "#28a745";
+
+        if (preview) {
+            preview.style.background = corEtiquetaSelecionada;
+        }
+
+        if (nomeInput) {
+            nomeInput.value = "";
+        }
+
+        if (overlay) {
+            overlay.style.display = "flex";
+        }
+
+        setTimeout(() => {
+            nomeInput?.focus();
+        }, 100);
+
+        return false;
+    };
+
+
+    window.fecharModalNovaEtiqueta = function() {
+        const overlay = document.getElementById("overlayNovaEtiqueta");
+        const paleta = document.getElementById("paletaCoresEtiqueta");
+        const nomeInput = document.getElementById("nomeNovaEtiqueta");
+        const painelMaisCores = document.getElementById("painelMaisCoresEtiqueta");
+        const preview = document.getElementById("previewCorEtiqueta");
+
+        if (overlay) {
+            overlay.style.display = "none";
+        }
+
+        if (paleta) {
+            paleta.classList.remove("aberta");
+        }
+
+        if (painelMaisCores) {
+            painelMaisCores.classList.remove("aberto");
+        }
+
+        if (nomeInput) {
+            nomeInput.value = "";
+        }
+
+        corEtiquetaSelecionada = "#28a745";
+
+        if (preview) {
+            preview.style.background = corEtiquetaSelecionada;
+        }
+    };
+
+
+    window.abrirPaletaEtiqueta = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const paleta = document.getElementById("paletaCoresEtiqueta");
+        const painelMaisCores = document.getElementById("painelMaisCoresEtiqueta");
+
+        if (painelMaisCores) {
+            painelMaisCores.classList.remove("aberto");
+        }
+
+        if (paleta) {
+            paleta.classList.toggle("aberta");
+        }
+
+        return false;
+    };
+
+
+    window.selecionarCorEtiqueta = function(event, elemento) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (!elemento) return false;
+
+        corEtiquetaSelecionada = elemento.dataset.cor || "#28a745";
+
+        const preview = document.getElementById("previewCorEtiqueta");
+        const paleta = document.getElementById("paletaCoresEtiqueta");
+        const painelMaisCores = document.getElementById("painelMaisCoresEtiqueta");
+
+        if (preview) {
+            preview.style.background = corEtiquetaSelecionada;
+        }
+
+        if (paleta) {
+            paleta.classList.remove("aberta");
+        }
+
+        if (painelMaisCores) {
+            painelMaisCores.classList.remove("aberto");
+        }
+
+        return false;
+    };
+
+
+    window.abrirPainelMaisCores = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const painel = document.getElementById("painelMaisCoresEtiqueta");
+        const inputCor = document.getElementById("inputCorLivreEtiqueta");
+
+        if (inputCor) {
+            inputCor.value = corEtiquetaSelecionada || "#28a745";
+        }
+
+        if (painel) {
+            painel.classList.add("aberto");
+        }
+
+        return false;
+    };
+
+
+    window.cancelarMaisCoresEtiqueta = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const painel = document.getElementById("painelMaisCoresEtiqueta");
+
+        if (painel) {
+            painel.classList.remove("aberto");
+        }
+
+        return false;
+    };
+
+
+    window.aplicarMaisCoresEtiqueta = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const inputCor = document.getElementById("inputCorLivreEtiqueta");
+        const preview = document.getElementById("previewCorEtiqueta");
+        const painel = document.getElementById("painelMaisCoresEtiqueta");
+        const paleta = document.getElementById("paletaCoresEtiqueta");
+
+        if (inputCor) {
+            corEtiquetaSelecionada = inputCor.value || "#28a745";
+        }
+
+        if (preview) {
+            preview.style.background = corEtiquetaSelecionada;
+        }
+
+        if (painel) {
+            painel.classList.remove("aberto");
+        }
+
+        if (paleta) {
+            paleta.classList.remove("aberta");
+        }
+
+        return false;
+    };
+
+
+    window.salvarNovaEtiquetaAgendamento = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const nomeInput = document.getElementById("nomeNovaEtiqueta");
+        const nome = nomeInput?.value.trim() || "";
+
+        if (!nome) {
+            alert("Informe o nome da etiqueta.");
+            return false;
+        }
+
+        const csrf = document.querySelector("#formNovoAgendamento [name=csrfmiddlewaretoken]")?.value
+            || document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+
+        const formData = new FormData();
+        formData.append("nome", nome);
+        formData.append("cor", corEtiquetaSelecionada);
+        formData.append("csrfmiddlewaretoken", csrf);
+
+        fetch("/agenda/etiquetas/criar/", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.ok) {
+                alert(data.erro || "Erro ao criar etiqueta.");
+                return;
+            }
+
+            const etiqueta = data.etiqueta;
+
+            adicionarEtiquetaNaListaESelecionar(etiqueta);
+
+            window.fecharModalNovaEtiqueta();
+        })
+        .catch(error => {
+            console.error("Erro ao salvar etiqueta:", error);
+            alert("Erro ao salvar etiqueta.");
+        });
+
+        return false;
+    };
+
+    window.trocarAbaAgendamento = function(tipo) {
+        const abaConsulta = document.getElementById("abaConsulta");
+        const abaCompromisso = document.getElementById("abaCompromisso");
+
+        const conteudoConsulta = document.getElementById("conteudoConsultaAgendamento");
+        const conteudoCompromisso = document.getElementById("conteudoCompromissoAgendamento");
+
+        const tipoAgendamento = document.getElementById("tipoAgendamento");
+        const btnMarcar = document.querySelector("#formNovoAgendamento .btn-marcar");
+
+        if (tipo === "consulta") {
+            abaConsulta?.classList.add("ativa");
+            abaCompromisso?.classList.remove("ativa");
+
+            if (conteudoConsulta) conteudoConsulta.style.display = "block";
+            if (conteudoCompromisso) conteudoCompromisso.style.display = "none";
+
+            if (tipoAgendamento) tipoAgendamento.value = "consulta";
+            if (btnMarcar) btnMarcar.textContent = "MARCAR";
+
+            return;
+        }
+
+        abaConsulta?.classList.remove("ativa");
+        abaCompromisso?.classList.add("ativa");
+
+        if (conteudoConsulta) conteudoConsulta.style.display = "none";
+        if (conteudoCompromisso) conteudoCompromisso.style.display = "block";
+
+        if (tipoAgendamento) tipoAgendamento.value = "compromisso";
+        if (btnMarcar) btnMarcar.textContent = "MARCAR";
+
+        preencherCompromissoComDadosDaConsulta();
+    };
+
+
+    function preencherCompromissoComDadosDaConsulta() {
+        const dataConsulta = document.getElementById("id_data")?.value || "";
+        const horaInicioConsulta = document.getElementById("id_hora_inicio")?.value || "";
+        const profissionalConsulta = document.getElementById("id_profissional")?.value || "";
+        const duracao = Number(document.getElementById("duracaoConsulta")?.value || 30);
+
+        const dataInicio = document.getElementById("compromissoDataInicio");
+        const dataFim = document.getElementById("compromissoDataFim");
+        const horaInicio = document.getElementById("compromissoHoraInicio");
+        const horaFim = document.getElementById("compromissoHoraFim");
+        const profissionalCompromisso = document.getElementById("id_profissional_compromisso");
+
+        if (dataInicio && !dataInicio.value) {
+            dataInicio.value = dataConsulta;
+        }
+
+        if (dataFim && !dataFim.value) {
+            dataFim.value = dataConsulta;
+        }
+
+        if (horaInicio && !horaInicio.value) {
+            horaInicio.value = horaInicioConsulta;
+        }
+
+        if (horaFim && !horaFim.value && horaInicioConsulta) {
+            const partes = horaInicioConsulta.split(":");
+            const dataHora = new Date();
+
+            dataHora.setHours(Number(partes[0]));
+            dataHora.setMinutes(Number(partes[1]) + duracao);
+            dataHora.setSeconds(0);
+
+            const hh = String(dataHora.getHours()).padStart(2, "0");
+            const mm = String(dataHora.getMinutes()).padStart(2, "0");
+
+            horaFim.value = `${hh}:${mm}`;
+        }
+
+        if (profissionalCompromisso && profissionalConsulta) {
+            profissionalCompromisso.value = profissionalConsulta;
+        }
+    }
+
+
+    window.toggleConfiguracoesCompromisso = function() {
+        const conteudo = document.getElementById("conteudoConfigCompromisso");
+        const icone = document.getElementById("iconeConfigCompromisso");
+
+        if (!conteudo) return;
+
+        const aberto = conteudo.style.display !== "none";
+
+        conteudo.style.display = aberto ? "none" : "block";
+
+        if (icone) {
+            icone.textContent = aberto ? "⌄" : "⌃";
+        }
+    };
+
+
+
+    function adicionarEtiquetaNaListaESelecionar(etiqueta) {
+        const menu = document.getElementById("menuEtiquetasAgendamento");
+        const btnNovo = document.getElementById("btnAbrirNovaEtiqueta");
+        const inputEtiqueta = document.getElementById("id_etiqueta");
+        const textoSelecionado = document.querySelector(".texto-etiqueta-selecionada");
+
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "item-etiqueta-agendamento";
+        item.dataset.id = etiqueta.id;
+        item.dataset.nome = etiqueta.nome;
+        item.dataset.cor = etiqueta.cor;
+        item.setAttribute("onclick", "window.selecionarEtiquetaAgendamento(event, this)");
+
+        item.innerHTML = `
+            <span class="bolinha-etiqueta" style="background:${etiqueta.cor}"></span>
+            <span>${etiqueta.nome}</span>
+        `;
+
+        if (menu && btnNovo) {
+            menu.insertBefore(item, btnNovo);
+        }
+
+        if (inputEtiqueta) {
+            inputEtiqueta.value = etiqueta.id;
+        }
+
+        if (textoSelecionado) {
+            textoSelecionado.innerHTML = `
+                <span class="bolinha-etiqueta" style="background:${etiqueta.cor}; width:18px; height:18px;"></span>
+                ${etiqueta.nome}
+            `;
+
+            textoSelecionado.style.display = "flex";
+            textoSelecionado.style.alignItems = "center";
+            textoSelecionado.style.gap = "8px";
+            textoSelecionado.style.color = "#333";
+        }
+    }
+
+
+    function carregarHorariosLivresAgendamento() {
+        const dataInput = document.getElementById("dataSugestaoHorario");
+        const profissionalInput = document.getElementById("id_profissional");
+        const duracaoInput = document.getElementById("duracaoConsulta");
+
+        const horariosManha = document.getElementById("horariosManha");
+        const horariosTarde = document.getElementById("horariosTarde");
+        const btnEscolher = document.getElementById("btnEscolherHorarioLivre");
+
+        if (!dataInput || !profissionalInput || !duracaoInput || !horariosManha || !horariosTarde) {
+            console.log("Campos do modal de horários não encontrados:", {
+                dataInput,
+                profissionalInput,
+                duracaoInput,
+                horariosManha,
+                horariosTarde
+            });
+
+            return;
+        }
+
+        horarioLivreSelecionado = null;
+
+        if (btnEscolher) {
+            btnEscolher.disabled = true;
+        }
+
+        horariosManha.innerHTML = `
+            <div class="horario-livre-vazio">
+                Buscando horários...
+            </div>
+        `;
+
+        horariosTarde.innerHTML = "";
+
+        const params = new URLSearchParams();
+        params.set("data", dataInput.value);
+        params.set("profissional", profissionalInput.value);
+        params.set("duracao", duracaoInput.value || 30);
+
+        fetch(`/agenda/horarios-livres/?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+
+                horariosManha.innerHTML = "";
+                horariosTarde.innerHTML = "";
+
+                if (!data.ok) {
+                    horariosManha.innerHTML = `
+                        <div class="horario-livre-vazio">
+                            ${data.erro || "Erro ao buscar horários."}
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (!data.horarios || data.horarios.length === 0) {
+                    horariosManha.innerHTML = `
+                        <div class="horario-livre-vazio">
+                            Nenhum horário livre encontrado.
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.horarios.forEach(function(horario) {
+                    const item = document.createElement("button");
+
+                    item.type = "button";
+                    item.className = "item-horario-livre";
+                    item.dataset.inicio = horario.inicio;
+                    item.dataset.fim = horario.fim;
+                    item.textContent = horario.texto;
+
+                    const hora = Number(horario.inicio.split(":")[0]);
+
+                    if (hora < 12) {
+                        horariosManha.appendChild(item);
+                    } else {
+                        horariosTarde.appendChild(item);
+                    }
+                });
+
+                if (!horariosManha.innerHTML.trim()) {
+                    horariosManha.innerHTML = `
+                        <div class="horario-livre-vazio">
+                            Nenhum horário pela manhã.
+                        </div>
+                    `;
+                }
+
+                if (!horariosTarde.innerHTML.trim()) {
+                    horariosTarde.innerHTML = `
+                        <div class="horario-livre-vazio">
+                            Nenhum horário à tarde.
+                        </div>
+                    `;
+                }
+
+            })
+            .catch(error => {
+                console.error("Erro ao buscar horários:", error);
+
+                horariosManha.innerHTML = `
+                    <div class="horario-livre-vazio">
+                        Erro ao buscar horários livres.
+                    </div>
+                `;
+
+                horariosTarde.innerHTML = "";
+            });
+    }
+
+
+    /* ===== MUDAR DATA DENTRO DO MODAL DE HORÁRIOS ===== */
+    document.addEventListener("change", function(e) {
+
+        if (e.target.matches("#dataSugestaoHorario")) {
+            carregarHorariosLivresAgendamento();
+        }
+
+    });
+
+
+    /* ===== SELECIONAR HORÁRIO NO MODAL ===== */
+    document.addEventListener("click", function(e) {
+
+        const item = e.target.closest(".item-horario-livre");
+
+        if (!item) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll(".item-horario-livre").forEach(btn => {
+            btn.classList.remove("selecionado");
+        });
+
+        item.classList.add("selecionado");
+
+        horarioLivreSelecionado = {
+            inicio: item.dataset.inicio,
+            fim: item.dataset.fim
+        };
+
+        console.log("Horário selecionado:", horarioLivreSelecionado);
+
+        const btnEscolher = document.getElementById("btnEscolherHorarioLivre");
+
+        if (btnEscolher) {
+            btnEscolher.disabled = false;
+        }
+
+    });
+
+
+    /* ===== ESCOLHER HORÁRIO ===== */
+    document.addEventListener("click", function(e) {
+
+        const btnEscolher = e.target.closest("#btnEscolherHorarioLivre");
+
+        if (!btnEscolher) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!horarioLivreSelecionado) return;
+
+        const horaInicio = document.getElementById("id_hora_inicio");
+        const horaFim = document.getElementById("id_hora_fim");
+        const dataAgendamento = document.getElementById("id_data");
+        const dataSugestao = document.getElementById("dataSugestaoHorario");
+
+        if (horaInicio) {
+            horaInicio.value = horarioLivreSelecionado.inicio;
+        }
+
+        if (horaFim) {
+            horaFim.value = horarioLivreSelecionado.fim;
+        }
+
+        if (dataAgendamento && dataSugestao) {
+            dataAgendamento.value = dataSugestao.value;
+        }
+
+        calcularHoraFimAgendamento();
+
+        fecharModalHorariosLivres();
+
+    });
 
     /* ===== DROPDOWN PERÍODO ===== */
     const btnPeriodo = document.getElementById("btnPeriodo");

@@ -1,109 +1,437 @@
 <div class="modal-novo-agendamento">
 
     <div class="abas-agendamento">
-        <button type="button" class="aba ativa">Consulta</button>
-        <button type="button" class="aba">Compromisso</button>
+        <button
+            type="button"
+            class="aba-agendamento ativa"
+            id="abaConsulta"
+            onclick="window.trocarAbaAgendamento('consulta')"
+        >
+            Consulta
+        </button>
+
+        <button
+            type="button"
+            class="aba-agendamento"
+            id="abaCompromisso"
+            onclick="window.trocarAbaAgendamento('compromisso')"
+        >
+            Compromisso
+        </button>
     </div>
 
     <form method="POST" action="{% url 'criar_agendamento' %}" id="formNovoAgendamento">
         {% csrf_token %}
 
-        <div class="campo campo-destaque">
-            <label>Paciente*</label>
-            {{ form.paciente_nome }}
-            <a href="#" class="link-cadastrar">Cadastrar novo paciente</a>
-        </div>
+        <input type="hidden" name="origem" value="{{ origem }}">
+        <input type="hidden" name="tipo_agendamento" id="tipoAgendamento" value="consulta">
 
-        <div class="campo">
-            <label>Profissional*</label>
-            {{ form.profissional }}
-        </div>
+        <!-- =========================
+             CONTEÚDO CONSULTA
+        ========================== -->
+        <div id="conteudoConsultaAgendamento">
 
-        <div class="linha-3">
-            <div class="campo">
-                <label>Data da consulta*</label>
-                {{ form.data }}
+            <div class="campo campo-destaque campo-paciente-agendamento">
+                <label>Paciente*</label>
+
+                <div class="paciente-autocomplete">
+                    {{ form.paciente_nome }}
+
+                    <div class="lista-pacientes-agendamento" id="listaPacientesAgendamento"></div>
+                </div>
+
+                <a
+                    href="{% url 'criar_paciente' %}?origem=agenda"
+                    class="link-cadastrar"
+                    id="btnCadastrarPacienteAgenda"
+                >
+                    Cadastrar novo paciente
+                </a>
             </div>
 
             <div class="campo">
-                <label>Hora de início*</label>
-                {{ form.hora_inicio }}
+                <label>Profissional*</label>
+                {{ form.profissional }}
+            </div>
+
+            <div class="linha-3">
+                <div class="campo">
+                    <label>Data da consulta*</label>
+                    {{ form.data }}
+                </div>
+
+                <div class="campo">
+                    <label>Hora de início*</label>
+                    {{ form.hora_inicio }}
+                </div>
+
+                <div class="campo">
+                    <label>Duração da consulta (min)*</label>
+                    <input
+                        type="number"
+                        id="duracaoConsulta"
+                        name="duracao"
+                        value="30"
+                        min="15"
+                        step="15"
+                    >
+                </div>
+            </div>
+
+            <input type="hidden" name="hora_fim" id="id_hora_fim">
+
+            <div class="bloco-horarios-livres">
+                <button
+                    type="button"
+                    class="link-horario"
+                    id="btnEncontrarHorarioLivre"
+                    onclick="window.abrirModalHorariosLivresAgendamento(event)"
+                >
+                    Encontrar horário livre
+                </button>
             </div>
 
             <div class="campo">
-                <label>Duração da consulta (min)*</label>
-                <input type="number" id="duracaoConsulta" value="30" min="15" step="15">
+                <label>Observação</label>
+                {{ form.observacoes }}
+                <span class="contador-observacao">0 / 500</span>
             </div>
+
+            <div class="linha-retorno-agendamento" id="linhaRetornoAgendamento">
+
+                <div class="campo campo-retorno">
+                    <label>Retornar em</label>
+
+                    <select name="retorno_tipo" id="retornoTipoSelect">
+                        <option value="">Sem retorno</option>
+                        <option value="7_dias">7 dias</option>
+                        <option value="15_dias">15 dias</option>
+                        <option value="30_dias">30 dias</option>
+                        <option value="60_dias">60 dias</option>
+                        <option value="1_mes">1 mês</option>
+                        <option value="6_meses">6 meses</option>
+                        <option value="12_meses">12 meses</option>
+                        <option value="outro_mes">Outro mês</option>
+                        <option value="data_especifica">Data específica</option>
+                    </select>
+                </div>
+
+                <div class="campo campo-retorno-extra campo-escondido" id="campoDataRetorno">
+                    <label>Data aproximada para retorno*</label>
+                    <input type="date" name="retorno_data" id="retornoData">
+                </div>
+
+                <div class="campo campo-retorno-extra campo-escondido" id="campoMesesRetorno">
+                    <label>Meses*</label>
+                    <input type="number" name="retorno_meses" id="retornoMeses" min="1">
+                </div>
+
+            </div>
+
+            <div class="campo campo-motivo-retorno campo-escondido" id="campoMotivoRetorno">
+                <label>Motivo do retorno</label>
+                <textarea
+                    name="motivo_retorno"
+                    id="motivoRetorno"
+                    maxlength="500"
+                    placeholder="Motivo do retorno"
+                ></textarea>
+                <span class="contador-retorno">0 / 500</span>
+            </div>
+
+            <div class="linha-switch-agendamento">
+                <label class="switch-agendamento">
+                    <input type="checkbox" name="enviar_lembrete">
+                    <span></span>
+                </label>
+
+                <span class="texto-switch-agendamento">
+                    Enviar confirmação e lembrete de consulta automático
+                </span>
+            </div>
+
+            <div class="campo-etiqueta-agendamento">
+
+                <div class="select-etiqueta-custom" id="selectEtiquetaCustom">
+
+                    <button
+                        type="button"
+                        class="btn-select-etiqueta"
+                        id="btnSelectEtiqueta"
+                        onclick="window.abrirMenuEtiquetasAgendamento(event)"
+                    >
+                        <span class="texto-etiqueta-selecionada">Selecione um rótulo</span>
+                        <span class="seta-etiqueta">▾</span>
+                    </button>
+
+                    <div class="menu-etiquetas-agendamento" id="menuEtiquetasAgendamento">
+
+                        {% for etiqueta in form.fields.etiqueta.queryset %}
+                            <button
+                                type="button"
+                                class="item-etiqueta-agendamento"
+                                data-id="{{ etiqueta.id }}"
+                                data-nome="{{ etiqueta.nome }}"
+                                data-cor="{{ etiqueta.cor }}"
+                                onclick="window.selecionarEtiquetaAgendamento(event, this)"
+                            >
+                                <span class="bolinha-etiqueta" style="background: {{ etiqueta.cor }}"></span>
+                                <span>{{ etiqueta.nome }}</span>
+                            </button>
+                        {% empty %}
+                            <div class="item-etiqueta-vazio">
+                                Nenhum rótulo cadastrado
+                            </div>
+                        {% endfor %}
+
+                        <button
+                            type="button"
+                            class="btn-novo-rotulo"
+                            id="btnAbrirNovaEtiqueta"
+                            onclick="window.abrirModalNovaEtiqueta(event)"
+                        >
+                            NOVO RÓTULO
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <input type="hidden" name="etiqueta" id="id_etiqueta">
+
+            </div>
+
         </div>
 
-        <input type="hidden" name="hora_fim" id="id_hora_fim">
+        <!-- =========================
+             CONTEÚDO COMPROMISSO
+        ========================== -->
+        <div id="conteudoCompromissoAgendamento" style="display:none;">
 
-        <a href="#" class="link-horario">Encontrar horário livre</a>
+            <div class="campo campo-titulo-compromisso">
+                <label>Título do compromisso*</label>
+                <input
+                    type="text"
+                    name="titulo_compromisso"
+                    id="tituloCompromisso"
+                    maxlength="255"
+                    placeholder="Título do compromisso*"
+                >
+                <span class="contador-titulo-compromisso" id="contadorTituloCompromisso">0 / 255</span>
+            </div>
 
-        <div class="campo">
-            <label>Observação</label>
-            {{ form.observacoes }}
-            <span class="contador-observacao">0 / 500</span>
-        </div>
+            <div class="campo">
+                <label>Descrição</label>
+                <textarea
+                    name="descricao_compromisso"
+                    id="descricaoCompromisso"
+                    rows="4"
+                    maxlength="500"
+                    placeholder="Descrição"
+                ></textarea>
+                <span class="contador-observacao" id="contadorDescricaoCompromisso">0 / 500</span>
+            </div>
 
-        <div class="linha-retorno-agendamento" id="linhaRetornoAgendamento">
+            <div class="campo">
+                <label>Agenda de*</label>
 
-            <div class="campo campo-retorno">
-                <label>Retornar em</label>
+                <select name="profissional_compromisso" id="id_profissional_compromisso">
+                    <option value="">---------</option>
 
-                <select name="retorno_tipo" id="retornoTipoSelect">
-                    <option value="">Sem retorno</option>
-                    <option value="7_dias">7 dias</option>
-                    <option value="15_dias">15 dias</option>
-                    <option value="30_dias">30 dias</option>
-                    <option value="60_dias">60 dias</option>
-                    <option value="1_mes">1 mês</option>
-                    <option value="6_meses">6 meses</option>
-                    <option value="12_meses">12 meses</option>
-                    <option value="outro_mes">Outro mês</option>
-                    <option value="data_especifica">Data específica</option>
+                    {% for profissional in form.fields.profissional.queryset %}
+                        <option value="{{ profissional.id }}">
+                            {{ profissional.nome }}
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
 
-            <div class="campo campo-retorno-extra campo-escondido" id="campoDataRetorno">
-                <label>Data aproximada para retorno*</label>
-                <input type="date" name="retorno_data" id="retornoData">
+            <div class="separador-compromisso"></div>
+
+            <h3 class="titulo-secao-compromisso">Data e hora</h3>
+
+            <!-- DIA INTEIRO -->
+            <div class="linha-check-compromisso">
+                <label class="check-compromisso-custom">
+                    <input type="checkbox" id="compromissoDiaInteiro" name="dia_inteiro">
+                    <span class="caixa-check-compromisso"></span>
+                    <span class="texto-check-compromisso">Dia inteiro</span>
+                </label>
             </div>
 
-            <div class="campo campo-retorno-extra campo-escondido" id="campoMesesRetorno">
-                <label>Meses*</label>
-                <input type="number" name="retorno_meses" id="retornoMeses" min="1">
+            <div class="grid-data-hora-compromisso" id="gridDataHoraCompromisso">
+
+                <div class="campo campo-data-compromisso">
+                    <label>Começa em*</label>
+                    <input type="date" name="compromisso_data_inicio" id="compromissoDataInicio">
+                </div>
+
+                <div class="campo campo-hora-compromisso campo-hora-compromisso-js">
+                    <label>Horário início*</label>
+                    <input type="time" name="compromisso_hora_inicio" id="compromissoHoraInicio">
+                </div>
+
+                <div class="campo campo-data-compromisso">
+                    <label>Termina em*</label>
+                    <input type="date" name="compromisso_data_fim" id="compromissoDataFim">
+                </div>
+
+                <div class="campo campo-hora-compromisso campo-hora-compromisso-js">
+                    <label>Horário fim*</label>
+                    <input type="time" name="compromisso_hora_fim" id="compromissoHoraFim">
+                </div>
+
+            </div>
+
+            <!-- REPETIR COMPROMISSO -->
+            <div class="linha-check-compromisso linha-repetir-compromisso">
+                <label class="check-compromisso-custom">
+                    <input type="checkbox" id="repetirCompromisso" name="repetir_compromisso">
+                    <span class="caixa-check-compromisso"></span>
+                    <span class="texto-check-compromisso">Repetir compromisso</span>
+                </label>
+            </div>
+
+            <div class="area-repeticao-compromisso" id="opcoesRepeticaoCompromisso">
+
+                <div class="linha-repeticao-compromisso">
+
+                    <div class="campo-limpo-compromisso">
+                        <label>Repetir</label>
+                        <select name="tipo_repeticao_compromisso" id="tipoRepeticaoCompromisso">
+                            <option value="todos_os_dias">Todos os dias</option>
+                            <option value="semanalmente">Semanalmente</option>
+                            <option value="quinzenalmente">Quinzenalmente</option>
+                            <option value="mensalmente">Mensalmente</option>
+                            <option value="anualmente">Anualmente</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-limpo-compromisso">
+                        <label>Terminar repetição</label>
+                        <select name="terminar_repeticao_compromisso" id="terminarRepeticaoCompromisso">
+                            <option value="nunca">Nunca</option>
+                            <option value="data_especifica">Data específica</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-limpo-compromisso campo-finaliza-repeticao" id="campoDataFimRepeticaoCompromisso">
+                        <label>Finaliza em*</label>
+                        <input
+                            type="date"
+                            name="data_fim_repeticao_compromisso"
+                            id="dataFimRepeticaoCompromisso"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="box-configuracoes-compromisso">
+
+                <div class="topo-configuracoes-compromisso" onclick="window.toggleConfiguracoesCompromisso()">
+                    <strong>Configurações extras</strong>
+                    <span id="iconeConfigCompromisso">⌃</span>
+                </div>
+
+                <div class="conteudo-configuracoes-compromisso" id="conteudoConfigCompromisso">
+
+                    <div class="grid-configuracoes-compromisso">
+
+                        <div class="campo-limpo-compromisso">
+                            <label>Disponibilidade para consultas</label>
+                            <select name="disponibilidade_compromisso" id="disponibilidadeCompromisso">
+                                <option value="ocupado">Ocupado</option>
+                                <option value="disponivel">Disponível</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-limpo-compromisso">
+                            <label>Privacidade do compromisso</label>
+                            <select name="privacidade_compromisso" id="privacidadeCompromisso">
+                                <option value="privado">Privado</option>
+                                <option value="publico">Público</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-limpo-compromisso">
+                            <label>Receber alerta</label>
+                            <select name="alerta_compromisso" id="alertaCompromisso">
+                                <option value="sem_alerta">Sem alerta</option>
+                                <option value="1_minuto">1 minuto antes</option>
+                                <option value="5_minutos">5 minutos antes</option>
+                                <option value="30_minutos">30 minutos antes</option>
+                                <option value="1_hora">1 hora antes</option>
+                                <option value="1_dia">1 dia antes</option>
+                                <option value="personalizar">Personalizar</option>
+                            </select>
+                        </div>
+
+                        <div
+                            class="campo-limpo-compromisso campo-alerta-personalizado"
+                            id="campoAlertaPersonalizado"
+                            style="display:none;"
+                        >
+                            <label>Tempo</label>
+                            <input
+                                type="number"
+                                name="alerta_quantidade"
+                                id="alertaQuantidade"
+                                value="1"
+                                min="1"
+                            >
+                        </div>
+
+                        <div
+                            class="campo-limpo-compromisso campo-alerta-personalizado"
+                            id="campoUnidadeAlertaPersonalizado"
+                            style="display:none;"
+                        >
+                            <label>Unidade</label>
+                            <select name="alerta_unidade" id="alertaUnidade">
+                                <option value="minutos">Minuto(s)</option>
+                                <option value="horas">Hora(s)</option>
+                                <option value="dias">Dia(s)</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
-        <div class="campo campo-motivo-retorno campo-escondido" id="campoMotivoRetorno">
-            <label>Motivo do retorno</label>
-            <textarea name="motivo_retorno" id="motivoRetorno" maxlength="500" placeholder="Motivo do retorno"></textarea>
-            <span class="contador-retorno">0 / 500</span>
-        </div>
-
-        <div class="linha-switch-agendamento">
-            <label class="switch-agendamento">
-                <input type="checkbox" name="enviar_lembrete">
-                <span></span>
-            </label>
-
-            <span class="texto-switch-agendamento">
-                Enviar confirmação e lembrete de consulta automático
-            </span>
-        </div>
-
+        <!-- =========================
+             RODAPÉ
+        ========================== -->
         <div class="rodape-agendamento">
-            <input type="text" name="rotulo" placeholder="Selecione um rótulo">
+
+            <div></div>
 
             <div class="botoes">
-                <button type="button" class="btn-fechar" onclick="fecharModalAgendamento()">FECHAR</button>
-                <button type="submit" class="btn-marcar">MARCAR</button>
+                <button
+                    type="button"
+                    class="btn-fechar"
+                    onclick="fecharModalAgendamento()"
+                >
+                    FECHAR
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-marcar"
+                >
+                    MARCAR
+                </button>
             </div>
+
         </div>
 
     </form>
+
 </div>
 
 <script>

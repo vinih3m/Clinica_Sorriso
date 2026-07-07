@@ -20,7 +20,7 @@ from django.views.decorators.cache import never_cache
 from django.urls import reverse_lazy
 from .forms import CriarUsuarioForm, UsuarioContaForm, ProfileForm, FotoProfileForm , DentistaProfileForm, DadosDaClinicaForm, ProdutoEstoqueForm, BaseProdutoEstoqueFormSet
 from .models import Profile, DentistaProfile, DadosDaClinica, ProdutoEstoque, RetiradaEstoque
-from .forms import AgendamentoForm
+from .forms import AgendamentoForm, PacienteForm
 from django.template.loader import render_to_string
 from django.contrib.auth.views import LoginView
 from django.conf import settings
@@ -645,10 +645,22 @@ def criar_agendamento(request):
             agendamento.paciente = paciente
             agendamento.save()
 
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({
+                    "ok": True,
+                    "mensagem": "Agendamento criado com sucesso."
+                })
+
             return redirect("agenda")
 
         else:
             print("FORM INVALIDO:", form.errors)
+
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({
+                    "ok": False,
+                    "erros": form.errors
+                }, status=400)
 
     else:
         initial = {
@@ -907,7 +919,70 @@ def detalhes_agendamento(request, id):
         }
     )
 
+from django.http import JsonResponse
 
+@login_required
+def buscar_pacientes_agenda(request):
+    termo = request.GET.get("q", "").strip()
+
+    pacientes = []
+
+    if termo:
+        pacientes_qs = (
+            Paciente.objects
+            .filter(nome__icontains=termo)
+            .order_by("nome")[:10]
+        )
+
+        pacientes = [
+            {
+                "id": paciente.id,
+                "nome": paciente.nome,
+                "cpf": getattr(paciente, "cpf", "") or "",
+                "celular": getattr(paciente, "celular", "") or "",
+            }
+            for paciente in pacientes_qs
+        ]
+
+    return JsonResponse({
+        "pacientes": pacientes
+    })
+
+@login_required
+def criar_paciente(request):
+    origem = request.GET.get("origem") or request.POST.get("origem")
+
+    if request.method == "POST":
+        form = PacienteForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+
+            if origem == "agenda":
+                return redirect("agenda")
+
+            return redirect("agenda")
+
+        else:
+            print("FORM PACIENTE INVALIDO:", form.errors)
+
+    else:
+        nome_inicial = request.GET.get("nome", "").strip()
+
+        form = PacienteForm(
+            initial={
+                "nome": nome_inicial
+            }
+        )
+
+    return render(
+        request,
+        "Clinica_Sorriso/pacientes/criar_paciente.html",
+        {
+            "form": form,
+            "origem": origem,
+        }
+    )
 
 from django.http import HttpResponse
 def exportar_retornos(request):
@@ -1915,3 +1990,111 @@ def editar_receita(request, receita_id):
             return JsonResponse({'sucesso': False, 'erro': str(e)})
 
     return JsonResponse({'sucesso': False, 'erro': 'Método inválido'})
+
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+
+@login_required
+def horarios_livres_agenda(request):
+    data_str = request.GET.get("data")
+    profissional_id = request.GET.get("profissional")
+    duracao = int(request.GET.get("duracao") or 30)
+
+    if not data_str or not profissional_id:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Data e profissional são obrigatórios."
+        }, status=400)
+
+    data_consulta = datetime.strptime(data_str, "%Y-%m-%d").date()
+
+    inicio_expediente = datetime.combine(
+        data_consulta,
+        datetime.strptime("08:00", "%H:%M").time()
+    )
+
+    fim_expediente = datetime.combine(
+        data_consulta,
+        datetime.strptime("18:00", "%H:%M").time()
+    )
+
+    agendamentos = (
+        Agendamento.objects
+        .filter(
+            data=data_consulta,
+            profissional_id=profissional_id
+        )
+        .order_by("hora_inicio")
+    )
+
+    ocupados = []
+
+    for ag in agendamentos:
+        inicio = datetime.combine(data_consulta, ag.hora_inicio)
+        fim = datetime.combine(data_consulta, ag.hora_fim)
+
+        ocupados.append((inicio, fim))
+
+    horarios_livres = []
+    atual = inicio_expediente
+
+    while atual + timedelta(minutes=duracao) <= fim_expediente:
+        fim_teste = atual + timedelta(minutes=duracao)
+
+        conflito = False
+
+        for inicio_ocupado, fim_ocupado in ocupados:
+            if atual < fim_ocupado and fim_teste > inicio_ocupado:
+                conflito = True
+                break
+
+        if not conflito:
+            horarios_livres.append({
+                "inicio": atual.strftime("%H:%M"),
+                "fim": fim_teste.strftime("%H:%M"),
+                "texto": f"{atual.strftime('%H:%M')} às {fim_teste.strftime('%H:%M')}"
+            })
+
+        atual += timedelta(minutes=15)
+
+    return JsonResponse({
+        "ok": True,
+        "horarios": horarios_livres
+    })
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Etiqueta
+
+@login_required
+@require_POST
+def criar_etiqueta_agenda(request):
+    nome = request.POST.get("nome", "").strip()
+    cor = request.POST.get("cor", "#28a745").strip()
+
+    if not nome:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Informe o nome do rótulo."
+        }, status=400)
+
+    etiqueta, criada = Etiqueta.objects.get_or_create(
+        nome=nome,
+        defaults={
+            "cor": cor or "#28a745"
+        }
+    )
+
+    if not criada:
+        etiqueta.cor = cor or etiqueta.cor
+        etiqueta.save()
+
+    return JsonResponse({
+        "ok": True,
+        "etiqueta": {
+            "id": etiqueta.id,
+            "nome": etiqueta.nome,
+            "cor": etiqueta.cor,
+        }
+    })
+

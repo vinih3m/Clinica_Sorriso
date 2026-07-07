@@ -68,6 +68,10 @@ urlpatterns = [
     path("agenda/parcial/", views.agenda_parcial, name="agenda_parcial"),
     path("exportar-retornos/", views.exportar_retornos, name="exportar_retornos"),
     path("agenda/detalhes/<int:id>/",views.detalhes_agendamento,name="detalhes_agendamento"),
+    path("agenda/buscar-pacientes/",views.buscar_pacientes_agenda,name="buscar_pacientes_agenda"),
+    path("pacientes/novo/", views.criar_paciente, name="criar_paciente"),
+    path("agenda/horarios-livres/",views.horarios_livres_agenda,name="horarios_livres_agenda"),
+    path("agenda/etiquetas/criar/", views.criar_etiqueta_agenda, name="criar_etiqueta_agenda"),
 
     # Financeiro
     path("financeiro/", views.fluxo_caixa, name="financeiro"),
