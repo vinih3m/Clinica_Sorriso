@@ -3607,6 +3607,1451 @@
     align-items: start;
 }
 
+/* ==================================================
+   SELECT CUSTOM COMPROMISSO - SIMPLES DENTAL STYLE
+================================================== */
+
+.campo-select-compromisso {
+    position: relative;
+    width: 100%;
+}
+
+.campo-select-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 5;
+    line-height: 14px;
+}
+
+.btn-select-compromisso {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-select-compromisso:focus,
+.btn-select-compromisso.ativo {
+    border-color: #2196f3;
+}
+
+.menu-select-compromisso {
+    display: none;
+    position: absolute;
+    top: 54px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 80000;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
+.menu-select-compromisso button {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.menu-select-compromisso button:hover {
+    background: #f2f2f2;
+    color: #1e88e5;
+}
+
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
+}
+
+.linha-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.area-repeticao-compromisso {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 28px;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 28px;
+    margin-bottom: 30px;
+    overflow: visible;
+    background: #fff;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 22px;
+    background: #fff;
+    overflow: visible;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ==================================================
+   SELECT CUSTOM COMPROMISSO - CORRIGIDO
+================================================== */
+
+.campo-select-compromisso {
+    position: relative;
+    width: 100%;
+}
+
+.campo-select-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 5;
+    line-height: 14px;
+    pointer-events: none;
+}
+
+.btn-select-compromisso {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.btn-select-compromisso.ativo,
+.btn-select-compromisso:focus {
+    border-color: #2196f3;
+}
+
+.menu-select-compromisso {
+    display: none;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 999999;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
+.menu-select-compromisso button {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.menu-select-compromisso button:hover,
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
+}
+
+
+/* para a caixa não cortar os menus */
+.box-configuracoes-compromisso,
+.conteudo-configuracoes-compromisso,
+.grid-configuracoes-compromisso {
+    overflow: visible !important;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
+.area-repeticao-compromisso {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 28px;
+}
+
+.area-repeticao-compromisso.aberta {
+    display: block;
+}
+
+.linha-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+/* ==================================================
+   MENUS CUSTOM COMPROMISSO - ROLÁVEL
+================================================== */
+
+.menu-select-compromisso {
+    display: none;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 999999 !important;
+    max-height: 260px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
+.menu-select-compromisso button {
+    width: 100%;
+    min-height: 52px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.menu-select-compromisso button:hover,
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
+}
+
+.menu-select-compromisso::-webkit-scrollbar {
+    width: 8px;
+}
+
+.menu-select-compromisso::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.menu-select-compromisso::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 8px;
+}
+
+/* ==================================================
+   ALERTA PERSONALIZADO
+================================================== */
+
+.linha-alerta-personalizado-compromisso {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.linha-alerta-personalizado-compromisso .campo-select-compromisso {
+    width: 100%;
+}
+
+#alertaQuantidade {
+    height: 52px;
+}
+
+/* ==================================================
+   AJUSTE DO MENU RECEBER ALERTA
+================================================== */
+
+#menuAlertaCompromisso {
+    max-height: 360px !important;
+    overflow-y: auto !important;
+}
+
+#menuAlertaCompromisso button {
+    min-height: 46px !important;
+    height: 46px !important;
+}
+
+#menuUnidadeAlertaCompromisso {
+    max-height: 180px !important;
+    overflow-y: auto !important;
+}
+
+.menu-select-compromisso {
+    z-index: 999999 !important;
+}
+
+/* ==================================================
+   SELECT CUSTOM COMPROMISSO - POSIÇÃO ESTÁVEL
+================================================== */
+
+.campo-select-compromisso {
+    position: relative !important;
+    width: 100%;
+    overflow: visible !important;
+}
+
+.campo-select-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 5;
+    line-height: 14px;
+    pointer-events: none;
+}
+
+.btn-select-compromisso {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.btn-select-compromisso.ativo,
+.btn-select-compromisso:focus {
+    border-color: #2196f3;
+}
+
+.menu-select-compromisso {
+    display: none;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: calc(100% + 4px) !important;
+    bottom: auto !important;
+    width: 100% !important;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    z-index: 999999 !important;
+    max-height: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.menu-select-compromisso.abrir-cima {
+    top: auto !important;
+    bottom: calc(100% + 4px) !important;
+}
+
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
+.menu-select-compromisso button {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.menu-select-compromisso button:hover,
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
+}
+
+#menuAlertaCompromisso {
+    max-height: 320px;
+}
+
+#menuUnidadeAlertaCompromisso {
+    max-height: 180px;
+}
+
+.box-configuracoes-compromisso,
+.conteudo-configuracoes-compromisso,
+.grid-configuracoes-compromisso {
+    overflow: visible !important;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px 18px !important;
+    align-items: start !important;
+}
+
+.grid-configuracoes-compromisso .campo-select-compromisso:nth-child(3) {
+    grid-column: 1 / 2;
+}
+
+.linha-alerta-personalizado-compromisso {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+/* ==================================================
+   CONSULTA - RETORNO CUSTOMIZADO
+================================================== */
+
+.linha-retorno-agendamento {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.linha-retorno-agendamento.com-extra {
+    grid-template-columns: 1fr 1fr;
+}
+
+.linha-retorno-agendamento .campo-select-compromisso {
+    width: 100%;
+}
+
+.campo-motivo-retorno {
+    margin-top: 18px;
+}
+
+.campo-motivo-retorno textarea {
+    width: 100%;
+    min-height: 90px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 14px;
+    font-size: 16px;
+    resize: none;
+    box-sizing: border-box;
+}
+
+/* ==================================================
+   CONSULTA - CORREÇÃO PACIENTE / PROFISSIONAL
+================================================== */
+
+.campo-paciente-agendamento {
+    position: relative !important;
+    margin-bottom: 42px !important;
+}
+
+.campo-paciente-agendamento .paciente-autocomplete {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.campo-paciente-agendamento .link-cadastrar {
+    position: absolute !important;
+    top: 66px !important;
+    right: 0 !important;
+    left: auto !important;
+
+    width: auto !important;
+    max-width: max-content !important;
+
+    display: inline-block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    font-size: 14px !important;
+    line-height: 18px !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+
+    z-index: 4 !important;
+    pointer-events: auto !important;
+}
+
+.campo-profissional-consulta {
+    margin-bottom: 24px !important;
+    z-index: 8 !important;
+}
+
+.campo-profissional-consulta .menu-select-compromisso {
+    z-index: 999999 !important;
+}
+
+.linha-3 {
+    margin-top: 0 !important;
+    gap: 20px !important;
+}
+
+.bloco-horarios-livres {
+    margin-top: 14px !important;
+    margin-bottom: 20px !important;
+}
+
+/* ==================================================
+   CONSULTA - ESPAÇAMENTO ENTRE CAMPOS
+================================================== */
+
+#conteudoConsultaAgendamento .campo-select-compromisso {
+    margin-bottom: 22px;
+}
+
+#conteudoConsultaAgendamento .campo-select-compromisso + .linha-3 {
+    margin-top: 4px !important;
+}
+
+#conteudoConsultaAgendamento .linha-3 .campo {
+    margin-top: 0 !important;
+}
+
+
+/* ==================================================
+   CONSULTA - CORREÇÃO CAMPO PACIENTE
+================================================== */
+
+.campo-paciente-agendamento {
+    position: relative !important;
+    margin-top: 18px !important;
+    margin-bottom: 42px !important;
+    padding-top: 0 !important;
+}
+
+.campo-paciente-agendamento > label {
+    position: absolute !important;
+    top: -9px !important;
+    left: 14px !important;
+    background: #fff !important;
+    padding: 0 6px !important;
+    font-size: 13px !important;
+    color: #666 !important;
+    z-index: 30 !important;
+    line-height: 16px !important;
+}
+
+.campo-paciente-agendamento input {
+    height: 52px !important;
+    padding: 0 16px !important;
+    font-size: 16px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+}
+
+.campo-paciente-agendamento input:focus {
+    border-color: #2196f3 !important;
+    outline: none !important;
+}
+
+.paciente-autocomplete {
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+/* ==================================================
+   LISTA DE PACIENTES - AJUSTE VISUAL
+================================================== */
+
+.lista-pacientes-agendamento {
+    display: none;
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    left: 0 !important;
+    width: 280px !important;
+    background: #1f1f1f !important;
+    border-radius: 6px !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35) !important;
+    z-index: 999999 !important;
+    padding: 10px 0 !important;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+}
+
+.lista-pacientes-agendamento.aberta {
+    display: block !important;
+}
+
+.item-paciente-agendamento {
+    width: 100% !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #fff !important;
+    padding: 11px 16px !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+}
+
+.item-paciente-agendamento:hover {
+    background: #333 !important;
+}
+
+.nome-item-paciente {
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+.info-item-paciente {
+    color: #ccc !important;
+    font-size: 12px !important;
+}
+
+/* ==================================================
+   COMPROMISSO NA GRADE DA AGENDA
+================================================== */
+
+.compromisso-agenda {
+    background: #fff3cd !important;
+    border-left: 4px solid #ff9800 !important;
+    color: #333 !important;
+    padding: 6px 8px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.15) !important;
+    z-index: 20 !important;
+}
+
+.compromisso-agenda strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+}
+
+.compromisso-agenda small {
+    display: block;
+    font-size: 11px;
+    color: #555;
+    margin-top: 3px;
+}
+
+/* ==================================================
+   COMPROMISSO NA GRADE DA AGENDA
+================================================== */
+
+.agendamento.compromisso-agenda {
+    background: #fff2c6 !important;
+    border-left: 4px solid #ff9800 !important;
+    color: #333 !important;
+
+    padding: 6px 8px !important;
+    border-radius: 5px !important;
+
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+
+    box-shadow: 0 1px 4px rgba(0,0,0,.14) !important;
+    cursor: pointer !important;
+
+    overflow: hidden !important;
+    z-index: 18 !important;
+}
+
+.agendamento.compromisso-agenda strong {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #222 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.agendamento.compromisso-agenda small {
+    display: block !important;
+    margin-top: 3px !important;
+
+    font-size: 11px !important;
+    color: #555 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ==================================================
+   MODAL DETALHES DO COMPROMISSO
+================================================== */
+
+.overlay-detalhes-compromisso {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.20);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-detalhes-compromisso {
+    width: 430px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.28);
+    overflow: hidden;
+    animation: aparecerDetalheCompromisso .12s ease-out;
+}
+
+@keyframes aparecerDetalheCompromisso {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.topo-detalhes-compromisso {
+    background: #80a9e6;
+    color: #fff;
+    padding: 22px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.topo-detalhes-compromisso h3 {
+    margin: 0 0 14px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.topo-detalhes-compromisso p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.acoes-detalhes-compromisso {
+    display: flex;
+    gap: 8px;
+}
+
+.acoes-detalhes-compromisso button {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.20);
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 38px;
+    text-align: center;
+}
+
+.acoes-detalhes-compromisso button:hover {
+    background: rgba(255,255,255,.32);
+}
+
+.btn-editar-compromisso {
+    font-size: 22px !important;
+}
+
+.btn-fechar-compromisso {
+    font-size: 34px !important;
+    font-weight: 300;
+}
+
+.corpo-detalhes-compromisso {
+    background: #fff;
+    padding: 20px 26px 22px;
+}
+
+.linha-detalhe-compromisso {
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.linha-detalhe-compromisso:last-child {
+    margin-bottom: 0;
+}
+
+.icone-detalhe-compromisso {
+    font-size: 24px;
+    line-height: 30px;
+    opacity: .75;
+}
+
+.linha-detalhe-compromisso strong {
+    display: block;
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.linha-detalhe-compromisso p {
+    margin: 0;
+    color: #222;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+/* ==================================================
+   MODAL EDITAR COMPROMISSO
+================================================== */
+
+.overlay-editar-compromisso {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-editar-compromisso {
+    width: 760px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.30);
+    padding: 24px 28px 16px;
+}
+
+.campo-editar-compromisso {
+    position: relative;
+    margin-bottom: 26px;
+}
+
+.campo-editar-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 2;
+}
+
+.campo-editar-compromisso input,
+.campo-editar-compromisso textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 16px;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.campo-editar-compromisso input {
+    height: 52px;
+}
+
+.campo-editar-compromisso textarea {
+    height: 86px;
+    padding-top: 18px;
+    resize: vertical;
+}
+
+.campo-editar-compromisso small {
+    display: block;
+    text-align: right;
+    color: #777;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.separador-editar-compromisso {
+    height: 1px;
+    background: #eee;
+    margin: 10px 0 20px;
+}
+
+.titulo-secao-editar-compromisso {
+    color: #1e88e5;
+    font-size: 17px;
+    margin: 0 0 18px;
+}
+
+.check-editar-compromisso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 16px;
+    color: #222;
+}
+
+.check-editar-compromisso input {
+    width: 20px;
+    height: 20px;
+}
+
+.grid-editar-data-hora {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 22px 18px;
+}
+
+.rodape-editar-compromisso {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 22px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.rodape-editar-compromisso button {
+    border: 0;
+    background: transparent;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.btn-fechar-editar-compromisso {
+    color: #222;
+}
+
+.btn-excluir-editar-compromisso {
+    color: #e53935;
+}
+
+.btn-salvar-editar-compromisso {
+    background: #4caf50 !important;
+    color: #fff !important;
+    padding: 14px 28px !important;
+    border-radius: 4px !important;
+}
+
+.area-editar-repeticao-compromisso {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 18px;
+    margin-bottom: 24px;
+}
+
+#campoEditarDataFimRepeticaoCompromisso {
+    display: none;
+    grid-column: 1 / -1;
+}
+
+.box-editar-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin: 18px 0 26px;
+    overflow: visible;
+}
+
+.topo-editar-configuracoes-compromisso {
+    background: #f5f5f5;
+    color: #1e88e5;
+    padding: 18px 22px;
+    font-size: 16px;
+}
+
+.grid-editar-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    padding: 22px;
+    overflow: visible;
+}
+
+.linha-editar-alerta-personalizado {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+/* ==================================================
+   CORES POR STATUS DA CONSULTA
+================================================== */
+
+.agendamento.status-agendada,
+.modal-detalhes.status-agendada .topo-detalhes-consulta {
+    background: #58aee8 !important;
+    border-left-color: #1976d2 !important;
+}
+
+.agendamento.status-confirmada,
+.modal-detalhes.status-confirmada .topo-detalhes-consulta {
+    background: #43a047 !important;
+    border-left-color: #2e7d32 !important;
+}
+
+.agendamento.status-em_atendimento,
+.modal-detalhes.status-em_atendimento .topo-detalhes-consulta {
+    background: #9c27b0 !important;
+    border-left-color: #6a1b9a !important;
+}
+
+.agendamento.status-atendida,
+.modal-detalhes.status-atendida .topo-detalhes-consulta {
+    background: #009688 !important;
+    border-left-color: #00695c !important;
+}
+
+.agendamento.status-falta,
+.modal-detalhes.status-falta .topo-detalhes-consulta {
+    background: #ff9800 !important;
+    border-left-color: #ef6c00 !important;
+}
+
+.agendamento.status-cancelada_paciente,
+.modal-detalhes.status-cancelada_paciente .topo-detalhes-consulta {
+    background: #e53935 !important;
+    border-left-color: #b71c1c !important;
+}
+
+.agendamento.status-cancelada_profissional,
+.modal-detalhes.status-cancelada_profissional .topo-detalhes-consulta {
+    background: #795548 !important;
+    border-left-color: #4e342e !important;
+}
+
+/* texto dentro do card */
+.agendamento.status-agendada,
+.agendamento.status-confirmada,
+.agendamento.status-em_atendimento,
+.agendamento.status-atendida,
+.agendamento.status-falta,
+.agendamento.status-cancelada_paciente,
+.agendamento.status-cancelada_profissional {
+    color: #fff !important;
+}
+
+.agendamento.status-agendada strong,
+.agendamento.status-confirmada strong,
+.agendamento.status-em_atendimento strong,
+.agendamento.status-atendida strong,
+.agendamento.status-falta strong,
+.agendamento.status-cancelada_paciente strong,
+.agendamento.status-cancelada_profissional strong,
+.agendamento.status-agendada small,
+.agendamento.status-confirmada small,
+.agendamento.status-em_atendimento small,
+.agendamento.status-atendida small,
+.agendamento.status-falta small,
+.agendamento.status-cancelada_paciente small,
+.agendamento.status-cancelada_profissional small {
+    color: #fff !important;
+}
+
+/* ==================================================
+   DETALHES CONSULTA - STATUS CUSTOM
+================================================== */
+
+.campo-status-detalhe-consulta {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.btn-status-detalhe {
+    width: 100%;
+    height: 54px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 34px 1fr 24px;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    font-size: 17px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-status-detalhe-consulta {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    border-radius: 4px;
+    overflow-y: auto;
+    max-height: 315px;
+    z-index: 999999;
+}
+
+.menu-status-detalhe-consulta.aberto {
+    display: block;
+}
+
+.menu-status-detalhe-consulta button {
+    width: 100%;
+    min-height: 52px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-status-detalhe-consulta button:hover {
+    background: #f0f0f0;
+}
+
+.bolinha-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Cores do botão de status */
+.btn-status-detalhe.status-pendente,
+.btn-status-detalhe.status-agendada {
+    color: #1e88e5;
+}
+
+.btn-status-detalhe.status-confirmado,
+.btn-status-detalhe.status-confirmada {
+    color: #2e7d32;
+}
+
+.btn-status-detalhe.status-paciente_aguardando {
+    color: #fb8c00;
+}
+
+.btn-status-detalhe.status-em_atendimento {
+    color: #8e24aa;
+}
+
+.btn-status-detalhe.status-atendido,
+.btn-status-detalhe.status-atendida {
+    color: #00897b;
+}
+
+.btn-status-detalhe.status-falta {
+    color: #c2185b;
+}
+
+.btn-status-detalhe.status-cancelado,
+.btn-status-detalhe.status-cancelada_profissional {
+    color: #5d4037;
+}
+
+.btn-status-detalhe.status-cancelada_paciente {
+    color: #d32f2f;
+}
+
+/* Cores das bolinhas */
+.bolinha-status.status-agendada {
+    background: #1e88e5;
+}
+
+.bolinha-status.status-confirmada {
+    background: #2e7d32;
+}
+
+.bolinha-status.status-paciente-aguardando {
+    background: #fb8c00;
+}
+
+.bolinha-status.status-em-atendimento {
+    background: #8e24aa;
+}
+
+.bolinha-status.status-atendida {
+    background: #00897b;
+}
+
+.bolinha-status.status-falta {
+    background: #c2185b;
+}
+
+.bolinha-status.status-cancelada-paciente {
+    background: #d32f2f;
+}
+
+.bolinha-status.status-cancelada-profissional {
+    background: #5d4037;
+}
+
+/* Cores do card na agenda */
+.agendamento.status-agendada,
+.agendamento.status-pendente {
+    background: #58aee8 !important;
+    border-left-color: #1976d2 !important;
+}
+
+.agendamento.status-confirmada,
+.agendamento.status-confirmado {
+    background: #43a047 !important;
+    border-left-color: #2e7d32 !important;
+}
+
+.agendamento.status-paciente_aguardando {
+    background: #fb8c00 !important;
+    border-left-color: #ef6c00 !important;
+}
+
+.agendamento.status-em_atendimento {
+    background: #9c27b0 !important;
+    border-left-color: #6a1b9a !important;
+}
+
+.agendamento.status-atendida,
+.agendamento.status-atendido {
+    background: #009688 !important;
+    border-left-color: #00695c !important;
+}
+
+.agendamento.status-falta {
+    background: #c2185b !important;
+    border-left-color: #880e4f !important;
+}
+
+.agendamento.status-cancelada_paciente {
+    background: #e53935 !important;
+    border-left-color: #b71c1c !important;
+}
+
+.agendamento.status-cancelada_profissional,
+.agendamento.status-cancelado {
+    background: #795548 !important;
+    border-left-color: #4e342e !important;
+}
+
+.agendamento.status-agendada,
+.agendamento.status-pendente,
+.agendamento.status-confirmada,
+.agendamento.status-confirmado,
+.agendamento.status-paciente_aguardando,
+.agendamento.status-em_atendimento,
+.agendamento.status-atendida,
+.agendamento.status-atendido,
+.agendamento.status-falta,
+.agendamento.status-cancelada_paciente,
+.agendamento.status-cancelada_profissional,
+.agendamento.status-cancelado {
+    color: #fff !important;
+}
+
+.agendamento.status-agendada strong,
+.agendamento.status-pendente strong,
+.agendamento.status-confirmada strong,
+.agendamento.status-confirmado strong,
+.agendamento.status-paciente_aguardando strong,
+.agendamento.status-em_atendimento strong,
+.agendamento.status-atendida strong,
+.agendamento.status-atendido strong,
+.agendamento.status-falta strong,
+.agendamento.status-cancelada_paciente strong,
+.agendamento.status-cancelada_profissional strong,
+.agendamento.status-cancelado strong,
+.agendamento.status-agendada small,
+.agendamento.status-pendente small,
+.agendamento.status-confirmada small,
+.agendamento.status-confirmado small,
+.agendamento.status-paciente_aguardando small,
+.agendamento.status-em_atendimento small,
+.agendamento.status-atendida small,
+.agendamento.status-atendido small,
+.agendamento.status-falta small,
+.agendamento.status-cancelada_paciente small,
+.agendamento.status-cancelada_profissional small,
+.agendamento.status-cancelado small {
+    color: #fff !important;
+}
+
+/* ==================================================
+   CORREÇÃO MODAL DETALHES CONSULTA
+================================================== */
+
+#overlay-detalhes {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#overlay-detalhes .modal-agendamento.modal-detalhes {
+    width: auto !important;
+    max-width: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+}
+
+#modal-detalhes-corpo {
+    width: auto !important;
+    background: transparent !important;
+}
+
+.detalhes-card {
+    width: 570px !important;
+    max-width: calc(100vw - 40px) !important;
+    background: #fff !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.35) !important;
+}
+
+/* ==================================================
+   WHATSAPP NO DETALHE DA CONSULTA
+================================================== */
+
+.whatsapp-box {
+    display: grid !important;
+    grid-template-columns: 1fr 64px !important;
+    width: 100% !important;
+    height: 48px !important;
+    margin: 0 0 24px 0 !important;
+    background: #d9f4d8 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+}
+
+.whatsapp-box .btn-whatsapp-confirmar {
+    width: 100% !important;
+    height: 48px !important;
+    border: 0 !important;
+    background: #d9f4d8 !important;
+    color: #1b7f2a !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    padding: 0 14px !important;
+    white-space: nowrap !important;
+}
+
+.whatsapp-box .btn-whatsapp-confirmar i {
+    font-size: 20px !important;
+    color: #1b7f2a !important;
+    margin: 0 !important;
+}
+
+.whatsapp-box .btn-whatsapp-confirmar span {
+    display: inline !important;
+    color: #1b7f2a !important;
+    line-height: 48px !important;
+    margin: 0 !important;
+}
+
+.whatsapp-box .btn-whatsapp-editar {
+    width: 64px !important;
+    height: 48px !important;
+    border: 0 !important;
+    border-left: 1px solid rgba(0,0,0,.12) !important;
+    background: #d9f4d8 !important;
+    color: #1b7f2a !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 18px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+}
+
+.whatsapp-box .btn-whatsapp-editar i {
+    color: #1b7f2a !important;
+    font-size: 18px !important;
+    margin: 0 !important;
+}
+
 </style>
 
 
@@ -3760,6 +5205,53 @@
                 </strong>
 
                 <small>{{ ag.hora_inicio|time:"H:i" }} - {{ ag.hora_fim|time:"H:i" }}</small>
+            </div>
+        {% endfor %}
+
+        {% for compromisso in compromissos %}
+            <div class="agendamento compromisso-agenda"
+                data-id="{{ compromisso.id }}"
+                data-titulo="{{ compromisso.titulo }}"
+                data-descricao="{{ compromisso.descricao|default:'' }}"
+                data-profissional="{{ compromisso.profissional }}"
+                data-profissional-id="{{ compromisso.profissional.id }}"
+
+                data-data="{{ compromisso.data_inicio|date:'d/m/Y' }}"
+                data-data-inicio="{{ compromisso.data_inicio|date:'Y-m-d' }}"
+                data-data-fim="{{ compromisso.data_fim|date:'Y-m-d' }}"
+                data-hora-inicio="{{ compromisso.hora_inicio|time:'H:i' }}"
+                data-hora-fim="{{ compromisso.hora_fim|time:'H:i' }}"
+                data-dia-inteiro="{{ compromisso.dia_inteiro|yesno:'true,false' }}"
+
+                data-repetir="{{ compromisso.repetir|yesno:'true,false' }}"
+                data-tipo-repeticao="{{ compromisso.tipo_repeticao|default:'todos_os_dias' }}"
+                data-terminar-repeticao="{{ compromisso.terminar_repeticao|default:'nunca' }}"
+                data-data-fim-repeticao="{{ compromisso.data_fim_repeticao|date:'Y-m-d' }}"
+
+                data-disponibilidade="{{ compromisso.disponibilidade|default:'ocupado' }}"
+                data-privacidade="{{ compromisso.privacidade|default:'privado' }}"
+                data-alerta="{{ compromisso.alerta|default:'sem_alerta' }}"
+                data-alerta-quantidade="{{ compromisso.alerta_quantidade|default:'1' }}"
+                data-alerta-unidade="{{ compromisso.alerta_unidade|default:'horas' }}"
+
+                style="grid-column: {{ compromisso.grid_col }}; grid-row: {{ compromisso.grid_row }} / span {{ compromisso.grid_span }};"
+                onclick="event.stopPropagation(); abrirDetalhesCompromisso(this);">
+
+                <strong>
+                    {{ compromisso.titulo }}
+
+                    {% if not profissional_id and compromisso.profissional %}
+                        - Dr(a). {{ compromisso.profissional }}
+                    {% endif %}
+                </strong>
+
+                {% if compromisso.dia_inteiro %}
+                    <small>Dia inteiro</small>
+                {% else %}
+                    <small>
+                        {{ compromisso.hora_inicio|time:"H:i" }} - {{ compromisso.hora_fim|time:"H:i" }}
+                    </small>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -3948,6 +5440,288 @@
     </div>
 </div>
 
+</div>
+
+<div class="overlay-detalhes-compromisso" id="overlayDetalhesCompromisso" onclick="fecharDetalhesCompromisso()">
+
+    <!-- CAMPOS USADOS PARA EDITAR O COMPROMISSO -->
+    <input type="hidden" id="detalheCompromissoId">
+    <input type="hidden" id="detalheCompromissoTituloHidden">
+    <input type="hidden" id="detalheCompromissoProfissionalHidden">
+    <input type="hidden" id="detalheCompromissoProfissionalNomeHidden">
+    <input type="hidden" id="detalheCompromissoDataInicioHidden">
+    <input type="hidden" id="detalheCompromissoHoraInicioHidden">
+    <input type="hidden" id="detalheCompromissoDataFimHidden">
+    <input type="hidden" id="detalheCompromissoHoraFimHidden">
+    <input type="hidden" id="detalheCompromissoDescricaoHidden">
+    <input type="hidden" id="detalheCompromissoDiaInteiroHidden">
+
+    <input type="hidden" id="detalheCompromissoRepetirHidden">
+    <input type="hidden" id="detalheCompromissoTipoRepeticaoHidden">
+    <input type="hidden" id="detalheCompromissoTerminarRepeticaoHidden">
+    <input type="hidden" id="detalheCompromissoDataFimRepeticaoHidden">
+
+    <input type="hidden" id="detalheCompromissoDisponibilidadeHidden">
+    <input type="hidden" id="detalheCompromissoPrivacidadeHidden">
+    <input type="hidden" id="detalheCompromissoAlertaHidden">
+    <input type="hidden" id="detalheCompromissoAlertaQuantidadeHidden">
+    <input type="hidden" id="detalheCompromissoAlertaUnidadeHidden">
+
+    <div class="card-detalhes-compromisso" onclick="event.stopPropagation();">
+
+        <div class="topo-detalhes-compromisso">
+            <div>
+                <h3 id="detalheCompromissoTitulo">Compromisso</h3>
+                <p id="detalheCompromissoDataHora">Data e horário</p>
+            </div>
+
+            <div class="acoes-detalhes-compromisso">
+                <button 
+                    type="button" 
+                    class="btn-editar-compromisso" 
+                    onclick="abrirModalEditarCompromisso()" 
+                    title="Editar"
+                >
+                    ✎
+                </button>
+
+                <button 
+                    type="button" 
+                    class="btn-fechar-compromisso" 
+                    onclick="fecharDetalhesCompromisso()" 
+                    title="Fechar"
+                >
+                    ×
+                </button>
+            </div>
+        </div>
+
+        <div class="corpo-detalhes-compromisso">
+
+            <div class="linha-detalhe-compromisso">
+                <span class="icone-detalhe-compromisso">📅</span>
+                <div>
+                    <strong>Agenda</strong>
+                    <p id="detalheCompromissoProfissional">Profissional</p>
+                </div>
+            </div>
+
+            <div class="linha-detalhe-compromisso" id="linhaDescricaoCompromisso">
+                <span class="icone-detalhe-compromisso">📝</span>
+                <div>
+                    <strong>Descrição</strong>
+                    <p id="detalheCompromissoDescricao"></p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="overlay-editar-compromisso" id="overlayEditarCompromisso">
+    <div class="modal-editar-compromisso" onclick="event.stopPropagation();">
+
+        <form id="formEditarCompromisso" method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" name="compromisso_id" id="editarCompromissoId">
+
+            <div class="campo-editar-compromisso">
+                <label>Título do compromisso*</label>
+                <input type="text" name="titulo" id="editarTituloCompromisso" maxlength="255">
+                <small id="contadorEditarTituloCompromisso">0 / 255</small>
+            </div>
+
+            <div class="campo-editar-compromisso">
+                <label>Descrição</label>
+                <textarea name="descricao" id="editarDescricaoCompromisso" maxlength="500"></textarea>
+                <small id="contadorEditarDescricaoCompromisso">0 / 500</small>
+            </div>
+
+            <div class="campo-editar-compromisso campo-select-compromisso">
+                <label>Agenda de*</label>
+
+                <button
+                    type="button"
+                    class="btn-select-compromisso"
+                    onclick="window.abrirSelectCompromisso(event, 'menuEditarProfissionalCompromisso')"
+                >
+                    <span id="textoEditarProfissionalCompromisso">---------</span>
+                    <span>▾</span>
+                </button>
+
+                <input type="hidden" name="profissional" id="editarProfissionalCompromisso">
+
+                <div class="menu-select-compromisso" id="menuEditarProfissionalCompromisso">
+                    {% for profissional in profissionais %}
+                        <button
+                            type="button"
+                            onclick="selecionarEditarProfissionalCompromisso(event, '{{ profissional.id }}', '{{ profissional.nome }}')"
+                        >
+                            {{ profissional.nome }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="separador-editar-compromisso"></div>
+
+            <h3 class="titulo-secao-editar-compromisso">Data e hora</h3>
+
+            <label class="check-editar-compromisso">
+                <input type="checkbox" name="repetir" id="editarRepetirCompromisso">
+                <span>Repetir compromisso</span>
+            </label>
+
+            <div class="area-editar-repeticao-compromisso" id="areaEditarRepeticaoCompromisso">
+
+                <div class="campo-editar-compromisso campo-select-compromisso">
+                    <label>Repetir</label>
+
+                    <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarTipoRepeticaoCompromisso')">
+                        <span id="textoEditarTipoRepeticaoCompromisso">Todos os dias</span>
+                        <span>▾</span>
+                    </button>
+
+                    <input type="hidden" name="tipo_repeticao" id="editarTipoRepeticaoCompromisso" value="todos_os_dias">
+
+                    <div class="menu-select-compromisso" id="menuEditarTipoRepeticaoCompromisso">
+                        <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarTipoRepeticaoCompromisso', 'textoEditarTipoRepeticaoCompromisso', 'todos_os_dias', 'Todos os dias', 'menuEditarTipoRepeticaoCompromisso')">Todos os dias</button>
+                        <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarTipoRepeticaoCompromisso', 'textoEditarTipoRepeticaoCompromisso', 'semanalmente', 'Semanalmente', 'menuEditarTipoRepeticaoCompromisso')">Semanalmente</button>
+                        <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarTipoRepeticaoCompromisso', 'textoEditarTipoRepeticaoCompromisso', 'quinzenalmente', 'Quinzenalmente', 'menuEditarTipoRepeticaoCompromisso')">Quinzenalmente</button>
+                        <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarTipoRepeticaoCompromisso', 'textoEditarTipoRepeticaoCompromisso', 'mensalmente', 'Mensalmente', 'menuEditarTipoRepeticaoCompromisso')">Mensalmente</button>
+                        <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarTipoRepeticaoCompromisso', 'textoEditarTipoRepeticaoCompromisso', 'anualmente', 'Anualmente', 'menuEditarTipoRepeticaoCompromisso')">Anualmente</button>
+                    </div>
+                </div>
+
+                <div class="campo-editar-compromisso campo-select-compromisso">
+                    <label>Terminar repetição</label>
+
+                    <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarTerminarRepeticaoCompromisso')">
+                        <span id="textoEditarTerminarRepeticaoCompromisso">Nunca</span>
+                        <span>▾</span>
+                    </button>
+
+                    <input type="hidden" name="terminar_repeticao" id="editarTerminarRepeticaoCompromisso" value="nunca">
+
+                    <div class="menu-select-compromisso" id="menuEditarTerminarRepeticaoCompromisso">
+                        <button type="button" onclick="selecionarEditarTerminarRepeticaoCompromisso(event, 'nunca', 'Nunca')">Nunca</button>
+                        <button type="button" onclick="selecionarEditarTerminarRepeticaoCompromisso(event, 'data_especifica', 'Data específica')">Data específica</button>
+                    </div>
+                </div>
+
+                <div class="campo-editar-compromisso" id="campoEditarDataFimRepeticaoCompromisso">
+                    <label>Data final da repetição</label>
+                    <input type="date" name="data_fim_repeticao" id="editarDataFimRepeticaoCompromisso">
+                </div>
+
+            </div>
+
+            <div class="box-editar-configuracoes-compromisso">
+                <div class="topo-editar-configuracoes-compromisso">
+                    <strong>Configurações extras</strong>
+                </div>
+
+                <div class="grid-editar-configuracoes-compromisso">
+
+                    <div class="campo-editar-compromisso campo-select-compromisso">
+                        <label>Disponibilidade para consultas</label>
+
+                        <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarDisponibilidadeCompromisso')">
+                            <span id="textoEditarDisponibilidadeCompromisso">Ocupado</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="disponibilidade" id="editarDisponibilidadeCompromisso" value="ocupado">
+
+                        <div class="menu-select-compromisso" id="menuEditarDisponibilidadeCompromisso">
+                            <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarDisponibilidadeCompromisso', 'textoEditarDisponibilidadeCompromisso', 'ocupado', 'Ocupado', 'menuEditarDisponibilidadeCompromisso')">Ocupado</button>
+                            <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarDisponibilidadeCompromisso', 'textoEditarDisponibilidadeCompromisso', 'disponivel', 'Disponível', 'menuEditarDisponibilidadeCompromisso')">Disponível</button>
+                        </div>
+                    </div>
+
+                    <div class="campo-editar-compromisso campo-select-compromisso">
+                        <label>Privacidade do compromisso</label>
+
+                        <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarPrivacidadeCompromisso')">
+                            <span id="textoEditarPrivacidadeCompromisso">Privado</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="privacidade" id="editarPrivacidadeCompromisso" value="privado">
+
+                        <div class="menu-select-compromisso" id="menuEditarPrivacidadeCompromisso">
+                            <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarPrivacidadeCompromisso', 'textoEditarPrivacidadeCompromisso', 'privado', 'Privado', 'menuEditarPrivacidadeCompromisso')">Privado</button>
+                            <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarPrivacidadeCompromisso', 'textoEditarPrivacidadeCompromisso', 'publico', 'Público', 'menuEditarPrivacidadeCompromisso')">Público</button>
+                        </div>
+                    </div>
+
+                    <div class="campo-editar-compromisso campo-select-compromisso">
+                        <label>Receber alerta</label>
+
+                        <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarAlertaCompromisso')">
+                            <span id="textoEditarAlertaCompromisso">Sem alerta</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="alerta" id="editarAlertaCompromisso" value="sem_alerta">
+
+                        <div class="menu-select-compromisso" id="menuEditarAlertaCompromisso">
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, 'sem_alerta', 'Sem alerta')">Sem alerta</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, '1_minuto', '1 minuto antes')">1 minuto antes</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, '5_minutos', '5 minutos antes')">5 minutos antes</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, '30_minutos', '30 minutos antes')">30 minutos antes</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, '1_hora', '1 hora antes')">1 hora antes</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, '1_dia', '1 dia antes')">1 dia antes</button>
+                            <button type="button" onclick="selecionarEditarAlertaCompromisso(event, 'personalizar', 'Personalizar')">Personalizar</button>
+                        </div>
+                    </div>
+
+                    <div class="linha-editar-alerta-personalizado" id="linhaEditarAlertaPersonalizado" style="display:none;">
+                        <div class="campo-editar-compromisso">
+                            <label>Tempo</label>
+                            <input type="number" name="alerta_quantidade" id="editarAlertaQuantidade" min="1" value="1">
+                        </div>
+
+                        <div class="campo-editar-compromisso campo-select-compromisso">
+                            <label>Unidade</label>
+
+                            <button type="button" class="btn-select-compromisso" onclick="window.abrirSelectCompromisso(event, 'menuEditarUnidadeAlertaCompromisso')">
+                                <span id="textoEditarUnidadeAlertaCompromisso">Hora(s)</span>
+                                <span>▾</span>
+                            </button>
+
+                            <input type="hidden" name="alerta_unidade" id="editarAlertaUnidade" value="horas">
+
+                            <div class="menu-select-compromisso" id="menuEditarUnidadeAlertaCompromisso">
+                                <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarAlertaUnidade', 'textoEditarUnidadeAlertaCompromisso', 'dias', 'Dia(s)', 'menuEditarUnidadeAlertaCompromisso')">Dia(s)</button>
+                                <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarAlertaUnidade', 'textoEditarUnidadeAlertaCompromisso', 'horas', 'Hora(s)', 'menuEditarUnidadeAlertaCompromisso')">Hora(s)</button>
+                                <button type="button" onclick="selecionarEditarCampoCompromisso(event, 'editarAlertaUnidade', 'textoEditarUnidadeAlertaCompromisso', 'minutos', 'Minuto(s)', 'menuEditarUnidadeAlertaCompromisso')">Minuto(s)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="rodape-editar-compromisso">
+                <button type="button" class="btn-fechar-editar-compromisso" onclick="fecharModalEditarCompromisso()">
+                    FECHAR
+                </button>
+
+                <button type="button" class="btn-excluir-editar-compromisso">
+                    EXCLUIR
+                </button>
+
+                <button type="submit" class="btn-salvar-editar-compromisso">
+                    SALVAR
+                </button>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 <!-- ==========================
@@ -4772,20 +6546,54 @@ document.addEventListener("DOMContentLoaded", () => {
             listaPacientes.innerHTML = "";
         }
 
-});
+    });
 
     /* ===== SALVAR NOVO AGENDAMENTO ===== */
     document.addEventListener("submit", function(e) {
-
         const form = e.target.closest("#formNovoAgendamento");
-
         if (!form) return;
 
         e.preventDefault();
 
-        calcularHoraFimAgendamento();
+        const tipoAgendamento = document.getElementById("tipoAgendamento")?.value || "consulta";
 
-        const botaoMarcar = form.querySelector(".btn-marcar");
+        console.log("Tipo agendamento ao salvar:", tipoAgendamento);
+
+        if (tipoAgendamento === "consulta") {
+            calcularHoraFimAgendamento();
+        }
+
+        if (tipoAgendamento === "compromisso") {
+            const titulo = document.getElementById("tituloCompromisso")?.value.trim() || "";
+            const profissional = document.getElementById("id_profissional_compromisso")?.value || "";
+            const dataInicio = document.getElementById("compromissoDataInicio")?.value || "";
+            const dataFim = document.getElementById("compromissoDataFim")?.value || "";
+            const diaInteiro = document.getElementById("compromissoDiaInteiro")?.checked || false;
+            const horaInicio = document.getElementById("compromissoHoraInicio")?.value || "";
+            const horaFim = document.getElementById("compromissoHoraFim")?.value || "";
+
+            if (!titulo) {
+                alert("Informe o título do compromisso.");
+                return;
+            }
+
+            if (!profissional) {
+                alert("Selecione a agenda/profissional.");
+                return;
+            }
+
+            if (!dataInicio || !dataFim) {
+                alert("Informe a data de início e fim do compromisso.");
+                return;
+            }
+
+            if (!diaInteiro && (!horaInicio || !horaFim)) {
+                alert("Informe o horário de início e fim do compromisso.");
+                return;
+            }
+        }
+
+        const botaoMarcar = document.querySelector(".btn-marcar");
 
         if (botaoMarcar) {
             botaoMarcar.disabled = true;
@@ -4802,19 +6610,24 @@ document.addEventListener("DOMContentLoaded", () => {
             body: formData
         })
         .then(async response => {
-            const data = await response.json();
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch (erroJson) {
+                console.error("Resposta não veio em JSON.");
+                throw new Error("Resposta inválida do servidor.");
+            }
 
             if (!response.ok || !data.ok) {
-                console.log("Erros:", data.erros);
-                alert("Não foi possível salvar o agendamento. Confira os campos obrigatórios.");
+                console.log("Erro ao salvar:", data);
+                alert(data.erro || "Não foi possível salvar. Confira os campos obrigatórios.");
                 return;
             }
 
             fecharModalAgendamento();
 
-            const profissionalId =
-                document.getElementById("profissionalAgendaSelecionado")?.value || "";
-
+            const profissionalId = document.getElementById("profissionalAgendaSelecionado")?.value || "";
             const url = new URL(window.location.href);
 
             url.searchParams.set("semana", semanaAtual);
@@ -4828,8 +6641,8 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = url.pathname + "?" + url.searchParams.toString();
         })
         .catch(error => {
-            console.error("Erro ao salvar agendamento:", error);
-            alert("Erro ao salvar agendamento.");
+            console.error("Erro ao salvar:", error);
+            alert("Erro ao salvar. Veja o console para detalhes.");
         })
         .finally(() => {
             if (botaoMarcar) {
@@ -4837,7 +6650,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 botaoMarcar.textContent = "MARCAR";
             }
         });
-
     });
 
     /* ===== FECHAR LISTA DE PACIENTES AO CLICAR FORA ===== */
@@ -4946,39 +6758,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* ===== TERMINAR REPETIÇÃO ===== */
-    document.addEventListener("change", function(e) {
-        if (!e.target.matches("#terminarRepeticaoCompromisso")) return;
-
-        const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
-
-        if (!campoData) return;
-
-        if (e.target.value === "data_especifica") {
-            campoData.classList.add("aberto");
-        } else {
-            campoData.classList.remove("aberto");
-        }
-    });
-
-
-    /* ===== ALERTA PERSONALIZADO ===== */
-    document.addEventListener("change", function(e) {
-        if (!e.target.matches("#alertaCompromisso")) return;
-
-        const campoQuantidade = document.getElementById("campoAlertaPersonalizado");
-        const campoUnidade = document.getElementById("campoUnidadeAlertaPersonalizado");
-
-        const personalizado = e.target.value === "personalizar";
-
-        if (campoQuantidade) {
-            campoQuantidade.style.display = personalizado ? "block" : "none";
-        }
-
-        if (campoUnidade) {
-            campoUnidade.style.display = personalizado ? "block" : "none";
-        }
-    });
 
     let horarioLivreSelecionado = null;
 
@@ -5389,31 +7168,54 @@ document.addEventListener("DOMContentLoaded", () => {
         const conteudoCompromisso = document.getElementById("conteudoCompromissoAgendamento");
 
         const tipoAgendamento = document.getElementById("tipoAgendamento");
-        const btnMarcar = document.querySelector("#formNovoAgendamento .btn-marcar");
+        const btnMarcar = document.querySelector(".btn-marcar");
+
+        console.log("Trocando aba para:", tipo);
+        console.log("Input tipoAgendamento:", tipoAgendamento);
+
+        if (tipoAgendamento) {
+            tipoAgendamento.value = tipo;
+        }
 
         if (tipo === "consulta") {
             abaConsulta?.classList.add("ativa");
             abaCompromisso?.classList.remove("ativa");
 
-            if (conteudoConsulta) conteudoConsulta.style.display = "block";
-            if (conteudoCompromisso) conteudoCompromisso.style.display = "none";
+            if (conteudoConsulta) {
+                conteudoConsulta.style.display = "block";
+            }
 
-            if (tipoAgendamento) tipoAgendamento.value = "consulta";
-            if (btnMarcar) btnMarcar.textContent = "MARCAR";
+            if (conteudoCompromisso) {
+                conteudoCompromisso.style.display = "none";
+            }
 
-            return;
+            if (btnMarcar) {
+                btnMarcar.textContent = "MARCAR";
+            }
+
+            return false;
         }
 
         abaConsulta?.classList.remove("ativa");
         abaCompromisso?.classList.add("ativa");
 
-        if (conteudoConsulta) conteudoConsulta.style.display = "none";
-        if (conteudoCompromisso) conteudoCompromisso.style.display = "block";
+        if (conteudoConsulta) {
+            conteudoConsulta.style.display = "none";
+        }
 
-        if (tipoAgendamento) tipoAgendamento.value = "compromisso";
-        if (btnMarcar) btnMarcar.textContent = "MARCAR";
+        if (conteudoCompromisso) {
+            conteudoCompromisso.style.display = "block";
+        }
 
-        preencherCompromissoComDadosDaConsulta();
+        if (btnMarcar) {
+            btnMarcar.textContent = "MARCAR";
+        }
+
+        if (typeof preencherCompromissoComDadosDaConsulta === "function") {
+            preencherCompromissoComDadosDaConsulta();
+        }
+
+        return false;
     };
 
 
@@ -5421,6 +7223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const dataConsulta = document.getElementById("id_data")?.value || "";
         const horaInicioConsulta = document.getElementById("id_hora_inicio")?.value || "";
         const profissionalConsulta = document.getElementById("id_profissional")?.value || "";
+        const textoProfissionalConsulta = document.getElementById("textoProfissionalConsulta")?.textContent?.trim() || "---------";
         const duracao = Number(document.getElementById("duracaoConsulta")?.value || 30);
 
         const dataInicio = document.getElementById("compromissoDataInicio");
@@ -5428,6 +7231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const horaInicio = document.getElementById("compromissoHoraInicio");
         const horaFim = document.getElementById("compromissoHoraFim");
         const profissionalCompromisso = document.getElementById("id_profissional_compromisso");
+        const textoProfissionalCompromisso = document.getElementById("textoProfissionalCompromisso");
 
         if (dataInicio && !dataInicio.value) {
             dataInicio.value = dataConsulta;
@@ -5457,6 +7261,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (profissionalCompromisso && profissionalConsulta) {
             profissionalCompromisso.value = profissionalConsulta;
+        }
+
+        if (textoProfissionalCompromisso && textoProfissionalConsulta) {
+            textoProfissionalCompromisso.textContent = textoProfissionalConsulta;
         }
     }
 
@@ -5795,6 +7603,798 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+window.selecionarProfissionalConsulta = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "id_profissional",
+        "textoProfissionalConsulta",
+        valor,
+        texto,
+        "menuProfissionalConsulta"
+    );
+
+    const profissionalCompromisso = document.getElementById("id_profissional_compromisso");
+    const textoProfissionalCompromisso = document.getElementById("textoProfissionalCompromisso");
+
+    if (profissionalCompromisso) {
+        profissionalCompromisso.value = valor;
+    }
+
+    if (textoProfissionalCompromisso) {
+        textoProfissionalCompromisso.textContent = texto;
+    }
+
+    return false;
+};
+
+window.selecionarRetornoConsulta = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "retornoTipoSelect",
+        "textoRetornoConsulta",
+        valor,
+        texto,
+        "menuRetornoConsulta"
+    );
+
+    if (typeof atualizarRetornoAgendamento === "function") {
+        atualizarRetornoAgendamento();
+    }
+
+    return false;
+};
+
+window.abrirMenuStatusDetalheConsulta = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const menu = document.getElementById("menuStatusDetalheConsulta");
+
+    if (menu) {
+        menu.classList.toggle("aberto");
+    }
+};
+
+window.alterarStatusConsultaDetalhe = function(agendamentoId, status, texto) {
+    const btnStatus = document.getElementById("btnStatusDetalheConsulta");
+    const textoStatus = document.getElementById("textoStatusDetalheConsulta");
+    const menuStatus = document.getElementById("menuStatusDetalheConsulta");
+    const cardAgenda = document.querySelector(`.agendamento[data-id="${agendamentoId}"]`);
+
+    const classesStatus = [
+        "status-pendente",
+        "status-agendada",
+        "status-confirmado",
+        "status-confirmada",
+        "status-paciente_aguardando",
+        "status-em_atendimento",
+        "status-atendido",
+        "status-atendida",
+        "status-falta",
+        "status-cancelado",
+        "status-cancelada_paciente",
+        "status-cancelada_profissional"
+    ];
+
+    if (textoStatus) {
+        textoStatus.textContent = texto;
+    }
+
+    if (btnStatus) {
+        btnStatus.dataset.status = status;
+        btnStatus.classList.remove(...classesStatus);
+        btnStatus.classList.add(`status-${status}`);
+    }
+
+    if (cardAgenda) {
+        cardAgenda.classList.remove(...classesStatus);
+        cardAgenda.classList.add(`status-${status}`);
+    }
+
+    if (menuStatus) {
+        menuStatus.classList.remove("aberto");
+    }
+
+    salvarStatusConsulta(agendamentoId, status);
+};
+
+document.addEventListener("click", function(event) {
+    if (!event.target.closest(".campo-status-detalhe-consulta")) {
+        const menu = document.getElementById("menuStatusDetalheConsulta");
+
+        if (menu) {
+            menu.classList.remove("aberto");
+        }
+    }
+});
+
+window.confirmarConsultaWhatsapp = function(botao) {
+    const paciente = botao.dataset.paciente || "paciente";
+    const telefoneOriginal = botao.dataset.telefone || "";
+    const dataConsulta = botao.dataset.data || "";
+    const horaInicio = botao.dataset.horaInicio || "";
+    const horaFim = botao.dataset.horaFim || "";
+
+    let telefone = telefoneOriginal.replace(/\D/g, "");
+
+    if (!telefone) {
+        alert("Este paciente não possui telefone/celular cadastrado.");
+        return;
+    }
+
+    // Se o telefone tiver 10 ou 11 dígitos, adiciona Brasil 55
+    if (telefone.length === 10 || telefone.length === 11) {
+        telefone = "55" + telefone;
+    }
+
+    const mensagem =
+`Olá ${paciente}, gostaríamos de confirmar sua consulta.
+
+Data: ${dataConsulta}
+Horário: ${horaInicio} - ${horaFim}
+
+Por favor, responda esta mensagem confirmando sua presença.`;
+
+    const url = `https://web.whatsapp.com/send?phone=${telefone}&text=${encodeURIComponent(mensagem)}`;
+
+    window.open(url, "_blank");
+};
+
+window.salvarStatusConsulta = function(agendamentoId, status) {
+    console.log("Salvar status depois:", agendamentoId, status);
+};
+
+window.fecharTodosSelectsCompromisso = function() {
+    document.querySelectorAll(".menu-select-compromisso").forEach(menu => {
+        menu.classList.remove("aberto");
+        menu.classList.remove("abrir-cima");
+
+        menu.style.left = "";
+        menu.style.top = "";
+        menu.style.width = "";
+        menu.style.position = "";
+        menu.style.maxHeight = "";
+    });
+
+    document.querySelectorAll(".btn-select-compromisso").forEach(btn => {
+        btn.classList.remove("ativo");
+    });
+};
+
+window.abrirSelectCompromisso = function(event, menuId) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    const botao = event.target.closest(".btn-select-compromisso");
+    const campo = botao?.closest(".campo-select-compromisso");
+    const menu = document.getElementById(menuId);
+
+    if (!botao || !campo || !menu) return false;
+
+    const estavaAberto = menu.classList.contains("aberto");
+
+    window.fecharTodosSelectsCompromisso();
+
+    if (estavaAberto) return false;
+
+    const rectCampo = campo.getBoundingClientRect();
+    const modal = document.querySelector(".modal-novo-agendamento");
+    const rectModal = modal ? modal.getBoundingClientRect() : null;
+
+    menu.classList.remove("abrir-cima");
+
+    if (rectModal) {
+        const espacoAbaixo = rectModal.bottom - rectCampo.bottom;
+        const alturaMenu = menuId === "menuAlertaCompromisso" ? 300 : 160;
+
+        if (espacoAbaixo < alturaMenu) {
+            menu.classList.add("abrir-cima");
+        }
+    }
+
+    menu.classList.add("aberto");
+    botao.classList.add("ativo");
+
+    return false;
+};
+
+
+window.selecionarSelectCompromisso = function(event, inputId, textoId, valor, texto, menuId) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    const input = document.getElementById(inputId);
+    const textoSpan = document.getElementById(textoId);
+    const menu = document.getElementById(menuId);
+
+    if (input) {
+        input.value = valor;
+    }
+
+    if (textoSpan) {
+        textoSpan.textContent = texto;
+    }
+
+    if (menu) {
+        menu.querySelectorAll("button").forEach(btn => {
+            btn.classList.remove("ativo");
+        });
+
+        event.target.classList.add("ativo");
+    }
+
+    window.fecharTodosSelectsCompromisso();
+
+    return false;
+};
+
+
+window.selecionarTerminarRepeticaoCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "terminarRepeticaoCompromisso",
+        "textoTerminarRepeticaoCompromisso",
+        valor,
+        texto,
+        "menuTerminarRepeticaoCompromisso"
+    );
+
+    const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
+
+    if (campoData) {
+        if (valor === "data_especifica") {
+            campoData.classList.add("aberto");
+        } else {
+            campoData.classList.remove("aberto");
+        }
+    }
+
+    return false;
+};
+
+
+window.selecionarAlertaCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "alertaCompromisso",
+        "textoAlertaCompromisso",
+        valor,
+        texto,
+        "menuAlertaCompromisso"
+    );
+
+    const linhaPersonalizado = document.getElementById("linhaAlertaPersonalizadoCompromisso");
+
+    if (linhaPersonalizado) {
+        linhaPersonalizado.style.display = valor === "personalizar" ? "grid" : "none";
+    }
+
+    return false;
+};
+
+
+document.addEventListener("click", function(e) {
+    if (!e.target.closest(".campo-select-compromisso")) {
+        window.fecharTodosSelectsCompromisso();
+    }
+});
+
+
+window.selecionarTerminarRepeticaoCompromisso = function(event, valor, texto) {
+    
+
+    const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
+
+    if (campoData) {
+        if (valor === "data_especifica") {
+            campoData.classList.add("aberto");
+        } else {
+            campoData.classList.remove("aberto");
+        }
+    }
+
+    return false;
+};
+
+
+document.addEventListener("click", function(e) {
+    if (!e.target.closest(".campo-select-compromisso")) {
+        window.fecharTodosSelectsCompromisso();
+    }
+});
+
+window.toggleRepetirCompromisso = function(checkbox) {
+    const opcoes = document.getElementById("opcoesRepeticaoCompromisso");
+    const terminar = document.getElementById("terminarRepeticaoCompromisso");
+    const textoTerminar = document.getElementById("textoTerminarRepeticaoCompromisso");
+    const campoData = document.getElementById("campoDataFimRepeticaoCompromisso");
+
+    if (!opcoes) return;
+
+    if (checkbox.checked) {
+        opcoes.classList.add("aberta");
+    } else {
+        opcoes.classList.remove("aberta");
+
+        if (terminar) {
+            terminar.value = "nunca";
+        }
+
+        if (textoTerminar) {
+            textoTerminar.textContent = "Nunca";
+        }
+
+        if (campoData) {
+            campoData.classList.remove("aberto");
+        }
+    }
+};
+
+window.selecionarProfissionalConsulta = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "id_profissional",
+        "textoProfissionalConsulta",
+        valor,
+        texto,
+        "menuProfissionalConsulta"
+    );
+
+    const profissionalCompromisso = document.getElementById("id_profissional_compromisso");
+    const textoProfissionalCompromisso = document.getElementById("textoProfissionalCompromisso");
+
+    if (profissionalCompromisso) {
+        profissionalCompromisso.value = valor;
+    }
+
+    if (textoProfissionalCompromisso) {
+        textoProfissionalCompromisso.textContent = texto;
+    }
+
+    return false;
+};
+
+
+window.selecionarProfissionalCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "id_profissional_compromisso",
+        "textoProfissionalCompromisso",
+        valor,
+        texto,
+        "menuProfissionalCompromisso"
+    );
+
+    return false;
+};
+
+window.abrirDetalhesCompromisso = function(elemento) {
+    const overlay = document.getElementById("overlayDetalhesCompromisso");
+
+    if (!overlay || !elemento) return;
+
+    const id = elemento.dataset.id || "";
+    const titulo = elemento.dataset.titulo || "Compromisso";
+    const descricao = elemento.dataset.descricao || "";
+
+    const profissional = elemento.dataset.profissional || "Não informado";
+    const profissionalId = elemento.dataset.profissionalId || "";
+
+    const data = elemento.dataset.data || "";
+    const dataInicio = elemento.dataset.dataInicio || "";
+    const dataFim = elemento.dataset.dataFim || "";
+    const horaInicio = elemento.dataset.horaInicio || "";
+    const horaFim = elemento.dataset.horaFim || "";
+    const diaInteiro = elemento.dataset.diaInteiro === "true";
+
+    const repetir = elemento.dataset.repetir || "false";
+    const tipoRepeticao = elemento.dataset.tipoRepeticao || "todos_os_dias";
+    const terminarRepeticao = elemento.dataset.terminarRepeticao || "nunca";
+    const dataFimRepeticao = elemento.dataset.dataFimRepeticao || "";
+
+    const disponibilidade = elemento.dataset.disponibilidade || "ocupado";
+    const privacidade = elemento.dataset.privacidade || "privado";
+    const alerta = elemento.dataset.alerta || "sem_alerta";
+    const alertaQuantidade = elemento.dataset.alertaQuantidade || "1";
+    const alertaUnidade = elemento.dataset.alertaUnidade || "horas";
+
+    document.getElementById("detalheCompromissoId").value = id;
+    document.getElementById("detalheCompromissoTituloHidden").value = titulo;
+    document.getElementById("detalheCompromissoDescricaoHidden").value = descricao;
+
+    document.getElementById("detalheCompromissoProfissionalHidden").value = profissionalId;
+    document.getElementById("detalheCompromissoProfissionalNomeHidden").value = profissional;
+
+    document.getElementById("detalheCompromissoDataInicioHidden").value = dataInicio;
+    document.getElementById("detalheCompromissoDataFimHidden").value = dataFim;
+    document.getElementById("detalheCompromissoHoraInicioHidden").value = horaInicio;
+    document.getElementById("detalheCompromissoHoraFimHidden").value = horaFim;
+    document.getElementById("detalheCompromissoDiaInteiroHidden").value = diaInteiro ? "true" : "false";
+
+    document.getElementById("detalheCompromissoRepetirHidden").value = repetir;
+    document.getElementById("detalheCompromissoTipoRepeticaoHidden").value = tipoRepeticao;
+    document.getElementById("detalheCompromissoTerminarRepeticaoHidden").value = terminarRepeticao;
+    document.getElementById("detalheCompromissoDataFimRepeticaoHidden").value = dataFimRepeticao;
+
+    document.getElementById("detalheCompromissoDisponibilidadeHidden").value = disponibilidade;
+    document.getElementById("detalheCompromissoPrivacidadeHidden").value = privacidade;
+    document.getElementById("detalheCompromissoAlertaHidden").value = alerta;
+    document.getElementById("detalheCompromissoAlertaQuantidadeHidden").value = alertaQuantidade;
+    document.getElementById("detalheCompromissoAlertaUnidadeHidden").value = alertaUnidade;
+
+    const tituloEl = document.getElementById("detalheCompromissoTitulo");
+    const dataHoraEl = document.getElementById("detalheCompromissoDataHora");
+    const profissionalEl = document.getElementById("detalheCompromissoProfissional");
+    const descricaoEl = document.getElementById("detalheCompromissoDescricao");
+    const linhaDescricao = document.getElementById("linhaDescricaoCompromisso");
+
+    if (tituloEl) tituloEl.textContent = titulo;
+
+    if (dataHoraEl) {
+        if (diaInteiro) {
+            dataHoraEl.textContent = `${data} · Dia inteiro`;
+        } else {
+            dataHoraEl.textContent = `${data} · ${horaInicio} - ${horaFim}`;
+        }
+    }
+
+    if (profissionalEl) {
+        profissionalEl.textContent = `Dr(a) ${profissional}`;
+    }
+
+    if (descricaoEl && linhaDescricao) {
+        if (descricao.trim()) {
+            descricaoEl.textContent = descricao;
+            linhaDescricao.style.display = "grid";
+        } else {
+            descricaoEl.textContent = "";
+            linhaDescricao.style.display = "none";
+        }
+    }
+
+    overlay.style.display = "flex";
+};
+
+window.fecharDetalhesCompromisso = function() {
+    const overlay = document.getElementById("overlayDetalhesCompromisso");
+
+    if (overlay) {
+        overlay.style.display = "none";
+    }
+};
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        window.fecharDetalhesCompromisso();
+    }
+});
+
+window.abrirModalEditarCompromisso = function() {
+    const overlayDetalhes = document.getElementById("overlayDetalhesCompromisso");
+    const overlayEditar = document.getElementById("overlayEditarCompromisso");
+
+    if (!overlayEditar) {
+        console.error("Modal de edição não encontrado: #overlayEditarCompromisso");
+        return;
+    }
+
+    const id = document.getElementById("detalheCompromissoId")?.value || "";
+    const titulo = document.getElementById("detalheCompromissoTituloHidden")?.value || "";
+    const descricao = document.getElementById("detalheCompromissoDescricaoHidden")?.value || "";
+
+    const profissionalId = document.getElementById("detalheCompromissoProfissionalHidden")?.value || "";
+    const profissionalNome = document.getElementById("detalheCompromissoProfissionalNomeHidden")?.value || "---------";
+
+    const dataInicio = document.getElementById("detalheCompromissoDataInicioHidden")?.value || "";
+    const dataFim = document.getElementById("detalheCompromissoDataFimHidden")?.value || "";
+    const horaInicio = document.getElementById("detalheCompromissoHoraInicioHidden")?.value || "";
+    const horaFim = document.getElementById("detalheCompromissoHoraFimHidden")?.value || "";
+    const diaInteiro = document.getElementById("detalheCompromissoDiaInteiroHidden")?.value === "true";
+
+    const repetir = document.getElementById("detalheCompromissoRepetirHidden")?.value === "true";
+    const tipoRepeticao = document.getElementById("detalheCompromissoTipoRepeticaoHidden")?.value || "todos_os_dias";
+    const terminarRepeticao = document.getElementById("detalheCompromissoTerminarRepeticaoHidden")?.value || "nunca";
+    const dataFimRepeticao = document.getElementById("detalheCompromissoDataFimRepeticaoHidden")?.value || "";
+
+    const disponibilidade = document.getElementById("detalheCompromissoDisponibilidadeHidden")?.value || "ocupado";
+    const privacidade = document.getElementById("detalheCompromissoPrivacidadeHidden")?.value || "privado";
+    const alerta = document.getElementById("detalheCompromissoAlertaHidden")?.value || "sem_alerta";
+    const alertaQuantidade = document.getElementById("detalheCompromissoAlertaQuantidadeHidden")?.value || "1";
+    const alertaUnidade = document.getElementById("detalheCompromissoAlertaUnidadeHidden")?.value || "horas";
+
+    if (overlayDetalhes) overlayDetalhes.style.display = "none";
+    overlayEditar.style.display = "flex";
+
+    // DADOS PRINCIPAIS
+    document.getElementById("editarCompromissoId").value = id;
+    document.getElementById("editarTituloCompromisso").value = titulo;
+    document.getElementById("editarDescricaoCompromisso").value = descricao;
+
+    document.getElementById("editarProfissionalCompromisso").value = profissionalId;
+    document.getElementById("textoEditarProfissionalCompromisso").textContent = profissionalNome;
+
+    // DATA E HORA
+    document.getElementById("editarDataInicioCompromisso").value = dataInicio;
+    document.getElementById("editarDataFimCompromisso").value = dataFim;
+    document.getElementById("editarHoraInicioCompromisso").value = horaInicio;
+    document.getElementById("editarHoraFimCompromisso").value = horaFim;
+    document.getElementById("editarDiaInteiroCompromisso").checked = diaInteiro;
+
+    // REPETIÇÃO
+    const checkRepetir = document.getElementById("editarRepetirCompromisso");
+    const areaRepeticao = document.getElementById("areaEditarRepeticaoCompromisso");
+
+    if (checkRepetir) checkRepetir.checked = repetir;
+
+    if (areaRepeticao) {
+        areaRepeticao.style.display = repetir ? "grid" : "none";
+    }
+
+    setarSelectEditarCompromisso(
+        "editarTipoRepeticaoCompromisso",
+        "textoEditarTipoRepeticaoCompromisso",
+        tipoRepeticao,
+        textoTipoRepeticaoCompromisso(tipoRepeticao)
+    );
+
+    setarSelectEditarCompromisso(
+        "editarTerminarRepeticaoCompromisso",
+        "textoEditarTerminarRepeticaoCompromisso",
+        terminarRepeticao,
+        textoTerminarRepeticaoCompromisso(terminarRepeticao)
+    );
+
+    const campoDataFimRepeticao = document.getElementById("campoEditarDataFimRepeticaoCompromisso");
+    const inputDataFimRepeticao = document.getElementById("editarDataFimRepeticaoCompromisso");
+
+    if (inputDataFimRepeticao) inputDataFimRepeticao.value = dataFimRepeticao;
+
+    if (campoDataFimRepeticao) {
+        campoDataFimRepeticao.style.display = terminarRepeticao === "data_especifica" ? "block" : "none";
+    }
+
+    // CONFIGURAÇÕES EXTRAS
+    setarSelectEditarCompromisso(
+        "editarDisponibilidadeCompromisso",
+        "textoEditarDisponibilidadeCompromisso",
+        disponibilidade,
+        textoDisponibilidadeCompromisso(disponibilidade)
+    );
+
+    setarSelectEditarCompromisso(
+        "editarPrivacidadeCompromisso",
+        "textoEditarPrivacidadeCompromisso",
+        privacidade,
+        textoPrivacidadeCompromisso(privacidade)
+    );
+
+    setarSelectEditarCompromisso(
+        "editarAlertaCompromisso",
+        "textoEditarAlertaCompromisso",
+        alerta,
+        textoAlertaCompromisso(alerta)
+    );
+
+    const inputAlertaQuantidade = document.getElementById("editarAlertaQuantidade");
+    if (inputAlertaQuantidade) inputAlertaQuantidade.value = alertaQuantidade;
+
+    setarSelectEditarCompromisso(
+        "editarAlertaUnidade",
+        "textoEditarUnidadeAlertaCompromisso",
+        alertaUnidade,
+        textoUnidadeAlertaCompromisso(alertaUnidade)
+    );
+
+    const linhaAlertaPersonalizado = document.getElementById("linhaEditarAlertaPersonalizado");
+    if (linhaAlertaPersonalizado) {
+        linhaAlertaPersonalizado.style.display = alerta === "personalizar" ? "grid" : "none";
+    }
+
+    atualizarCamposHoraEditarCompromisso();
+    atualizarContadoresEditarCompromisso();
+};
+
+function setarSelectEditarCompromisso(inputId, textoId, valor, texto) {
+    const input = document.getElementById(inputId);
+    const textoEl = document.getElementById(textoId);
+
+    if (input) input.value = valor;
+    if (textoEl) textoEl.textContent = texto;
+}
+
+function textoTipoRepeticaoCompromisso(valor) {
+    const opcoes = {
+        "todos_os_dias": "Todos os dias",
+        "semanalmente": "Semanalmente",
+        "quinzenalmente": "Quinzenalmente",
+        "mensalmente": "Mensalmente",
+        "anualmente": "Anualmente"
+    };
+
+    return opcoes[valor] || "Todos os dias";
+}
+
+function textoTerminarRepeticaoCompromisso(valor) {
+    const opcoes = {
+        "nunca": "Nunca",
+        "data_especifica": "Data específica"
+    };
+
+    return opcoes[valor] || "Nunca";
+}
+
+function textoDisponibilidadeCompromisso(valor) {
+    const opcoes = {
+        "ocupado": "Ocupado",
+        "disponivel": "Disponível"
+    };
+
+    return opcoes[valor] || "Ocupado";
+}
+
+function textoPrivacidadeCompromisso(valor) {
+    const opcoes = {
+        "privado": "Privado",
+        "publico": "Público"
+    };
+
+    return opcoes[valor] || "Privado";
+}
+
+function textoAlertaCompromisso(valor) {
+    const opcoes = {
+        "sem_alerta": "Sem alerta",
+        "1_minuto": "1 minuto antes",
+        "5_minutos": "5 minutos antes",
+        "30_minutos": "30 minutos antes",
+        "1_hora": "1 hora antes",
+        "1_dia": "1 dia antes",
+        "personalizar": "Personalizar"
+    };
+
+    return opcoes[valor] || "Sem alerta";
+}
+
+function textoUnidadeAlertaCompromisso(valor) {
+    const opcoes = {
+        "dias": "Dia(s)",
+        "horas": "Hora(s)",
+        "minutos": "Minuto(s)"
+    };
+
+    return opcoes[valor] || "Hora(s)";
+}
+
+window.selecionarEditarCampoCompromisso = function(event, inputId, textoId, valor, texto, menuId) {
+    window.selecionarSelectCompromisso(
+        event,
+        inputId,
+        textoId,
+        valor,
+        texto,
+        menuId
+    );
+
+    return false;
+};
+
+window.selecionarEditarTerminarRepeticaoCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "editarTerminarRepeticaoCompromisso",
+        "textoEditarTerminarRepeticaoCompromisso",
+        valor,
+        texto,
+        "menuEditarTerminarRepeticaoCompromisso"
+    );
+
+    const campoData = document.getElementById("campoEditarDataFimRepeticaoCompromisso");
+
+    if (campoData) {
+        campoData.style.display = valor === "data_especifica" ? "block" : "none";
+    }
+
+    return false;
+};
+
+window.selecionarEditarAlertaCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "editarAlertaCompromisso",
+        "textoEditarAlertaCompromisso",
+        valor,
+        texto,
+        "menuEditarAlertaCompromisso"
+    );
+
+    const linhaPersonalizado = document.getElementById("linhaEditarAlertaPersonalizado");
+
+    if (linhaPersonalizado) {
+        linhaPersonalizado.style.display = valor === "personalizar" ? "grid" : "none";
+    }
+
+    return false;
+};
+
+window.fecharModalEditarCompromisso = function() {
+    const overlayEditar = document.getElementById("overlayEditarCompromisso");
+
+    if (overlayEditar) {
+        overlayEditar.style.display = "none";
+    }
+};
+
+window.selecionarEditarProfissionalCompromisso = function(event, valor, texto) {
+    window.selecionarSelectCompromisso(
+        event,
+        "editarProfissionalCompromisso",
+        "textoEditarProfissionalCompromisso",
+        valor,
+        texto,
+        "menuEditarProfissionalCompromisso"
+    );
+
+    return false;
+};
+
+function atualizarCamposHoraEditarCompromisso() {
+    const diaInteiro = document.getElementById("editarDiaInteiroCompromisso")?.checked || false;
+    const camposHora = document.querySelectorAll(".campo-hora-editar-compromisso");
+
+    camposHora.forEach(campo => {
+        campo.style.display = diaInteiro ? "none" : "block";
+    });
+}
+
+function atualizarContadoresEditarCompromisso() {
+    const titulo = document.getElementById("editarTituloCompromisso");
+    const descricao = document.getElementById("editarDescricaoCompromisso");
+
+    const contadorTitulo = document.getElementById("contadorEditarTituloCompromisso");
+    const contadorDescricao = document.getElementById("contadorEditarDescricaoCompromisso");
+
+    if (titulo && contadorTitulo) {
+        contadorTitulo.textContent = `${titulo.value.length} / 255`;
+    }
+
+    if (descricao && contadorDescricao) {
+        contadorDescricao.textContent = `${descricao.value.length} / 500`;
+    }
+}
+
+document.addEventListener("change", function(e) {
+    if (e.target.matches("#editarDiaInteiroCompromisso")) {
+        atualizarCamposHoraEditarCompromisso();
+    }
+
+    if (e.target.matches("#editarRepetirCompromisso")) {
+        const areaRepeticao = document.getElementById("areaEditarRepeticaoCompromisso");
+
+        if (areaRepeticao) {
+            areaRepeticao.style.display = e.target.checked ? "grid" : "none";
+        }
+    }
+});
+
+document.addEventListener("input", function(e) {
+    if (
+        e.target.matches("#editarTituloCompromisso") ||
+        e.target.matches("#editarDescricaoCompromisso")
+    ) {
+        atualizarContadoresEditarCompromisso();
+    }
+});
+
+document.addEventListener("wheel", function(e) {
+    if (e.target.closest(".menu-select-compromisso")) {
+        e.stopPropagation();
+    }
+}, { passive: false });
 
 /* ===============================
    CONTADOR

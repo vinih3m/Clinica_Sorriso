@@ -357,6 +357,112 @@ class Agendamento(models.Model):
 
     def __str__(self):
         return f"{self.paciente} - {self.data} ({self.tipo})"
+
+class CompromissoAgenda(models.Model):
+    DISPONIBILIDADE_CHOICES = (
+        ("ocupado", "Ocupado"),
+        ("disponivel", "Disponível"),
+    )
+
+    PRIVACIDADE_CHOICES = (
+        ("privado", "Privado"),
+        ("publico", "Público"),
+    )
+
+    ALERTA_CHOICES = (
+        ("sem_alerta", "Sem alerta"),
+        ("1_minuto", "1 minuto antes"),
+        ("5_minutos", "5 minutos antes"),
+        ("30_minutos", "30 minutos antes"),
+        ("1_hora", "1 hora antes"),
+        ("1_dia", "1 dia antes"),
+        ("personalizar", "Personalizar"),
+    )
+
+    REPETICAO_CHOICES = (
+        ("todos_os_dias", "Todos os dias"),
+        ("semanalmente", "Semanalmente"),
+        ("quinzenalmente", "Quinzenalmente"),
+        ("mensalmente", "Mensalmente"),
+        ("anualmente", "Anualmente"),
+    )
+
+    TERMINAR_REPETICAO_CHOICES = (
+        ("nunca", "Nunca"),
+        ("data_especifica", "Data específica"),
+    )
+
+    titulo = models.CharField(max_length=255)
+    descricao = models.TextField(blank=True, null=True)
+
+    profissional = models.ForeignKey(
+        Profissional,
+        on_delete=models.CASCADE,
+        related_name="compromissos"
+    )
+
+    data_inicio = models.DateField()
+    hora_inicio = models.TimeField(blank=True, null=True)
+
+    data_fim = models.DateField()
+    hora_fim = models.TimeField(blank=True, null=True)
+
+    dia_inteiro = models.BooleanField(default=False)
+
+    repetir = models.BooleanField(default=False)
+    tipo_repeticao = models.CharField(
+        max_length=30,
+        choices=REPETICAO_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    terminar_repeticao = models.CharField(
+        max_length=30,
+        choices=TERMINAR_REPETICAO_CHOICES,
+        default="nunca"
+    )
+
+    data_fim_repeticao = models.DateField(blank=True, null=True)
+
+    disponibilidade = models.CharField(
+        max_length=20,
+        choices=DISPONIBILIDADE_CHOICES,
+        default="ocupado"
+    )
+
+    privacidade = models.CharField(
+        max_length=20,
+        choices=PRIVACIDADE_CHOICES,
+        default="privado"
+    )
+
+    alerta = models.CharField(
+        max_length=30,
+        choices=ALERTA_CHOICES,
+        default="sem_alerta"
+    )
+
+    alerta_quantidade = models.PositiveIntegerField(blank=True, null=True)
+    alerta_unidade = models.CharField(max_length=20, blank=True, null=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        if not self.dia_inteiro:
+            if not self.hora_inicio or not self.hora_fim:
+                raise ValidationError("Informe horário de início e fim.")
+
+            if self.data_inicio == self.data_fim and self.hora_inicio >= self.hora_fim:
+                raise ValidationError("O horário final deve ser maior que o inicial.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.titulo} - {self.data_inicio}"
+    
     
 from django.db import models
 from django.contrib.auth.models import User

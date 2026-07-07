@@ -20,7 +20,7 @@
         </button>
     </div>
 
-    <form method="POST" action="{% url 'criar_agendamento' %}" id="formNovoAgendamento">
+    <form method="POST" action="{% url 'criar_agendamento' %}" id="formNovoAgendamento" novalidate>
         {% csrf_token %}
 
         <input type="hidden" name="origem" value="{{ origem }}">
@@ -49,9 +49,54 @@
                 </a>
             </div>
 
-            <div class="campo">
+            <div class="campo-select-compromisso campo-profissional-consulta">
                 <label>Profissional*</label>
-                {{ form.profissional }}
+
+                <button
+                    type="button"
+                    class="btn-select-compromisso"
+                    onclick="window.abrirSelectCompromisso(event, 'menuProfissionalConsulta')"
+                >
+                    <span id="textoProfissionalConsulta">
+                        {% if form.profissional.value %}
+                            {% for profissional in form.fields.profissional.queryset %}
+                                {% if form.profissional.value|stringformat:'s' == profissional.id|stringformat:'s' %}
+                                    {{ profissional.nome }}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            ---------
+                        {% endif %}
+                    </span>
+                    <span>▾</span>
+                </button>
+
+                <input
+                    type="hidden"
+                    name="profissional"
+                    id="id_profissional"
+                    value="{{ form.profissional.value|default:'' }}"
+                >
+
+                <div class="menu-select-compromisso" id="menuProfissionalConsulta">
+
+                    <button
+                        type="button"
+                        onclick="window.selecionarProfissionalConsulta(event, '', '---------')"
+                    >
+                        ---------
+                    </button>
+
+                    {% for profissional in form.fields.profissional.queryset %}
+                        <button
+                            type="button"
+                            onclick="window.selecionarProfissionalConsulta(event, '{{ profissional.id }}', '{{ profissional.nome }}')"
+                        >
+                            {{ profissional.nome }}
+                        </button>
+                    {% endfor %}
+
+                </div>
             </div>
 
             <div class="linha-3">
@@ -99,29 +144,40 @@
 
             <div class="linha-retorno-agendamento" id="linhaRetornoAgendamento">
 
-                <div class="campo campo-retorno">
+                <div class="campo-select-compromisso campo-retorno">
                     <label>Retornar em</label>
 
-                    <select name="retorno_tipo" id="retornoTipoSelect">
-                        <option value="">Sem retorno</option>
-                        <option value="7_dias">7 dias</option>
-                        <option value="15_dias">15 dias</option>
-                        <option value="30_dias">30 dias</option>
-                        <option value="60_dias">60 dias</option>
-                        <option value="1_mes">1 mês</option>
-                        <option value="6_meses">6 meses</option>
-                        <option value="12_meses">12 meses</option>
-                        <option value="outro_mes">Outro mês</option>
-                        <option value="data_especifica">Data específica</option>
-                    </select>
+                    <button
+                        type="button"
+                        class="btn-select-compromisso"
+                        onclick="window.abrirSelectCompromisso(event, 'menuRetornoConsulta')"
+                    >
+                        <span id="textoRetornoConsulta">Sem retorno</span>
+                        <span>▾</span>
+                    </button>
+
+                    <input type="hidden" name="retorno_tipo" id="retornoTipoSelect" value="">
+
+                    <div class="menu-select-compromisso" id="menuRetornoConsulta">
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '', 'Sem retorno')">Sem retorno</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '7_dias', '7 dias')">7 dias</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '15_dias', '15 dias')">15 dias</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '30_dias', '30 dias')">30 dias</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '60_dias', '60 dias')">60 dias</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '1_mes', '1 mês')">1 mês</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '6_meses', '6 meses')">6 meses</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, '12_meses', '12 meses')">12 meses</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, 'outro_mes', 'Outro mês')">Outro mês</button>
+                        <button type="button" onclick="window.selecionarRetornoConsulta(event, 'data_especifica', 'Data específica')">Data específica</button>
+                    </div>
                 </div>
 
-                <div class="campo campo-retorno-extra campo-escondido" id="campoDataRetorno">
+                <div class="campo-select-compromisso campo-retorno-extra campo-escondido" id="campoDataRetorno">
                     <label>Data aproximada para retorno*</label>
                     <input type="date" name="retorno_data" id="retornoData">
                 </div>
 
-                <div class="campo campo-retorno-extra campo-escondido" id="campoMesesRetorno">
+                <div class="campo-select-compromisso campo-retorno-extra campo-escondido" id="campoMesesRetorno">
                     <label>Meses*</label>
                     <input type="number" name="retorno_meses" id="retornoMeses" min="1">
                 </div>
@@ -232,18 +288,54 @@
                 <span class="contador-observacao" id="contadorDescricaoCompromisso">0 / 500</span>
             </div>
 
-            <div class="campo">
+            <div class="campo-select-compromisso">
                 <label>Agenda de*</label>
 
-                <select name="profissional_compromisso" id="id_profissional_compromisso">
-                    <option value="">---------</option>
+                <button
+                    type="button"
+                    class="btn-select-compromisso"
+                    onclick="window.abrirSelectCompromisso(event, 'menuProfissionalCompromisso')"
+                >
+                    <span id="textoProfissionalCompromisso">
+                        {% if form.profissional.value %}
+                            {% for profissional in form.fields.profissional.queryset %}
+                                {% if form.profissional.value|stringformat:'s' == profissional.id|stringformat:'s' %}
+                                    {{ profissional.nome }}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            ---------
+                        {% endif %}
+                    </span>
+                    <span>▾</span>
+                </button>
+
+                <input
+                    type="hidden"
+                    name="profissional_compromisso"
+                    id="id_profissional_compromisso"
+                    value="{{ form.profissional.value|default:'' }}"
+                >
+
+                <div class="menu-select-compromisso" id="menuProfissionalCompromisso">
+
+                    <button
+                        type="button"
+                        onclick="window.selecionarProfissionalCompromisso(event, '', '---------')"
+                    >
+                        ---------
+                    </button>
 
                     {% for profissional in form.fields.profissional.queryset %}
-                        <option value="{{ profissional.id }}">
+                        <button
+                            type="button"
+                            onclick="window.selecionarProfissionalCompromisso(event, '{{ profissional.id }}', '{{ profissional.nome }}')"
+                        >
                             {{ profissional.nome }}
-                        </option>
+                        </button>
                     {% endfor %}
-                </select>
+
+                </div>
             </div>
 
             <div class="separador-compromisso"></div>
@@ -286,7 +378,12 @@
             <!-- REPETIR COMPROMISSO -->
             <div class="linha-check-compromisso linha-repetir-compromisso">
                 <label class="check-compromisso-custom">
-                    <input type="checkbox" id="repetirCompromisso" name="repetir_compromisso">
+                    <input
+                        type="checkbox"
+                        id="repetirCompromisso"
+                        name="repetir_compromisso"
+                        onchange="window.toggleRepetirCompromisso(this)"
+                    >       
                     <span class="caixa-check-compromisso"></span>
                     <span class="texto-check-compromisso">Repetir compromisso</span>
                 </label>
@@ -296,26 +393,50 @@
 
                 <div class="linha-repeticao-compromisso">
 
-                    <div class="campo-limpo-compromisso">
+                    <div class="campo-select-compromisso">
                         <label>Repetir</label>
-                        <select name="tipo_repeticao_compromisso" id="tipoRepeticaoCompromisso">
-                            <option value="todos_os_dias">Todos os dias</option>
-                            <option value="semanalmente">Semanalmente</option>
-                            <option value="quinzenalmente">Quinzenalmente</option>
-                            <option value="mensalmente">Mensalmente</option>
-                            <option value="anualmente">Anualmente</option>
-                        </select>
+
+                        <button
+                            type="button"
+                            class="btn-select-compromisso"
+                            onclick="window.abrirSelectCompromisso(event, 'menuRepetirCompromisso')"
+                        >
+                            <span id="textoTipoRepeticaoCompromisso">Todos os dias</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="tipo_repeticao_compromisso" id="tipoRepeticaoCompromisso" value="todos_os_dias">
+
+                        <div class="menu-select-compromisso" id="menuRepetirCompromisso">
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'todos_os_dias', 'Todos os dias', 'menuRepetirCompromisso')">Todos os dias</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'semanalmente', 'Semanalmente', 'menuRepetirCompromisso')">Semanalmente</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'quinzenalmente', 'Quinzenalmente', 'menuRepetirCompromisso')">Quinzenalmente</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'mensalmente', 'Mensalmente', 'menuRepetirCompromisso')">Mensalmente</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'anualmente', 'Anualmente', 'menuRepetirCompromisso')">Anualmente</button>
+                        </div>
                     </div>
 
-                    <div class="campo-limpo-compromisso">
+                    <div class="campo-select-compromisso">
                         <label>Terminar repetição</label>
-                        <select name="terminar_repeticao_compromisso" id="terminarRepeticaoCompromisso">
-                            <option value="nunca">Nunca</option>
-                            <option value="data_especifica">Data específica</option>
-                        </select>
+
+                        <button
+                            type="button"
+                            class="btn-select-compromisso"
+                            onclick="window.abrirSelectCompromisso(event, 'menuTerminarRepeticaoCompromisso')"
+                        >
+                            <span id="textoTerminarRepeticaoCompromisso">Nunca</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="terminar_repeticao_compromisso" id="terminarRepeticaoCompromisso" value="nunca">
+
+                        <div class="menu-select-compromisso" id="menuTerminarRepeticaoCompromisso">
+                            <button type="button" onclick="window.selecionarTerminarRepeticaoCompromisso(event, 'nunca', 'Nunca')">Nunca</button>
+                            <button type="button" onclick="window.selecionarTerminarRepeticaoCompromisso(event, 'data_especifica', 'Data específica')">Data específica</button>
+                        </div>
                     </div>
 
-                    <div class="campo-limpo-compromisso campo-finaliza-repeticao" id="campoDataFimRepeticaoCompromisso">
+                    <div class="campo-select-compromisso campo-finaliza-repeticao" id="campoDataFimRepeticaoCompromisso">
                         <label>Finaliza em*</label>
                         <input
                             type="date"
@@ -337,42 +458,74 @@
 
                 <div class="conteudo-configuracoes-compromisso" id="conteudoConfigCompromisso">
 
-                    <div class="grid-configuracoes-compromisso">
+                    <div class="campo-select-compromisso">
+                        <label>Disponibilidade para consultas</label>
 
-                        <div class="campo-limpo-compromisso">
-                            <label>Disponibilidade para consultas</label>
-                            <select name="disponibilidade_compromisso" id="disponibilidadeCompromisso">
-                                <option value="ocupado">Ocupado</option>
-                                <option value="disponivel">Disponível</option>
-                            </select>
-                        </div>
-
-                        <div class="campo-limpo-compromisso">
-                            <label>Privacidade do compromisso</label>
-                            <select name="privacidade_compromisso" id="privacidadeCompromisso">
-                                <option value="privado">Privado</option>
-                                <option value="publico">Público</option>
-                            </select>
-                        </div>
-
-                        <div class="campo-limpo-compromisso">
-                            <label>Receber alerta</label>
-                            <select name="alerta_compromisso" id="alertaCompromisso">
-                                <option value="sem_alerta">Sem alerta</option>
-                                <option value="1_minuto">1 minuto antes</option>
-                                <option value="5_minutos">5 minutos antes</option>
-                                <option value="30_minutos">30 minutos antes</option>
-                                <option value="1_hora">1 hora antes</option>
-                                <option value="1_dia">1 dia antes</option>
-                                <option value="personalizar">Personalizar</option>
-                            </select>
-                        </div>
-
-                        <div
-                            class="campo-limpo-compromisso campo-alerta-personalizado"
-                            id="campoAlertaPersonalizado"
-                            style="display:none;"
+                        <button
+                            type="button"
+                            class="btn-select-compromisso"
+                            onclick="window.abrirSelectCompromisso(event, 'menuDisponibilidadeCompromisso')"
                         >
+                            <span id="textoDisponibilidadeCompromisso">Ocupado</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="disponibilidade_compromisso" id="disponibilidadeCompromisso" value="ocupado">
+
+                        <div class="menu-select-compromisso" id="menuDisponibilidadeCompromisso">
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'disponibilidadeCompromisso', 'textoDisponibilidadeCompromisso', 'ocupado', 'Ocupado', 'menuDisponibilidadeCompromisso')">Ocupado</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'disponibilidadeCompromisso', 'textoDisponibilidadeCompromisso', 'disponivel', 'Disponível', 'menuDisponibilidadeCompromisso')">Disponível</button>
+                        </div>
+                    </div>
+
+                    <div class="campo-select-compromisso">
+                        <label>Privacidade do compromisso</label>
+
+                        <button
+                            type="button"
+                            class="btn-select-compromisso"
+                            onclick="window.abrirSelectCompromisso(event, 'menuPrivacidadeCompromisso')"
+                        >
+                            <span id="textoPrivacidadeCompromisso">Privado</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="privacidade_compromisso" id="privacidadeCompromisso" value="privado">
+
+                        <div class="menu-select-compromisso" id="menuPrivacidadeCompromisso">
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'privacidadeCompromisso', 'textoPrivacidadeCompromisso', 'privado', 'Privado', 'menuPrivacidadeCompromisso')">Privado</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'privacidadeCompromisso', 'textoPrivacidadeCompromisso', 'publico', 'Público', 'menuPrivacidadeCompromisso')">Público</button>
+                        </div>
+                    </div>
+
+                    <div class="campo-select-compromisso">
+                        <label>Receber alerta</label>
+
+                        <button
+                            type="button"
+                            class="btn-select-compromisso"
+                            onclick="window.abrirSelectCompromisso(event, 'menuAlertaCompromisso')"
+                        >
+                            <span id="textoAlertaCompromisso">Sem alerta</span>
+                            <span>▾</span>
+                        </button>
+
+                        <input type="hidden" name="alerta_compromisso" id="alertaCompromisso" value="sem_alerta">
+
+                        <div class="menu-select-compromisso" id="menuAlertaCompromisso">
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, 'sem_alerta', 'Sem alerta')">Sem alerta</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, '1_minuto', '1 minuto antes')">1 minuto antes</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, '5_minutos', '5 minutos antes')">5 minutos antes</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, '30_minutos', '30 minutos antes')">30 minutos antes</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, '1_hora', '1 hora antes')">1 hora antes</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, '1_dia', '1 dia antes')">1 dia antes</button>
+                            <button type="button" onclick="window.selecionarAlertaCompromisso(event, 'personalizar', 'Personalizar')">Personalizar</button>
+                        </div>
+                    </div>
+
+                    <div class="linha-alerta-personalizado-compromisso" id="linhaAlertaPersonalizadoCompromisso" style="display:none;">
+
+                        <div class="campo-select-compromisso campo-alerta-personalizado">
                             <label>Tempo</label>
                             <input
                                 type="number"
@@ -383,19 +536,38 @@
                             >
                         </div>
 
-                        <div
-                            class="campo-limpo-compromisso campo-alerta-personalizado"
-                            id="campoUnidadeAlertaPersonalizado"
-                            style="display:none;"
-                        >
+                        <div class="campo-select-compromisso campo-alerta-personalizado">
                             <label>Unidade</label>
-                            <select name="alerta_unidade" id="alertaUnidade">
-                                <option value="minutos">Minuto(s)</option>
-                                <option value="horas">Hora(s)</option>
-                                <option value="dias">Dia(s)</option>
-                            </select>
+
+                            <button
+                                type="button"
+                                class="btn-select-compromisso"
+                                onclick="window.abrirSelectCompromisso(event, 'menuUnidadeAlertaCompromisso')"
+                            >
+                                <span id="textoUnidadeAlertaCompromisso">Hora(s)</span>
+                                <span>▾</span>
+                            </button>
+
+                            <input type="hidden" name="alerta_unidade" id="alertaUnidade" value="horas">
+
+                            <div class="menu-select-compromisso" id="menuUnidadeAlertaCompromisso">
+                                <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'dias', 'Dia(s)', 'menuUnidadeAlertaCompromisso')">Dia(s)</button>
+                                <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'horas', 'Hora(s)', 'menuUnidadeAlertaCompromisso')">Hora(s)</button>
+                                <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'minutos', 'Minuto(s)', 'menuUnidadeAlertaCompromisso')">Minuto(s)</button>
+                            </div>
                         </div>
 
+                    </div>
+                            
+                    </button>
+
+                    <input type="hidden" name="alerta_unidade" id="alertaUnidade" value="horas">
+
+                    <div class="menu-select-compromisso" id="menuUnidadeAlertaCompromisso">
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'dias', 'Dia(s)', 'menuUnidadeAlertaCompromisso')">Dia(s)</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'horas', 'Hora(s)', 'menuUnidadeAlertaCompromisso')">Hora(s)</button>
+                            <button type="button" onclick="window.selecionarSelectCompromisso(event, 'alertaUnidade', 'textoUnidadeAlertaCompromisso', 'minutos', 'Minuto(s)', 'menuUnidadeAlertaCompromisso')">Minuto(s)</button>
+                        </div>
                     </div>
 
                 </div>
@@ -407,27 +579,14 @@
         <!-- =========================
              RODAPÉ
         ========================== -->
-        <div class="rodape-agendamento">
+        <div class="rodape-modal-agendamento">
+            <button type="button" class="btn-cancelar" onclick="fecharModalAgendamento()">
+                CANCELAR
+            </button>
 
-            <div></div>
-
-            <div class="botoes">
-                <button
-                    type="button"
-                    class="btn-fechar"
-                    onclick="fecharModalAgendamento()"
-                >
-                    FECHAR
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn-marcar"
-                >
-                    MARCAR
-                </button>
-            </div>
-
+            <button type="submit" form="formNovoAgendamento" class="btn-marcar">
+                MARCAR
+            </button>
         </div>
 
     </form>

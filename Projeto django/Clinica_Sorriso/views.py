@@ -38,8 +38,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import AgendamentoForm
 from django.views.decorators.http import require_POST
-from .models import Paciente, Agendamento
-
+from .models import Agendamento, Paciente, Profissional, CompromissoAgenda
 
 
 # =========================
@@ -541,7 +540,51 @@ def Exportar_Estoque_Excel(request):
     
     return response
 
-from .models import Agendamento, Paciente, Profissional
+
+def preparar_compromissos_grid(compromissos, horas):
+    compromissos_grid = []
+
+    mapa_horas = {}
+
+    for index, hora in enumerate(horas):
+        mapa_horas[hora["valor"]] = index + 2
+
+    for compromisso in compromissos:
+        if not compromisso.data_inicio:
+            continue
+
+        grid_col = compromisso.data_inicio.weekday() + 2
+
+        if compromisso.dia_inteiro:
+            hora_inicio_str = "08:00"
+            grid_row = mapa_horas.get(hora_inicio_str, 2)
+            grid_span = len(horas)
+        else:
+            if not compromisso.hora_inicio or not compromisso.hora_fim:
+                continue
+
+            hora_inicio_str = compromisso.hora_inicio.strftime("%H:%M")
+            grid_row = mapa_horas.get(hora_inicio_str)
+
+            if not grid_row:
+                continue
+
+            inicio_minutos = compromisso.hora_inicio.hour * 60 + compromisso.hora_inicio.minute
+            fim_minutos = compromisso.hora_fim.hour * 60 + compromisso.hora_fim.minute
+            duracao_minutos = fim_minutos - inicio_minutos
+
+            if duracao_minutos <= 0:
+                duracao_minutos = 15
+
+            grid_span = max(1, duracao_minutos // 15)
+
+        compromisso.grid_col = grid_col
+        compromisso.grid_row = grid_row
+        compromisso.grid_span = grid_span
+
+        compromissos_grid.append(compromisso)
+
+    return compromissos_grid
 
 @login_required
 def agenda(request):
@@ -590,7 +633,7 @@ def agenda(request):
             "num": dia.day,
         })
 
-    # ================= AGENDAMENTOS =================
+    # ================= AGENDAMENTOS / CONSULTAS =================
     agendamentos = (
         Agendamento.objects
         .select_related("paciente", "profissional")
@@ -602,6 +645,19 @@ def agenda(request):
 
     agendamentos = preparar_agendamentos_grid(agendamentos, horas)
 
+    # ================= COMPROMISSOS =================
+    compromissos = (
+        CompromissoAgenda.objects
+        .select_related("profissional")
+        .filter(data_inicio__range=[inicio_semana, fim_semana])
+        .order_by("data_inicio", "hora_inicio")
+    )
+
+    if profissional_id:
+        compromissos = compromissos.filter(profissional_id=profissional_id)
+
+    compromissos = preparar_compromissos_grid(compromissos, horas)
+
     return render(
         request,
         "Clinica_Sorriso/agenda/agenda.html",
@@ -609,9 +665,20 @@ def agenda(request):
             "horas": horas,
             "dias": dias,
             "today": date.today(),
+
+            # consultas
             "agendamentos": agendamentos,
+
+            # compromissos
+            "compromissos": compromissos,
+
+            # semana
             "semana": semana,
             "data_base": data_base,
+            "inicio_semana": inicio_semana,
+            "fim_semana": fim_semana,
+
+            # expediente
             "inicio_expediente": "08:00",
             "fim_expediente": "18:00",
 
@@ -627,19 +694,89 @@ def criar_agendamento(request):
     profissional_id = request.GET.get("profissional") or request.POST.get("profissional")
 
     if request.method == "POST":
+        tipo_agendamento = request.POST.get("tipo_agendamento", "consulta")
+
+        if tipo_agendamento == "compromisso":
+            titulo = request.POST.get("titulo_compromisso", "").strip()
+            descricao = request.POST.get("descricao_compromisso", "").strip()
+            profissional_compromisso_id = request.POST.get("profissional_compromisso")
+
+            data_inicio = request.POST.get("compromisso_data_inicio")
+            hora_inicio = request.POST.get("compromisso_hora_inicio")
+            data_fim = request.POST.get("compromisso_data_fim")
+            hora_fim = request.POST.get("compromisso_hora_fim")
+
+            dia_inteiro = request.POST.get("dia_inteiro") == "on"
+            repetir = request.POST.get("repetir_compromisso") == "on"
+
+            tipo_repeticao = request.POST.get("tipo_repeticao_compromisso") if repetir else None
+            terminar_repeticao = request.POST.get("terminar_repeticao_compromisso") or "nunca"
+            data_fim_repeticao = request.POST.get("data_fim_repeticao_compromisso") or None
+
+            disponibilidade = request.POST.get("disponibilidade_compromisso") or "ocupado"
+            privacidade = request.POST.get("privacidade_compromisso") or "privado"
+            alerta = request.POST.get("alerta_compromisso") or "sem_alerta"
+
+            alerta_quantidade = request.POST.get("alerta_quantidade") or None
+            alerta_unidade = request.POST.get("alerta_unidade") or None
+
+            if not titulo:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Informe o título do compromisso."
+                }, status=400)
+
+            if not profissional_compromisso_id:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Selecione a agenda/profissional."
+                }, status=400)
+
+            try:
+                compromisso = CompromissoAgenda.objects.create(
+                    titulo=titulo,
+                    descricao=descricao,
+                    profissional_id=profissional_compromisso_id,
+                    data_inicio=data_inicio,
+                    hora_inicio=None if dia_inteiro else hora_inicio,
+                    data_fim=data_fim,
+                    hora_fim=None if dia_inteiro else hora_fim,
+                    dia_inteiro=dia_inteiro,
+                    repetir=repetir,
+                    tipo_repeticao=tipo_repeticao,
+                    terminar_repeticao=terminar_repeticao,
+                    data_fim_repeticao=data_fim_repeticao,
+                    disponibilidade=disponibilidade,
+                    privacidade=privacidade,
+                    alerta=alerta,
+                    alerta_quantidade=alerta_quantidade,
+                    alerta_unidade=alerta_unidade,
+                )
+            except Exception as e:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": str(e)
+                }, status=400)
+
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({
+                    "ok": True,
+                    "mensagem": "Compromisso criado com sucesso.",
+                    "tipo": "compromisso",
+                    "id": compromisso.id,
+                })
+
+            return redirect("agenda")
+
         form = AgendamentoForm(request.POST)
 
         if form.is_valid():
             nome_paciente = form.cleaned_data["paciente_nome"].strip()
 
-            paciente = Paciente.objects.filter(
-                nome__iexact=nome_paciente
-            ).first()
+            paciente = Paciente.objects.filter(nome__iexact=nome_paciente).first()
 
             if not paciente:
-                paciente = Paciente.objects.create(
-                    nome=nome_paciente
-                )
+                paciente = Paciente.objects.create(nome=nome_paciente)
 
             agendamento = form.save(commit=False)
             agendamento.paciente = paciente
@@ -648,7 +785,9 @@ def criar_agendamento(request):
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({
                     "ok": True,
-                    "mensagem": "Agendamento criado com sucesso."
+                    "mensagem": "Agendamento criado com sucesso.",
+                    "tipo": "consulta",
+                    "id": agendamento.id,
                 })
 
             return redirect("agenda")
@@ -673,14 +812,10 @@ def criar_agendamento(request):
 
         form = AgendamentoForm(initial=initial)
 
-    return render(
-        request,
-        "Clinica_Sorriso/agenda/criar_agendamento.html",
-        {
-            "form": form,
-            "profissional_id": profissional_id,
-        }
-    )
+    return render(request, "Clinica_Sorriso/agenda/criar_agendamento.html", {
+        "form": form,
+        "profissional_id": profissional_id,
+    })
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -708,8 +843,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
-from .models import Agendamento, Paciente, Profissional
-
+from .models import Agendamento, Paciente, Profissional, CompromissoAgenda
 
 @login_required
 @require_POST
@@ -872,6 +1006,7 @@ def gerar_horas():
 import math
 from datetime import date, timedelta, datetime
 
+
 def preparar_agendamentos_grid(agendamentos, horas):
     mapa_horas = {
         h["valor"]: index + 1
@@ -900,26 +1035,58 @@ def preparar_agendamentos_grid(agendamentos, horas):
 
         ag.grid_span = max(1, math.ceil(minutos / 15))
 
+        # ================= DADOS EXTRAS PARA O MODAL =================
+        if ag.paciente:
+            ag.paciente_nome = ag.paciente.nome
+
+            # tenta pegar celular, telefone ou whatsapp, conforme existir no seu model
+            ag.paciente_celular = (
+                getattr(ag.paciente, "celular", "") or
+                getattr(ag.paciente, "telefone", "") or
+                getattr(ag.paciente, "whatsapp", "")
+            )
+        else:
+            ag.paciente_nome = ""
+            ag.paciente_celular = ""
+
     return agendamentos
+
 
 from django.shortcuts import get_object_or_404
 @login_required
 def detalhes_agendamento(request, id):
-
-    agendamento = get_object_or_404(
-        Agendamento,
-        id=id
+    ag = (
+        Agendamento.objects
+        .select_related("paciente", "profissional")
+        .filter(id=id)
+        .first()
     )
+
+    if not ag:
+        return HttpResponse("Agendamento não encontrado.", status=404)
+
+    # Dados extras para o template de detalhes
+    if ag.paciente:
+        ag.paciente_nome = getattr(ag.paciente, "nome", str(ag.paciente))
+
+        ag.paciente_celular = (
+            getattr(ag.paciente, "celular", "") or
+            getattr(ag.paciente, "telefone", "") or
+            getattr(ag.paciente, "whatsapp", "")
+        )
+    else:
+        ag.paciente_nome = ""
+        ag.paciente_celular = ""
 
     return render(
         request,
         "Clinica_Sorriso/agenda/detalhes_agendamento.html",
         {
-            "ag": agendamento
+            "ag": ag,
         }
     )
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 @login_required
 def buscar_pacientes_agenda(request):

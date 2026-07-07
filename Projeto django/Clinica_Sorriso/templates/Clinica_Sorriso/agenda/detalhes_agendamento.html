@@ -1,4 +1,4 @@
-<div class="detalhes-card">
+<div class="detalhes-card status-{{ ag.status }}" id="conteudoDetalhesConsulta">
 
     <div class="detalhes-topo">
 
@@ -8,49 +8,130 @@
 
         <div class="detalhes-info">
             <h2>{{ ag.paciente }}</h2>
-            <p>{{ ag.data|date:"l, d \\d\\e F" }} • {{ ag.hora_inicio|time:"H:i" }} - {{ ag.hora_fim|time:"H:i" }}</p>
+            
+            <p>
+                {{ ag.data|date:"l, d \\d\\e F" }} •
+                {{ ag.hora_inicio|time:"H:i" }} - {{ ag.hora_fim|time:"H:i" }}
+            </p>
         </div>
 
         <div class="detalhes-acoes-topo">
-            <button type="button" title="Duplicar">
+
+            <button type="button" title="Duplicar" onclick="duplicarConsultaAtual({{ ag.id }})">
                 <i class="fas fa-copy"></i>
             </button>
 
-            <button type="button" title="Editar">
+            <button type="button" title="Editar" onclick="editarConsultaAtual({{ ag.id }})">
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
             <button type="button" title="Fechar" onclick="fecharDetalhesAgendamento()">
                 <i class="fas fa-times"></i>
             </button>
+
         </div>
 
     </div>
 
     <div class="detalhes-body">
 
-        <div class="campo-status">
-            <i class="far fa-calendar"></i>
+        <div class="campo-status-detalhe-consulta">
 
-            <select>
-                <option {% if ag.status == "pendente" %}selected{% endif %}>Agendada</option>
-                <option {% if ag.status == "confirmado" %}selected{% endif %}>Confirmada</option>
-                <option {% if ag.status == "atendido" %}selected{% endif %}>Finalizada</option>
-                <option {% if ag.status == "cancelado" %}selected{% endif %}>Cancelada pelo profissional</option>
-                <option>Paciente aguardando</option>
-                <option>Em atendimento</option>
-                <option>Falta</option>
-            </select>
+            <button
+                type="button"
+                class="btn-status-detalhe status-{{ ag.status }}"
+                id="btnStatusDetalheConsulta"
+                data-status="{{ ag.status }}"
+                onclick="abrirMenuStatusDetalheConsulta(event)"
+            >
+                <i class="far fa-calendar"></i>
+
+                <span id="textoStatusDetalheConsulta">
+                    {% if ag.status == "pendente" or ag.status == "agendada" %}
+                        Agendada
+                    {% elif ag.status == "confirmado" or ag.status == "confirmada" %}
+                        Confirmada
+                    {% elif ag.status == "em_atendimento" %}
+                        Em atendimento
+                    {% elif ag.status == "atendido" or ag.status == "atendida" %}
+                        Finalizada
+                    {% elif ag.status == "falta" %}
+                        Falta
+                    {% elif ag.status == "cancelado" or ag.status == "cancelada_profissional" %}
+                        Cancelada pelo profissional
+                    {% elif ag.status == "cancelada_paciente" %}
+                        Cancelada pelo paciente
+                    {% else %}
+                        Agendada
+                    {% endif %}
+                </span>
+
+                <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <div class="menu-status-detalhe-consulta" id="menuStatusDetalheConsulta">
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'agendada', 'Agendada')">
+                    <span class="bolinha-status status-agendada"></span>
+                    Agendada
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'confirmada', 'Confirmada')">
+                    <span class="bolinha-status status-confirmada"></span>
+                    Confirmada
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'paciente_aguardando', 'Paciente aguardando')">
+                    <span class="bolinha-status status-paciente-aguardando"></span>
+                    Paciente aguardando
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'em_atendimento', 'Em atendimento')">
+                    <span class="bolinha-status status-em-atendimento"></span>
+                    Em atendimento
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'atendida', 'Finalizada')">
+                    <span class="bolinha-status status-atendida"></span>
+                    Finalizada
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'falta', 'Falta')">
+                    <span class="bolinha-status status-falta"></span>
+                    Falta
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'cancelada_paciente', 'Cancelada pelo paciente')">
+                    <span class="bolinha-status status-cancelada-paciente"></span>
+                    Cancelada pelo paciente
+                </button>
+
+                <button type="button" onclick="alterarStatusConsultaDetalhe({{ ag.id }}, 'cancelada_profissional', 'Cancelada pelo profissional')">
+                    <span class="bolinha-status status-cancelada-profissional"></span>
+                    Cancelada pelo profissional
+                </button>
+
+            </div>
+
         </div>
 
         <div class="whatsapp-box">
-            <i class="fab fa-whatsapp"></i>
-            <span>Confirmar por WhatsApp Web</span>
-
-            <button type="button">
-                <i class="fas fa-pencil-alt"></i>
+            <button 
+                type="button" 
+                class="btn-whatsapp-confirmar"
+                data-paciente="{{ ag.paciente_nome|default:ag.paciente }}"
+                data-telefone="{{ ag.paciente_celular|default:'' }}"
+                data-data="{{ ag.data|date:'d/m/Y' }}"
+                data-hora-inicio="{{ ag.hora_inicio|time:'H:i' }}"
+                data-hora-fim="{{ ag.hora_fim|time:'H:i' }}"
+                onclick="confirmarConsultaWhatsapp(this)"
+            >
+                <i class="fab fa-whatsapp"></i>
+                <span>Confirmar por WhatsApp Web</span>
             </button>
+
         </div>
+
 
         <div class="linha-info">
             <span class="bolinha-profissional">
@@ -73,7 +154,7 @@
         </div>
 
         <div class="campo-rotulo">
-            <input type="text" placeholder="Rótulo da consulta">
+            <input type="text" placeholder="Rótulo da consulta" readonly>
         </div>
 
     </div>
