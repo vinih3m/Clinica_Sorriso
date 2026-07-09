@@ -1686,6 +1686,13 @@
     font-size: 14px;
 }
 
+.grupo-esquerda,
+.grupo-direita {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 @media (max-width: 900px) {
     .topo-agenda {
         flex-direction: column;
@@ -1981,6 +1988,28 @@
     color: #666;
 }
 
+.paciente-autocomplete {
+    position: relative;
+}
+
+.lista-pacientes-agendamento {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 18px rgba(0,0,0,.22);
+    z-index: 12000;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.lista-pacientes-agendamento.aberta {
+    display: block;
+}
+
 .item-paciente-agendamento {
     width: 100%;
     border: 0;
@@ -1989,6 +2018,23 @@
     text-align: left;
     cursor: pointer;
     border-bottom: 1px solid #eee;
+}
+
+.item-paciente-agendamento:hover {
+    background: #f5f5f5;
+}
+
+.nome-item-paciente {
+    display: block;
+    font-weight: 600;
+    color: #222;
+}
+
+.info-item-paciente {
+    display: block;
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
 }
 
 .lista-pacientes-agendamento {
@@ -2230,6 +2276,20 @@
     justify-content: flex-end;
     margin-top: -6px;
     margin-bottom: 12px;
+}
+
+.link-horario {
+    border: 0;
+    background: transparent;
+    color: #1e88e5;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    text-decoration: none;
+}
+
+.link-horario:hover {
+    text-decoration: underline;
 }
 
 .overlay-horarios-livres {
@@ -2532,6 +2592,10 @@
     gap: 8px;
 }
 
+.paleta-cores-etiqueta.aberta {
+    display: grid;
+}
+
 .paleta-cores-etiqueta > button:not(.btn-mais-cores-texto) {
     width: 26px;
     height: 26px;
@@ -2829,6 +2893,34 @@
     display: block;
 }
 
+.box-configuracoes-compromisso {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-top: 22px;
+    overflow: hidden;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 18px 22px 22px;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 18px;
+}
+
 /* ===============================
    COMPROMISSO - CHECKBOXES
 ================================ */
@@ -2970,6 +3062,21 @@
     margin-bottom: 22px;
 }
 
+.grid-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: end;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
 
 /* ===============================
    CONFIGURAÇÕES EXTRAS COMPROMISSO
@@ -3019,6 +3126,21 @@
     overflow: hidden;
 }
 
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+}
+
+.conteudo-configuracoes-compromisso {
+    padding: 18px 22px 22px;
+}
+
 /* ===============================
    COMPROMISSO - CHECKBOX CORRIGIDO
 ================================ */
@@ -3047,6 +3169,10 @@
     width: auto;
 }
 
+.check-compromisso-custom input[type="checkbox"] {
+    display: none !important;
+}
+
 .caixa-check-compromisso {
     width: 20px !important;
     height: 20px !important;
@@ -3060,6 +3186,19 @@
     justify-content: center;
     flex-shrink: 0;
     box-sizing: border-box;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso {
+    background: #2196f3;
+    border-color: #2196f3;
+}
+
+.check-compromisso-custom input[type="checkbox"]:checked + .caixa-check-compromisso::after {
+    content: "✓";
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .texto-check-compromisso {
@@ -3313,6 +3452,14 @@
     align-items: end;
 }
 
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
 
 /* configurações extras */
 
@@ -3340,6 +3487,13 @@
 .conteudo-configuracoes-compromisso {
     padding: 22px;
     background: #fff;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
 }
 
 /* ==================================================
@@ -3436,6 +3590,21 @@
     margin-bottom: 28px;
 }
 
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
 .box-configuracoes-compromisso {
     border: 1px solid #eee;
     border-radius: 4px;
@@ -3449,6 +3618,18 @@
     padding: 22px;
     background: #fff;
     overflow: visible;
+}
+
+.topo-configuracoes-compromisso {
+    height: 58px;
+    background: #f5f5f5;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 /* ==================================================
@@ -3504,6 +3685,22 @@
     overflow-y: auto;
 }
 
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
+.menu-select-compromisso button {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    padding: 0 18px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
 .menu-select-compromisso button:hover,
 .menu-select-compromisso button.ativo {
     background: #e0e0e0;
@@ -3516,6 +3713,34 @@
 .conteudo-configuracoes-compromisso,
 .grid-configuracoes-compromisso {
     overflow: visible !important;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 18px;
+    align-items: start;
+}
+
+.area-repeticao-compromisso {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 28px;
+}
+
+.linha-repeticao-compromisso {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.campo-finaliza-repeticao {
+    display: none;
+}
+
+.campo-finaliza-repeticao.aberto {
+    display: block;
 }
 
 /* ==================================================
@@ -3533,6 +3758,10 @@
     overflow-x: hidden !important;
 }
 
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
 .menu-select-compromisso button {
     width: 100%;
     min-height: 52px;
@@ -3543,6 +3772,12 @@
     font-size: 16px;
     color: #222;
     cursor: pointer;
+}
+
+.menu-select-compromisso button:hover,
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
 }
 
 .menu-select-compromisso::-webkit-scrollbar {
@@ -3611,6 +3846,40 @@
     overflow: visible !important;
 }
 
+.campo-select-compromisso label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #777;
+    z-index: 5;
+    line-height: 14px;
+    pointer-events: none;
+}
+
+.btn-select-compromisso {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.btn-select-compromisso.ativo,
+.btn-select-compromisso:focus {
+    border-color: #2196f3;
+}
+
 .menu-select-compromisso {
     display: none;
     position: absolute !important;
@@ -3633,6 +3902,10 @@
     bottom: calc(100% + 4px) !important;
 }
 
+.menu-select-compromisso.aberto {
+    display: block;
+}
+
 .menu-select-compromisso button {
     width: 100%;
     min-height: 48px;
@@ -3643,6 +3916,12 @@
     font-size: 16px;
     color: #222;
     cursor: pointer;
+}
+
+.menu-select-compromisso button:hover,
+.menu-select-compromisso button.ativo {
+    background: #e0e0e0;
+    color: #1e88e5;
 }
 
 #menuAlertaCompromisso {
@@ -3657,6 +3936,13 @@
 .conteudo-configuracoes-compromisso,
 .grid-configuracoes-compromisso {
     overflow: visible !important;
+}
+
+.grid-configuracoes-compromisso {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px 18px !important;
+    align-items: start !important;
 }
 
 .grid-configuracoes-compromisso .campo-select-compromisso:nth-child(3) {
@@ -3679,6 +3965,10 @@
     grid-template-columns: 1fr;
     gap: 18px;
     margin-top: 18px;
+}
+
+.linha-retorno-agendamento.com-extra {
+    grid-template-columns: 1fr 1fr;
 }
 
 .linha-retorno-agendamento .campo-select-compromisso {
@@ -5410,6 +5700,10 @@
     margin-bottom: 0 !important;
 }
 
+.campo-data-retorno-duplicar.ativo {
+    display: block !important;
+}
+
 .campo-data-retorno-duplicar input {
     width: 100% !important;
     height: 52px !important;
@@ -5425,6 +5719,10 @@
     display: none !important;
     margin-top: 18px !important;
     margin-bottom: 24px !important;
+}
+
+.campo-motivo-retorno-duplicar.ativo {
+    display: block !important;
 }
 
 .campo-motivo-retorno-duplicar textarea {
@@ -5474,6 +5772,56 @@
 
 .campo-retorno-duplicar {
     margin-bottom: 0 !important;
+}
+
+.campo-data-retorno-duplicar {
+    display: none !important;
+    margin-bottom: 0 !important;
+}
+
+.campo-data-retorno-duplicar.ativo {
+    display: block !important;
+}
+
+.campo-motivo-retorno-duplicar {
+    display: none !important;
+    margin-top: 18px !important;
+    margin-bottom: 24px !important;
+}
+
+.campo-motivo-retorno-duplicar.ativo {
+    display: block !important;
+}
+
+.campo-data-retorno-duplicar input {
+    width: 100% !important;
+    height: 52px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    padding: 0 16px !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+    background: #fff !important;
+}
+
+.campo-motivo-retorno-duplicar textarea {
+    width: 100% !important;
+    height: 78px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    padding: 16px !important;
+    font-size: 16px !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
+    background: #fff !important;
+}
+
+.campo-motivo-retorno-duplicar small {
+    display: block !important;
+    text-align: right !important;
+    color: #777 !important;
+    margin-top: 6px !important;
+    font-size: 12px !important;
 }
 
 #menuDuplicarRetornoConsulta {
@@ -6880,6 +7228,10 @@
     padding: 8px 0 !important;
 }
 
+.menu-acoes-encaixe.aberto {
+    display: block !important;
+}
+
 .menu-acoes-encaixe button {
     width: 100% !important;
     min-height: 48px !important;
@@ -7392,6 +7744,11 @@
     overflow: visible !important;
 }
 
+.menu-alerta-wrapper {
+    position: relative !important;
+    overflow: visible !important;
+}
+
 .btn-menu-alerta {
     border: 0 !important;
     background: transparent !important;
@@ -7415,6 +7772,10 @@
     padding: 8px 0 !important;
 }
 
+.menu-acoes-alerta.aberto {
+    display: block !important;
+}
+
 .menu-acoes-alerta button {
     width: 100% !important;
     min-height: 48px !important;
@@ -7425,6 +7786,14 @@
     font-size: 16px !important;
     color: #222 !important;
     cursor: pointer !important;
+}
+
+.menu-acoes-alerta button:hover {
+    background: #f5f5f5 !important;
+}
+
+.menu-acoes-alerta .acao-excluir {
+    color: red !important;
 }
 
 /* ==================================================

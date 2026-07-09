@@ -38,11 +38,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import AgendamentoForm
 from django.views.decorators.http import require_POST
-from .models import (Agendamento,Paciente,Profissional,CompromissoAgenda,Etiqueta,EncaixeAgenda,AlertaRetorno,)
+from .models import (Agendamento,Paciente,Profissional,CompromissoAgenda,Etiqueta,EncaixeAgenda,AlertaRetorno,AlertaRetorno,)
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
+
 
 # =========================
 # LOGIN
@@ -2069,9 +2070,112 @@ def dados_alerta_retorno(request, alerta_id):
     })
 
 
-from django.http import HttpResponse
+@login_required
 def exportar_retornos(request):
-    return HttpResponse("Exportação ainda não implementada")
+    from django.http import HttpResponse
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.units import cm
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="alertas_de_retorno.pdf"'
+
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=A4,
+        rightMargin=1.5 * cm,
+        leftMargin=1.5 * cm,
+        topMargin=1.5 * cm,
+        bottomMargin=1.5 * cm,
+    )
+
+    elementos = []
+    estilos = getSampleStyleSheet()
+
+    titulo = Paragraph("Alertas de Retorno", estilos["Title"])
+    elementos.append(titulo)
+    elementos.append(Spacer(1, 12))
+
+    alertas = (
+        AlertaRetorno.objects
+        .select_related("paciente", "profissional")
+        .all()
+        .order_by("data_retorno", "-criado_em")
+    )
+
+    dados = [
+        ["Data", "Paciente", "Profissional", "Retornar em", "Status", "Motivo"]
+    ]
+
+    for alerta in alertas:
+        data_retorno = alerta.data_retorno.strftime("%d/%m/%Y") if alerta.data_retorno else "Sem data"
+
+        paciente = alerta.paciente.nome if alerta.paciente else "-"
+
+        profissional = alerta.profissional.nome if alerta.profissional else "-"
+
+        tipo_retorno = alerta.get_tipo_retorno_display() if alerta.tipo_retorno else "-"
+
+        status = alerta.get_status_display() if alerta.status else "-"
+
+        motivo = alerta.motivo or "-"
+
+        dados.append([
+            data_retorno,
+            paciente,
+            profissional,
+            tipo_retorno,
+            status,
+            motivo,
+        ])
+
+    if len(dados) == 1:
+        dados.append(["-", "Nenhum alerta encontrado", "-", "-", "-", "-"])
+
+    tabela = Table(
+        dados,
+        colWidths=[
+            2.2 * cm,
+            3.5 * cm,
+            3.5 * cm,
+            3.0 * cm,
+            2.3 * cm,
+            4.0 * cm,
+        ],
+        repeatRows=1,
+    )
+
+    tabela.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1976d2")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 8),
+
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 1), (-1, -1), 7),
+
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+
+        ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#cccccc")),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [
+            colors.white,
+            colors.HexColor("#f5f5f5"),
+        ]),
+
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+    ]))
+
+    elementos.append(tabela)
+
+    doc.build(elementos)
+
+    return response
 
 
 from django.shortcuts import render
