@@ -11108,7 +11108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const menu = document.getElementById("menuEtiquetasAgendamento");
 
         if (!menu) {
-            alert("Menu de etiquetas não encontrado.");
+            alert("Selecione um profissional.");
             return false;
         }
 
@@ -11825,7 +11825,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!horaInicio) {
-            alert("Informe a hora de início.");
+            alert("Informe a data da consulta.");
             return;
         }
 
@@ -12687,14 +12687,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* ===== EXPORTAR ===== */
+    /* ===== EXPORTAR RETORNOS ===== */
     document.querySelector(".btn-exportar")
-        ?.addEventListener("click", function () {
+        ?.addEventListener("click", function (event) {
+            event.preventDefault();
 
-            alert("Exportar clicado");
-
-            // depois vamos colocar a URL real aqui
-            // window.location.href = "{% url 'exportar_retornos' %}";
+            window.location.href = "{% url 'exportar_retornos' %}";
         });
 
 
