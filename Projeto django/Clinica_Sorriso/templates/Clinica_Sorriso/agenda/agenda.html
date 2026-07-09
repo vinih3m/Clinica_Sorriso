@@ -170,29 +170,6 @@
     gap: 6px;
 }
 
-
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 999;
-}
-
-.modal-content {
-  background: transparent;
-  margin: auto;
-  padding: 0;
-}
-
-.modal-agendamento {
-  width: 460px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 26px;
-  box-shadow: 0 25px 50px rgba(0,0,0,.25);
-}
-
 .modal-agendamento h2 {
   margin: 0;
   color: #0d5ea6;
@@ -916,10 +893,6 @@
     cursor: pointer;
 }
 
-.alerta-retorno {
-    background: #fff3cd;
-}
-
 .topo-agenda {
     display: flex;
     align-items: center;
@@ -934,11 +907,6 @@
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-#inputCalendario {
-    width: auto;
-    padding: 5px 8px;
 }
 
 .alerta-retorno {
@@ -998,11 +966,6 @@
     margin: 0;
 }
 
-.acoes-header {
-    display: flex;
-    gap: 10px;
-}
-
 .btn-ver-todos {
     background: none;
     border: none;
@@ -1017,13 +980,6 @@
     padding: 6px 14px;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.btn-fechar {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
 }
 
 .modal-encaixe-body {
@@ -1111,10 +1067,6 @@
     font-size: 16px;
 }
 
-.dropdown-menu {
-    display: none;
-}
-
 .dropdown-menu.mostrar {
     display: block;
 }
@@ -1132,25 +1084,6 @@
     background:#e4e4e4;
 }
 
-#overlay-detalhes {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999999;
-}
-
-#modal-detalhes-corpo {
-    background: #fff;
-    width: 600px;
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.25);
-}
 
 #overlay-detalhes {
     position: fixed;
@@ -1848,14 +1781,6 @@
     background: #fff !important;
 }
 
-#overlay-agendamento,
-#overlay-detalhes,
-#overlay-alertas,
-#overlay-ver-todos,
-#overlay-alerta-retorno {
-    z-index: 9000;
-}
-
 #overlay-agendamento .modal-novo-agendamento,
 #overlay-detalhes .modal-detalhes {
     z-index: 9001;
@@ -1895,15 +1820,6 @@
 .agendamento {
     position: relative;
     z-index: 1;
-}
-
-/* Modal continua acima de tudo */
-#overlay-agendamento,
-#overlay-detalhes,
-#overlay-alertas,
-#overlay-ver-todos,
-#overlay-alerta-retorno {
-    z-index: 9000 !important;
 }
 
 .conteudo-agenda,
@@ -10271,8 +10187,6 @@ MODAL DETALHES AGENDAMENTO
 </div>
     
 <script>
-console.log("SCRIPT PRINCIPAL CARREGOU");
-
 /* ===============================
    FUNÇÕES GLOBAIS
 ================================ */
@@ -10302,8 +10216,6 @@ let controllerAgendamento = null;
 
 function abrirModalAgendamento(dia = null, hora = null) {
 
-    console.log("Abrindo modal", dia, hora);
-
     document.getElementById("menuProfissionalAgenda")?.classList.remove("aberto");
     document.getElementById("btnProfissionalAgenda")?.classList.remove("ativo");
 
@@ -10327,53 +10239,40 @@ function abrirModalAgendamento(dia = null, hora = null) {
         params.set("hora", hora);
     }
 
-    const profissionalId = document.getElementById("profissionalAgendaSelecionado")?.value || "";
-
-    if (profissionalId) {
-        params.set("profissional", profissionalId);
-    }
-
     if (params.toString()) {
-        url += `?${params.toString()}`;
+        url += "?" + params.toString();
     }
-    fetch(url, { signal })
 
-    .then(r => r.text())
-
+    fetch(url, {
+        signal: signal,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(response => response.text())
     .then(html => {
+        const corpo = document.getElementById("modal-corpo");
+        const overlay = document.getElementById("overlay-agendamento");
 
-        if (signal.aborted) return;
-
-        fecharTodosModais();
-
-        document.getElementById("modal-corpo").innerHTML = html;
-
-        document.getElementById("overlay-agendamento").style.display = "flex";
-
-    })
-
-    .catch(err => {
-
-        if (err.name !== "AbortError") {
-            console.error(err);
-            alert("Erro ao abrir agendamento");
+        if (corpo) {
+            corpo.innerHTML = html;
         }
 
+        if (overlay) {
+            overlay.style.display = "flex";
+        }
     })
-
-    .finally(() => {
-
-        if (controllerAgendamento?.signal === signal) {
-            controllerAgendamento = null;
+    .catch(error => {
+        if (error.name === "AbortError") {
+            return;
         }
 
+        console.error("Erro ao abrir modal de agendamento:", error);
+        alert("Erro ao abrir o modal de agendamento.");
     });
-
 }
 
 function abrirDetalhesAgendamento(id) {
-    console.log("Abrindo detalhes:", id);
-
     fetch(`/agenda/detalhes/${id}/`)
         .then(r => r.text())
         .then(html => {
@@ -10445,8 +10344,6 @@ function atualizarRetornoAgendamento() {
     if (!select) return;
 
     const valor = select.value;
-
-    console.log("Retorno selecionado:", valor);
 
     linhaRetorno?.classList.remove("com-extra");
 
@@ -10721,7 +10618,6 @@ document.addEventListener("DOMContentLoaded", () => {
             e.stopPropagation();
             e.stopImmediatePropagation();
 
-            console.log("Clicou no botão de profissional");
 
             if (menuProfissional) {
                 menuProfissional.classList.add("aberto");
@@ -10731,7 +10627,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnProfissionalAgenda.classList.add("ativo");
             }
 
-            console.log("Classes do menu:", menuProfissional?.className);
 
             return;
         }
@@ -10747,7 +10642,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 itemProfissional.dataset.nome ||
                 itemProfissional.innerText.trim();
 
-            console.log("Profissional selecionado:", profissionalId || "Todos");
 
             const hiddenProfissional = document.getElementById("profissionalAgendaSelecionado");
 
@@ -10930,7 +10824,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tipoAgendamento = document.getElementById("tipoAgendamento")?.value || "consulta";
 
-        console.log("Tipo agendamento ao salvar:", tipoAgendamento);
 
         if (tipoAgendamento === "consulta") {
             calcularHoraFimAgendamento();
@@ -10993,7 +10886,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (!response.ok || !data.ok) {
-                console.log("Erro ao salvar:", data);
                 alert(data.erro || "Não foi possível salvar. Confira os campos obrigatórios.");
                 return;
             }
@@ -11131,7 +11023,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-
     let horarioLivreSelecionado = null;
 
     window.abrirModalHorariosLivresAgendamento = function(event) {
@@ -11140,21 +11031,12 @@ document.addEventListener("DOMContentLoaded", () => {
             event.stopPropagation();
         }
 
-        console.log("Clicou em encontrar horário livre");
-
         const dataInput = document.getElementById("id_data");
         const profissionalInput = document.getElementById("id_profissional");
         const duracaoInput = document.getElementById("duracaoConsulta");
         const overlay = document.getElementById("overlayHorariosLivres");
 
         if (!dataInput || !profissionalInput || !duracaoInput || !overlay) {
-            console.log("Campos não encontrados:", {
-                dataInput,
-                profissionalInput,
-                duracaoInput,
-                overlay
-            });
-
             alert("Erro ao localizar os campos do agendamento.");
             return false;
         }
@@ -11223,12 +11105,9 @@ document.addEventListener("DOMContentLoaded", () => {
             event.stopPropagation();
         }
 
-        console.log("Clicou no campo de etiqueta");
-
         const menu = document.getElementById("menuEtiquetasAgendamento");
 
         if (!menu) {
-            console.log("Menu de etiquetas não encontrado");
             alert("Menu de etiquetas não encontrado.");
             return false;
         }
@@ -11250,8 +11129,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = elemento.dataset.id || "";
         const nome = elemento.dataset.nome || "";
         const cor = elemento.dataset.cor || "#28a745";
-
-        console.log("Etiqueta selecionada:", id, nome, cor);
 
         const inputEtiqueta = document.getElementById("id_etiqueta");
         const textoSelecionado = document.querySelector(".texto-etiqueta-selecionada");
@@ -11289,8 +11166,6 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             event.stopPropagation();
         }
-
-        console.log("Abrindo modal nova etiqueta");
 
         const overlay = document.getElementById("overlayNovaEtiqueta");
         const menu = document.getElementById("menuEtiquetasAgendamento");
@@ -11690,10 +11565,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const profissionalId = document.getElementById("duplicarProfissionalConsulta")?.value || "";
         const duracao = document.getElementById("duplicarDuracaoConsulta")?.value || "30";
 
-        console.log("BUSCANDO HORÁRIOS DUPLICAR:");
-        console.log("data:", dataConsulta);
-        console.log("profissional:", profissionalId);
-        console.log("duracao:", duracao);
 
         if (!dataConsulta) {
             alert("Informe a data da consulta antes de buscar horários livres.");
@@ -11778,8 +11649,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const url = `/agenda/horarios-livres/?data=${encodeURIComponent(dataConsulta)}&profissional=${encodeURIComponent(profissionalId)}&duracao=${encodeURIComponent(duracao)}`;
 
-        console.log("URL horários livres duplicar:", url);
-
         fetch(url, {
             headers: {
                 "X-Requested-With": "XMLHttpRequest"
@@ -11787,8 +11656,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Resposta horários livres completa:", JSON.stringify(data, null, 2));
-
             containerManha.innerHTML = "";
             containerTarde.innerHTML = "";
 
@@ -11799,8 +11666,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const horarios = data.horarios || data.horarios_livres || data.lista || [];
-
-            console.log("Horários recebidos:", horarios);
 
             if (!horarios.length) {
                 containerManha.innerHTML = `<p class="texto-sem-horario">Nenhum horário livre pela manhã.</p>`;
@@ -12454,8 +12319,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const tipoAgendamento = document.getElementById("tipoAgendamento");
         const btnMarcar = document.querySelector(".btn-marcar");
 
-        console.log("Trocando aba para:", tipo);
-        console.log("Input tipoAgendamento:", tipoAgendamento);
 
         if (tipoAgendamento) {
             tipoAgendamento.value = tipo;
@@ -12621,14 +12484,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const btnEscolher = document.getElementById("btnEscolherHorarioLivre");
 
         if (!dataInput || !profissionalInput || !duracaoInput || !horariosManha || !horariosTarde) {
-            console.log("Campos do modal de horários não encontrados:", {
-                dataInput,
-                profissionalInput,
-                duracaoInput,
-                horariosManha,
-                horariosTarde
-            });
-
+            alert("Erro ao localizar os campos de horários livres.");
             return;
         }
 
@@ -12654,7 +12510,6 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/agenda/horarios-livres/?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
-
                 horariosManha.innerHTML = "";
                 horariosTarde.innerHTML = "";
 
@@ -12709,7 +12564,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     `;
                 }
-
             })
             .catch(error => {
                 console.error("Erro ao buscar horários:", error);
@@ -12755,8 +12609,6 @@ document.addEventListener("DOMContentLoaded", () => {
             inicio: item.dataset.inicio,
             fim: item.dataset.fim
         };
-
-        console.log("Horário selecionado:", horarioLivreSelecionado);
 
         const btnEscolher = document.getElementById("btnEscolherHorarioLivre");
 
@@ -12823,8 +12675,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btnPeriodo.innerHTML = this.innerText + ' <span class="seta">▾</span>';
 
             menuPeriodo.classList.remove("mostrar");
-
-            console.log("Período selecionado:", this.dataset.value);
 
         });
 
@@ -12919,15 +12769,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const diaInteiro = pegarCheck("editarDiaInteiroCompromisso", "dia_inteiro");
 
-        console.log("DADOS DO EDITAR COMPROMISSO:");
-        console.log("compromissoId:", compromissoId);
-        console.log("titulo:", titulo);
-        console.log("profissional:", profissional);
-        console.log("dataInicio:", dataInicio);
-        console.log("dataFim:", dataFim);
-        console.log("horaInicio:", horaInicio);
-        console.log("horaFim:", horaFim);
-        console.log("diaInteiro:", diaInteiro);
 
         if (!compromissoId) {
             alert("Compromisso não encontrado para edição.");
@@ -13133,7 +12974,7 @@ Por favor, responda esta mensagem confirmando sua presença.`;
 };
 
 window.salvarStatusConsulta = function(agendamentoId, status) {
-    console.log("Salvar status depois:", agendamentoId, status);
+
 };
 
 window.fecharTodosSelectsCompromisso = function() {
@@ -13898,8 +13739,6 @@ document.addEventListener("click", function(e){
     const id = card.dataset.id;
     const novoStatus = btn.dataset.status;
 
-    console.log("ID:", id);
-    console.log("Novo Status:", novoStatus);
 
     fetch("{% url 'alterar_status_agendamento' %}", {
         method: "POST",
@@ -13911,7 +13750,6 @@ document.addEventListener("click", function(e){
     })
     .then(r => r.json())
     .then(resp => {
-    console.log("RESPOSTA DO BACKEND:", resp); 
 
     if(!resp.success){
         alert("Erro ao alterar status");
@@ -13943,7 +13781,6 @@ document.addEventListener("click", function(e){
 
 //duplicar consulta
 window.duplicarConsultaAtual = function(dados) {
-    console.log("Duplicar consulta:", dados);
 
     if (!dados) {
         alert("Dados da consulta não encontrados.");
@@ -13989,7 +13826,6 @@ function calcularDuracaoMinutosDuplicar(horaInicio, horaFim) {
 }
 
 window.editarConsultaAtual = function(agendamentoId) {
-    console.log("Editar consulta:", agendamentoId);
     alert("Agora vamos montar o modal de editar consulta.");
 };
 
@@ -14670,14 +14506,10 @@ document.addEventListener("submit", function(e) {
     .then(async response => {
         const data = await response.json();
 
-        console.log("RESPOSTA DO SALVAR CONSULTA:", data);
-
         if (!response.ok || !data.ok) {
             alert(data.erro || "Não foi possível salvar a consulta.");
             return;
         }
-
-        console.log("RESPOSTA DO SALVAR CONSULTA:", data);
 
         if (data.salvo) {
             alert(
@@ -16201,8 +16033,6 @@ window.agendarAlertaRetorno = function(alertaId) {
     .then(async response => {
         const data = await response.json();
 
-        console.log("DADOS DO ALERTA PARA AGENDAR:", data);
-
         if (!response.ok || !data.ok) {
             alert(data.erro || "Não foi possível carregar o alerta.");
             return;
@@ -16231,39 +16061,6 @@ window.agendarAlertaRetorno = function(alertaId) {
     });
 };
 
-
-window.editarAlertaRetorno = function(alertaId) {
-    if (!alertaId) {
-        alert("Alerta de retorno não encontrado.");
-        return;
-    }
-
-    document.querySelectorAll(".menu-acoes-alerta").forEach(function(menu) {
-        menu.classList.remove("aberto");
-    });
-
-    fetch(`/agenda/alertas-retorno/${alertaId}/dados/`, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-    .then(async response => {
-        const data = await response.json();
-
-        console.log("DADOS DO ALERTA PARA EDITAR:", data);
-
-        if (!response.ok || !data.ok) {
-            alert(data.erro || "Não foi possível carregar o alerta.");
-            return;
-        }
-
-        abrirModalEditarAlertaRetornoComDados(data.alerta);
-    })
-    .catch(error => {
-        console.error("Erro ao carregar alerta para edição:", error);
-        alert("Erro ao carregar alerta. Veja o console.");
-    });
-};
 
 
 document.addEventListener("click", function(e) {
