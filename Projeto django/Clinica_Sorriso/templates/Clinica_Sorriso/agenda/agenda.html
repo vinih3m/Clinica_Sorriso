@@ -7892,6 +7892,45 @@
     color: red !important;
 }
 
+/* ==================================================
+   COMPROMISSO - CORREÇÃO DROPDOWN REPETIR
+================================================== */
+
+/* padrão: todos os campos ficam baixos */
+.campo-select-compromisso,
+.campo-compromisso,
+.linha-compromisso,
+.bloco-config-compromisso {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* somente o campo que está com menu aberto fica por cima */
+.campo-select-compromisso:has(.menu-select-compromisso.aberto),
+.campo-select-compromisso:has(.menu-repetir-compromisso.aberto),
+.dropdown-compromisso:has(.menu-select-compromisso.aberto) {
+    z-index: 999999 !important;
+}
+
+/* o menu em si fica acima dos campos vizinhos */
+.menu-select-compromisso.aberto,
+.menu-repetir-compromisso.aberto,
+.dropdown-menu-compromisso.aberto {
+    position: absolute !important;
+    z-index: 1000000 !important;
+    background: #fff !important;
+    box-shadow: 0 5px 18px rgba(0,0,0,.25) !important;
+}
+
+/* área cinza de disponibilidade/privacidade/alerta fica abaixo */
+.bloco-opcoes-compromisso,
+.area-opcoes-compromisso,
+.configuracoes-compromisso,
+.card-opcoes-compromisso {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
 </style>
 
 
