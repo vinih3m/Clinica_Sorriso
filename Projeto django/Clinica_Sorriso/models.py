@@ -463,6 +463,160 @@ class CompromissoAgenda(models.Model):
     def __str__(self):
         return f"{self.titulo} - {self.data_inicio}"
     
+class EncaixeAgenda(models.Model):
+    TURNO_CHOICES = [
+        ("", "Qualquer turno"),
+        ("manha", "Manhã"),
+        ("tarde", "Tarde"),
+        ("noite", "Noite"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="encaixes_agenda",
+        verbose_name="Paciente"
+    )
+
+    profissional = models.ForeignKey(
+        Profissional,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="encaixes_agenda",
+        verbose_name="Profissional"
+    )
+
+    data_desejada = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Data desejada"
+    )
+
+    qualquer_data = models.BooleanField(
+        default=False,
+        verbose_name="Qualquer data"
+    )
+
+    turno = models.CharField(
+        max_length=20,
+        choices=TURNO_CHOICES,
+        blank=True,
+        default="",
+        verbose_name="Turno desejado"
+    )
+
+    plano = models.CharField(
+        max_length=100,
+        blank=True,
+        default="Particular",
+        verbose_name="Plano"
+    )
+
+    observacao = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Observação"
+    )
+
+    urgente = models.BooleanField(
+        default=False,
+        verbose_name="Encaixe urgente"
+    )
+
+    etiqueta = models.ForeignKey(
+        "Etiqueta",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="encaixes_agenda",
+        verbose_name="Rótulo"
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Criado em"
+    )
+
+    class Meta:
+        verbose_name = "Encaixe"
+        verbose_name_plural = "Encaixes"
+        ordering = ["-urgente", "data_desejada", "-criado_em"]
+
+    def __str__(self):
+        return f"Encaixe - {self.paciente}"
+    
+class AlertaRetorno(models.Model):
+    TIPO_RETORNO_CHOICES = [
+        ("data_especifica", "Data específica"),
+        ("7_dias", "Em 7 dias"),
+        ("15_dias", "Em 15 dias"),
+        ("30_dias", "Em 30 dias"),
+        ("3_meses", "Em 3 meses"),
+        ("6_meses", "Em 6 meses"),
+    ]
+
+    STATUS_CHOICES = [
+        ("pendente", "Pendente"),
+        ("agendado", "Agendado"),
+        ("concluido", "Concluído"),
+        ("cancelado", "Cancelado"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="alertas_retorno",
+        verbose_name="Paciente"
+    )
+
+    profissional = models.ForeignKey(
+        Profissional,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="alertas_retorno",
+        verbose_name="Profissional"
+    )
+
+    tipo_retorno = models.CharField(
+        max_length=30,
+        choices=TIPO_RETORNO_CHOICES,
+        default="data_especifica",
+        verbose_name="Retornar em"
+    )
+
+    data_retorno = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Data aproximada para retorno"
+    )
+
+    motivo = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Motivo do retorno"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pendente",
+        verbose_name="Status"
+    )
+
+    criado_em = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Criado em"
+    )
+
+    class Meta:
+        verbose_name = "Alerta de retorno"
+        verbose_name_plural = "Alertas de retorno"
+        ordering = ["data_retorno", "-criado_em"]
+
+    def __str__(self):
+        return f"Retorno - {self.paciente}"
     
 from django.db import models
 from django.contrib.auth.models import User

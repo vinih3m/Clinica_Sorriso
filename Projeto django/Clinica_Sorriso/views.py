@@ -38,8 +38,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import AgendamentoForm
 from django.views.decorators.http import require_POST
-from .models import Agendamento, Paciente, Profissional, CompromissoAgenda
-
+from .models import (Agendamento,Paciente,Profissional,CompromissoAgenda,Etiqueta,EncaixeAgenda,AlertaRetorno,)
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.core.exceptions import ValidationError
 
 # =========================
 # LOGIN
@@ -616,6 +619,27 @@ def agenda(request):
             .first()
         )
 
+    # ================= ETIQUETAS / RÓTULOS =================
+    etiquetas = (
+        Etiqueta.objects
+        .all()
+        .order_by("nome")
+    )
+
+    encaixes = (
+        EncaixeAgenda.objects
+        .select_related("paciente", "profissional", "etiqueta")
+        .all()
+        .order_by("-urgente", "data_desejada", "-criado_em")
+    )
+
+    alertas_retorno = (
+        AlertaRetorno.objects
+        .select_related("paciente", "profissional")
+        .all()
+        .order_by("data_retorno", "-criado_em")
+    )
+
     # ================= HORÁRIOS =================
     horas = gerar_horas()
 
@@ -658,35 +682,45 @@ def agenda(request):
 
     compromissos = preparar_compromissos_grid(compromissos, horas)
 
+    context = {
+        "horas": horas,
+        "dias": dias,
+        "today": date.today(),
+
+        # consultas
+        "agendamentos": agendamentos,
+
+        # compromissos
+        "compromissos": compromissos,
+
+        # rótulos / etiquetas
+        "etiquetas": etiquetas,
+
+        # semana
+        "semana": semana,
+        "data_base": data_base,
+        "inicio_semana": inicio_semana,
+        "fim_semana": fim_semana,
+
+        # expediente
+        "inicio_expediente": "08:00",
+        "fim_expediente": "18:00",
+
+        # profissionais
+        "profissionais": profissionais,
+        "profissional_id": profissional_id,
+        "profissional_selecionado": profissional_selecionado,
+
+        "encaixes": encaixes,
+
+        "alertas_retorno": alertas_retorno,
+
+    }
+
     return render(
         request,
         "Clinica_Sorriso/agenda/agenda.html",
-        {
-            "horas": horas,
-            "dias": dias,
-            "today": date.today(),
-
-            # consultas
-            "agendamentos": agendamentos,
-
-            # compromissos
-            "compromissos": compromissos,
-
-            # semana
-            "semana": semana,
-            "data_base": data_base,
-            "inicio_semana": inicio_semana,
-            "fim_semana": fim_semana,
-
-            # expediente
-            "inicio_expediente": "08:00",
-            "fim_expediente": "18:00",
-
-            # profissionais
-            "profissionais": profissionais,
-            "profissional_id": profissional_id,
-            "profissional_selecionado": profissional_selecionado,
-        }
+        context
     )
 
 @login_required
@@ -782,6 +816,16 @@ def criar_agendamento(request):
             agendamento.paciente = paciente
             agendamento.save()
 
+            # Marca o alerta de retorno como agendado, se esse agendamento veio de um alerta
+            alerta_retorno_id = request.POST.get("alerta_retorno_id")
+
+            if alerta_retorno_id:
+                alerta_retorno = AlertaRetorno.objects.filter(id=alerta_retorno_id).first()
+
+                if alerta_retorno:
+                    alerta_retorno.status = "agendado"
+                    alerta_retorno.save(update_fields=["status"])
+
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({
                     "ok": True,
@@ -817,6 +861,7 @@ def criar_agendamento(request):
         "profissional_id": profissional_id,
     })
 
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
@@ -839,68 +884,104 @@ def alterar_status_agendamento(request):
         return JsonResponse({"success": False})
 
 
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from datetime import timedelta
-from .models import Agendamento, Paciente, Profissional, CompromissoAgenda
-
 @login_required
 @require_POST
 def salvar_retorno(request):
-    paciente_nome = request.POST.get("paciente")
-    profissional_nome = request.POST.get("profissional")
-    dia = request.POST.get("dia")
-    hora = request.POST.get("hora")
-    motivo = request.POST.get("motivo")
-
-    if not all([paciente_nome, profissional_nome, dia, hora, motivo]):
-        return JsonResponse({
-            "ok": False,
-            "erro": "Dados incompletos."
-        }, status=400)
-
-    paciente, _ = Paciente.objects.get_or_create(
-        nome__iexact=paciente_nome.strip(),
-        defaults={"nome": paciente_nome.strip()}
-    )
-
     try:
-        profissional = Profissional.objects.get(
-            nome__iexact=profissional_nome.strip()
-        )
-    except Profissional.DoesNotExist:
-        return JsonResponse({
-            "ok": False,
-            "erro": "Profissional não encontrado."
-        }, status=400)
+        paciente_id = request.POST.get("paciente_id")
+        paciente_nome = request.POST.get("paciente_nome", "").strip()
 
-    hora_inicio = datetime.strptime(hora, "%H:%M").time()
-    hora_fim = (
-        datetime.combine(date.today(), hora_inicio)
-        + timedelta(hours=1)
-    ).time()
+        profissional_id = request.POST.get("profissional", "").strip()
+        tipo_retorno = request.POST.get("tipo_retorno", "data_especifica").strip()
+        data_retorno = request.POST.get("data_retorno", "").strip()
+        motivo = request.POST.get("motivo", "").strip()
 
-    try:
-        Agendamento.objects.create(
+        if not paciente_id and not paciente_nome:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe o paciente."
+            }, status=400)
+
+        if not profissional_id:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Selecione o profissional."
+            }, status=400)
+
+        if not tipo_retorno:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Selecione quando o paciente deve retornar."
+            }, status=400)
+
+        paciente = None
+
+        if paciente_id:
+            paciente = Paciente.objects.filter(id=paciente_id).first()
+
+        if not paciente and paciente_nome:
+            paciente = Paciente.objects.filter(nome__iexact=paciente_nome).first()
+
+        if not paciente:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Paciente não encontrado. Cadastre o paciente antes de salvar o retorno."
+            }, status=404)
+
+        profissional = Profissional.objects.filter(id=profissional_id).first()
+
+        if not profissional:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Profissional não encontrado."
+            }, status=404)
+
+        data_obj = None
+
+        if tipo_retorno == "data_especifica":
+            if not data_retorno:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Informe a data aproximada para retorno."
+                }, status=400)
+
+            data_obj = datetime.strptime(data_retorno, "%Y-%m-%d").date()
+
+        else:
+            hoje = date.today()
+
+            if tipo_retorno == "7_dias":
+                data_obj = hoje + timedelta(days=7)
+            elif tipo_retorno == "15_dias":
+                data_obj = hoje + timedelta(days=15)
+            elif tipo_retorno == "30_dias":
+                data_obj = hoje + timedelta(days=30)
+            elif tipo_retorno == "3_meses":
+                data_obj = hoje + timedelta(days=90)
+            elif tipo_retorno == "6_meses":
+                data_obj = hoje + timedelta(days=180)
+
+        alerta = AlertaRetorno.objects.create(
             paciente=paciente,
             profissional=profissional,
-            data=dia,
-            hora_inicio=hora_inicio,
-            hora_fim=hora_fim,
-            tipo="retorno",      # 👈 Aqui diferencia
-            status="pendente",   # 👈 Mantém padrão
-            observacoes=motivo
+            tipo_retorno=tipo_retorno,
+            data_retorno=data_obj,
+            motivo=motivo,
+            status="pendente"
         )
-    except ValidationError as e:
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Alerta de retorno salvo com sucesso.",
+            "alerta_id": alerta.id
+        })
+
+    except Exception as e:
         return JsonResponse({
             "ok": False,
-            "erro": e.messages[0]
-        }, status=400)
-
-    return JsonResponse({"ok": True})
-
-
+            "erro": str(e)
+        }, status=500)
+    
 @login_required
 def agenda_parcial(request):
     semana = int(request.GET.get("semana", 0))
@@ -1057,7 +1138,7 @@ from django.shortcuts import get_object_or_404
 def detalhes_agendamento(request, id):
     ag = (
         Agendamento.objects
-        .select_related("paciente", "profissional")
+        .select_related("paciente", "profissional", "etiqueta")
         .filter(id=id)
         .first()
     )
@@ -1065,7 +1146,6 @@ def detalhes_agendamento(request, id):
     if not ag:
         return HttpResponse("Agendamento não encontrado.", status=404)
 
-    # Dados extras para o template de detalhes
     if ag.paciente:
         ag.paciente_nome = getattr(ag.paciente, "nome", str(ag.paciente))
 
@@ -1078,13 +1158,17 @@ def detalhes_agendamento(request, id):
         ag.paciente_nome = ""
         ag.paciente_celular = ""
 
+    etiquetas = Etiqueta.objects.all().order_by("nome")
+
     return render(
         request,
         "Clinica_Sorriso/agenda/detalhes_agendamento.html",
         {
             "ag": ag,
+            "etiquetas": etiquetas,
         }
     )
+
 
 from django.http import JsonResponse, HttpResponse
 
@@ -1150,6 +1234,840 @@ def criar_paciente(request):
             "origem": origem,
         }
     )
+
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+
+@login_required
+def horarios_livres_agenda(request):
+    data_str = request.GET.get("data")
+    profissional_id = request.GET.get("profissional")
+    duracao = int(request.GET.get("duracao") or 30)
+
+    if not data_str or not profissional_id:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Data e profissional são obrigatórios."
+        }, status=400)
+
+    data_consulta = datetime.strptime(data_str, "%Y-%m-%d").date()
+
+    inicio_expediente = datetime.combine(
+        data_consulta,
+        datetime.strptime("08:00", "%H:%M").time()
+    )
+
+    fim_expediente = datetime.combine(
+        data_consulta,
+        datetime.strptime("18:00", "%H:%M").time()
+    )
+
+    agendamentos = (
+        Agendamento.objects
+        .filter(
+            data=data_consulta,
+            profissional_id=profissional_id
+        )
+        .order_by("hora_inicio")
+    )
+
+    ocupados = []
+
+    for ag in agendamentos:
+        inicio = datetime.combine(data_consulta, ag.hora_inicio)
+        fim = datetime.combine(data_consulta, ag.hora_fim)
+
+        ocupados.append((inicio, fim))
+
+    horarios_livres = []
+    atual = inicio_expediente
+
+    while atual + timedelta(minutes=duracao) <= fim_expediente:
+        fim_teste = atual + timedelta(minutes=duracao)
+
+        conflito = False
+
+        for inicio_ocupado, fim_ocupado in ocupados:
+            if atual < fim_ocupado and fim_teste > inicio_ocupado:
+                conflito = True
+                break
+
+        if not conflito:
+            horarios_livres.append({
+                "inicio": atual.strftime("%H:%M"),
+                "fim": fim_teste.strftime("%H:%M"),
+                "texto": f"{atual.strftime('%H:%M')} às {fim_teste.strftime('%H:%M')}"
+            })
+
+        atual += timedelta(minutes=15)
+
+    return JsonResponse({
+        "ok": True,
+        "horarios": horarios_livres
+    })
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Etiqueta
+
+@login_required
+@require_POST
+def criar_etiqueta_agenda(request):
+    nome = request.POST.get("nome", "").strip()
+    cor = request.POST.get("cor", "#28a745").strip()
+
+    if not nome:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Informe o nome do rótulo."
+        }, status=400)
+
+    etiqueta, criada = Etiqueta.objects.get_or_create(
+        nome=nome,
+        defaults={
+            "cor": cor or "#28a745"
+        }
+    )
+
+    if not criada:
+        etiqueta.cor = cor or etiqueta.cor
+        etiqueta.save()
+
+    return JsonResponse({
+        "ok": True,
+        "etiqueta": {
+            "id": etiqueta.id,
+            "nome": etiqueta.nome,
+            "cor": etiqueta.cor,
+        }
+    })
+
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+
+@login_required
+@require_POST
+def editar_compromisso_agenda(request, compromisso_id):
+    compromisso = CompromissoAgenda.objects.filter(id=compromisso_id).first()
+
+    if not compromisso:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Compromisso não encontrado."
+        }, status=404)
+
+    titulo = request.POST.get("titulo", "").strip()
+    descricao = request.POST.get("descricao", "").strip()
+    profissional_id = request.POST.get("profissional")
+
+    data_inicio = request.POST.get("data_inicio")
+    data_fim = request.POST.get("data_fim")
+    hora_inicio = request.POST.get("hora_inicio")
+    hora_fim = request.POST.get("hora_fim")
+
+    dia_inteiro = request.POST.get("dia_inteiro") == "on"
+    repetir = request.POST.get("repetir") == "on"
+
+    tipo_repeticao = request.POST.get("tipo_repeticao") if repetir else None
+    terminar_repeticao = request.POST.get("terminar_repeticao") or "nunca"
+    data_fim_repeticao = request.POST.get("data_fim_repeticao") or None
+
+    disponibilidade = request.POST.get("disponibilidade") or "ocupado"
+    privacidade = request.POST.get("privacidade") or "privado"
+    alerta = request.POST.get("alerta") or "sem_alerta"
+    alerta_quantidade = request.POST.get("alerta_quantidade") or None
+    alerta_unidade = request.POST.get("alerta_unidade") or None
+
+    if not titulo:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Informe o título do compromisso."
+        }, status=400)
+
+    if not profissional_id:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Selecione a agenda/profissional."
+        }, status=400)
+
+    if not data_inicio or not data_fim:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Informe a data de início e fim."
+        }, status=400)
+
+    if not dia_inteiro and (not hora_inicio or not hora_fim):
+        return JsonResponse({
+            "ok": False,
+            "erro": "Informe o horário de início e fim."
+        }, status=400)
+
+    try:
+        compromisso.titulo = titulo
+        compromisso.descricao = descricao
+        compromisso.profissional_id = profissional_id
+        compromisso.data_inicio = data_inicio
+        compromisso.data_fim = data_fim
+
+        compromisso.dia_inteiro = dia_inteiro
+
+        if dia_inteiro:
+            compromisso.hora_inicio = None
+            compromisso.hora_fim = None
+        else:
+            compromisso.hora_inicio = hora_inicio
+            compromisso.hora_fim = hora_fim
+
+        compromisso.repetir = repetir
+        compromisso.tipo_repeticao = tipo_repeticao
+        compromisso.terminar_repeticao = terminar_repeticao
+        compromisso.data_fim_repeticao = data_fim_repeticao
+
+        compromisso.disponibilidade = disponibilidade
+        compromisso.privacidade = privacidade
+        compromisso.alerta = alerta
+        compromisso.alerta_quantidade = alerta_quantidade
+        compromisso.alerta_unidade = alerta_unidade
+
+        compromisso.save()
+
+    except Exception as e:
+        return JsonResponse({
+            "ok": False,
+            "erro": str(e)
+        }, status=400)
+
+    return JsonResponse({
+        "ok": True,
+        "mensagem": "Compromisso atualizado com sucesso."
+    })
+
+
+@login_required
+@require_POST
+def atualizar_rotulo_agendamento(request, agendamento_id):
+    agendamento = Agendamento.objects.filter(id=agendamento_id).first()
+
+    if not agendamento:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Agendamento não encontrado."
+        }, status=404)
+
+    etiqueta_id = request.POST.get("etiqueta_id")
+
+    if etiqueta_id:
+        etiqueta = Etiqueta.objects.filter(id=etiqueta_id).first()
+
+        if not etiqueta:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Rótulo não encontrado."
+            }, status=404)
+
+        agendamento.etiqueta = etiqueta
+    else:
+        agendamento.etiqueta = None
+
+    agendamento.save(update_fields=["etiqueta"])
+
+    return JsonResponse({
+        "ok": True,
+        "etiqueta_id": etiqueta_id or ""
+    })
+
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from .models import Agendamento, Paciente, Profissional
+from django.core.exceptions import ValidationError
+
+@login_required
+@require_POST
+def duplicar_consulta_agenda(request):
+    try:
+        paciente_id = request.POST.get("paciente_id")
+        paciente_nome = request.POST.get("paciente_nome", "").strip()
+        profissional_id = request.POST.get("profissional")
+
+        data = request.POST.get("data")
+        hora_inicio = request.POST.get("hora_inicio")
+        duracao = request.POST.get("duracao") or 30
+        observacoes = request.POST.get("observacoes", "").strip()
+
+        if not paciente_nome:
+            return JsonResponse({"ok": False, "erro": "Informe o paciente."}, status=400)
+
+        if not profissional_id:
+            return JsonResponse({"ok": False, "erro": "Selecione o profissional."}, status=400)
+
+        if not data:
+            return JsonResponse({"ok": False, "erro": "Informe a data da consulta."}, status=400)
+
+        if not hora_inicio:
+            return JsonResponse({"ok": False, "erro": "Informe a hora de início."}, status=400)
+
+        paciente = None
+
+        if paciente_id:
+            paciente = Paciente.objects.filter(id=paciente_id).first()
+
+        if not paciente:
+            paciente = Paciente.objects.filter(nome__iexact=paciente_nome).first()
+
+        if not paciente:
+            return JsonResponse({"ok": False, "erro": "Paciente não encontrado."}, status=404)
+
+        profissional = Profissional.objects.filter(id=profissional_id).first()
+
+        if not profissional:
+            return JsonResponse({"ok": False, "erro": "Profissional não encontrado."}, status=404)
+
+        try:
+            duracao = int(duracao)
+        except ValueError:
+            duracao = 30
+
+        data_obj = datetime.strptime(data, "%Y-%m-%d").date()
+        hora_inicio_obj = datetime.strptime(hora_inicio, "%H:%M").time()
+
+        inicio_dt = datetime.combine(data_obj, hora_inicio_obj)
+        fim_dt = inicio_dt + timedelta(minutes=duracao)
+        hora_fim_obj = fim_dt.time()
+
+        agendamento = Agendamento(
+            paciente=paciente,
+            profissional=profissional,
+            data=data_obj,
+            hora_inicio=hora_inicio_obj,
+            hora_fim=hora_fim_obj,
+            observacoes=observacoes,
+            status="pendente",
+        )
+
+        agendamento.full_clean()
+        agendamento.save()
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Consulta duplicada com sucesso.",
+            "agendamento_id": agendamento.id,
+        })
+
+    except ValidationError as e:
+        mensagens = []
+
+        if hasattr(e, "message_dict"):
+            for lista_erros in e.message_dict.values():
+                mensagens.extend(lista_erros)
+        else:
+            mensagens = e.messages
+
+        return JsonResponse({
+            "ok": False,
+            "erro": mensagens[0] if mensagens else "Não foi possível duplicar a consulta."
+        }, status=400)
+
+    except Exception as e:
+        return JsonResponse({
+            "ok": False,
+            "erro": str(e),
+        }, status=500)
+
+
+@login_required
+@require_POST
+def editar_consulta_agenda(request, agendamento_id):
+    try:
+        agendamento = Agendamento.objects.filter(id=agendamento_id).first()
+
+        if not agendamento:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Consulta não encontrada."
+            }, status=404)
+
+        paciente_id = request.POST.get("paciente_id")
+        paciente_nome = request.POST.get("paciente_nome", "").strip()
+        profissional_id = request.POST.get("profissional")
+
+        data = request.POST.get("data")
+        hora_inicio = request.POST.get("hora_inicio")
+        duracao = request.POST.get("duracao") or 30
+        observacoes = request.POST.get("observacoes", "").strip()
+        status = request.POST.get("status", "").strip()
+        etiqueta_id = request.POST.get("etiqueta_id", "").strip()
+
+        if not paciente_nome:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe o paciente."
+            }, status=400)
+
+        if not profissional_id:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Selecione o profissional."
+            }, status=400)
+
+        if not data:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe a data da consulta."
+            }, status=400)
+
+        if not hora_inicio:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe a hora de início."
+            }, status=400)
+
+        paciente = None
+
+        if paciente_id:
+            paciente = Paciente.objects.filter(id=paciente_id).first()
+
+        if paciente:
+            # Se o nome foi alterado no modal, atualiza o cadastro do paciente
+            if paciente_nome and paciente.nome != paciente_nome:
+                paciente.nome = paciente_nome
+                paciente.save(update_fields=["nome"])
+        else:
+            paciente = Paciente.objects.filter(nome__iexact=paciente_nome).first()
+
+        if not paciente:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Paciente não encontrado."
+            }, status=404)
+
+        profissional = Profissional.objects.filter(id=profissional_id).first()
+
+        if not profissional:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Profissional não encontrado."
+            }, status=404)
+
+        try:
+            duracao = int(duracao)
+        except ValueError:
+            duracao = 30
+
+        data_obj = datetime.strptime(data, "%Y-%m-%d").date()
+        hora_inicio_obj = datetime.strptime(hora_inicio, "%H:%M").time()
+
+        inicio_dt = datetime.combine(data_obj, hora_inicio_obj)
+        fim_dt = inicio_dt + timedelta(minutes=duracao)
+        hora_fim_obj = fim_dt.time()
+
+        agendamento.paciente = paciente
+        agendamento.profissional = profissional
+        agendamento.data = data_obj
+        agendamento.hora_inicio = hora_inicio_obj
+        agendamento.hora_fim = hora_fim_obj
+
+        campos_model = [campo.name for campo in Agendamento._meta.fields]
+
+        if "observacoes" in campos_model:
+            agendamento.observacoes = observacoes
+        elif "observacao" in campos_model:
+            agendamento.observacao = observacoes
+
+        if "status" in campos_model and status:
+            agendamento.status = status
+
+        if "etiqueta" in campos_model:
+            if etiqueta_id:
+                etiqueta = Etiqueta.objects.filter(id=etiqueta_id).first()
+
+                if not etiqueta:
+                    return JsonResponse({
+                        "ok": False,
+                        "erro": "Rótulo não encontrado."
+                    }, status=404)
+
+                agendamento.etiqueta = etiqueta
+            else:
+                agendamento.etiqueta = None
+
+        agendamento.full_clean()
+        agendamento.save()
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Consulta salva com sucesso.",
+            "agendamento_id": agendamento.id,
+        })
+
+    except ValidationError as e:
+        mensagens = []
+
+        if hasattr(e, "message_dict"):
+            for lista_erros in e.message_dict.values():
+                mensagens.extend(lista_erros)
+        else:
+            mensagens = e.messages
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Consulta salva com sucesso.",
+            "agendamento_id": agendamento.id,
+            "salvo": {
+                "paciente": str(agendamento.paciente),
+                "profissional": str(agendamento.profissional),
+                "data": agendamento.data.strftime("%Y-%m-%d"),
+                "hora_inicio": agendamento.hora_inicio.strftime("%H:%M"),
+                "hora_fim": agendamento.hora_fim.strftime("%H:%M"),
+                "status": getattr(agendamento, "status", ""),
+                "etiqueta": str(agendamento.etiqueta) if getattr(agendamento, "etiqueta", None) else "",
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "ok": False,
+            "erro": str(e),
+        }, status=500)
+
+
+@login_required
+@require_POST
+def excluir_consulta_agenda(request, agendamento_id):
+    agendamento = Agendamento.objects.filter(id=agendamento_id).first()
+
+    if not agendamento:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Consulta não encontrada."
+        }, status=404)
+
+    agendamento.delete()
+
+    return JsonResponse({
+        "ok": True,
+        "mensagem": "Consulta excluída com sucesso."
+    })
+
+
+@login_required
+@require_POST
+def salvar_encaixe_agenda(request):
+    try:
+        paciente_id = request.POST.get("paciente_id")
+        paciente_nome = request.POST.get("paciente_nome", "").strip()
+
+        profissional_id = request.POST.get("profissional", "").strip()
+        data_desejada = request.POST.get("data_desejada", "").strip()
+        qualquer_data = request.POST.get("qualquer_data") == "1"
+        turno = request.POST.get("turno", "").strip()
+        plano = request.POST.get("plano", "").strip() or "Particular"
+        observacao = request.POST.get("observacao", "").strip()
+        urgente = request.POST.get("urgente") == "1"
+        etiqueta_id = request.POST.get("etiqueta_id", "").strip()
+
+        if not paciente_id and not paciente_nome:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe o paciente."
+            }, status=400)
+
+        paciente = None
+
+        if paciente_id:
+            paciente = Paciente.objects.filter(id=paciente_id).first()
+
+        if not paciente and paciente_nome:
+            paciente = Paciente.objects.filter(nome__iexact=paciente_nome).first()
+
+        if not paciente:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Paciente não encontrado. Cadastre o paciente antes de salvar o encaixe."
+            }, status=404)
+
+        profissional = None
+
+        if profissional_id:
+            profissional = Profissional.objects.filter(id=profissional_id).first()
+
+            if not profissional:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Profissional não encontrado."
+                }, status=404)
+
+        data_obj = None
+
+        if not qualquer_data:
+            if not data_desejada:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Informe a data do encaixe ou marque Qualquer data."
+                }, status=400)
+
+            data_obj = datetime.strptime(data_desejada, "%Y-%m-%d").date()
+
+        etiqueta = None
+
+        if etiqueta_id:
+            etiqueta = Etiqueta.objects.filter(id=etiqueta_id).first()
+
+            if not etiqueta:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Rótulo não encontrado."
+                }, status=404)
+
+        encaixe = EncaixeAgenda.objects.create(
+            paciente=paciente,
+            profissional=profissional,
+            data_desejada=data_obj,
+            qualquer_data=qualquer_data,
+            turno=turno,
+            plano=plano,
+            observacao=observacao,
+            urgente=urgente,
+            etiqueta=etiqueta,
+        )
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Encaixe salvo com sucesso.",
+            "encaixe_id": encaixe.id
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "ok": False,
+            "erro": str(e)
+        }, status=500)
+    
+
+@login_required
+def dados_encaixe_agenda(request, encaixe_id):
+    encaixe = (
+        EncaixeAgenda.objects
+        .select_related("paciente", "profissional", "etiqueta")
+        .filter(id=encaixe_id)
+        .first()
+    )
+
+    if not encaixe:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Encaixe não encontrado."
+        }, status=404)
+
+    celular = (
+        getattr(encaixe.paciente, "celular", "") or
+        getattr(encaixe.paciente, "telefone", "") or
+        getattr(encaixe.paciente, "whatsapp", "")
+    )
+
+    return JsonResponse({
+        "ok": True,
+        "encaixe": {
+            "id": encaixe.id,
+            "paciente_id": encaixe.paciente.id,
+            "paciente_nome": encaixe.paciente.nome,
+            "paciente_celular": celular,
+
+            "profissional_id": encaixe.profissional.id if encaixe.profissional else "",
+            "profissional_nome": encaixe.profissional.nome if encaixe.profissional else "",
+
+            "data": encaixe.data_desejada.strftime("%Y-%m-%d") if encaixe.data_desejada else "",
+            "turno": encaixe.turno or "",
+
+            "plano": encaixe.plano or "Particular",
+            "observacao": encaixe.observacao or "",
+
+            "etiqueta_id": encaixe.etiqueta.id if encaixe.etiqueta else "",
+            "etiqueta_nome": encaixe.etiqueta.nome if encaixe.etiqueta else "",
+            "etiqueta_cor": encaixe.etiqueta.cor if encaixe.etiqueta else "",
+        }
+    })
+
+@login_required
+@require_POST
+def editar_encaixe_agenda(request, encaixe_id):
+    try:
+        encaixe = EncaixeAgenda.objects.filter(id=encaixe_id).first()
+
+        if not encaixe:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Encaixe não encontrado."
+            }, status=404)
+
+        paciente_id = request.POST.get("paciente_id")
+        paciente_nome = request.POST.get("paciente_nome", "").strip()
+
+        profissional_id = request.POST.get("profissional", "").strip()
+        data_desejada = request.POST.get("data_desejada", "").strip()
+        qualquer_data = request.POST.get("qualquer_data") == "1"
+        turno = request.POST.get("turno", "").strip()
+        plano = request.POST.get("plano", "").strip() or "Particular"
+        observacao = request.POST.get("observacao", "").strip()
+        urgente = request.POST.get("urgente") == "1"
+        etiqueta_id = request.POST.get("etiqueta_id", "").strip()
+
+        if not paciente_id and not paciente_nome:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Informe o paciente."
+            }, status=400)
+
+        paciente = None
+
+        if paciente_id:
+            paciente = Paciente.objects.filter(id=paciente_id).first()
+
+        if not paciente and paciente_nome:
+            paciente = Paciente.objects.filter(nome__iexact=paciente_nome).first()
+
+        if not paciente:
+            return JsonResponse({
+                "ok": False,
+                "erro": "Paciente não encontrado."
+            }, status=404)
+
+        profissional = None
+
+        if profissional_id:
+            profissional = Profissional.objects.filter(id=profissional_id).first()
+
+            if not profissional:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Profissional não encontrado."
+                }, status=404)
+
+        data_obj = None
+
+        if not qualquer_data:
+            if not data_desejada:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Informe a data do encaixe ou marque Qualquer data."
+                }, status=400)
+
+            data_obj = datetime.strptime(data_desejada, "%Y-%m-%d").date()
+
+        etiqueta = None
+
+        if etiqueta_id:
+            etiqueta = Etiqueta.objects.filter(id=etiqueta_id).first()
+
+            if not etiqueta:
+                return JsonResponse({
+                    "ok": False,
+                    "erro": "Rótulo não encontrado."
+                }, status=404)
+
+        encaixe.paciente = paciente
+        encaixe.profissional = profissional
+        encaixe.data_desejada = data_obj
+        encaixe.qualquer_data = qualquer_data
+        encaixe.turno = turno
+        encaixe.plano = plano
+        encaixe.observacao = observacao
+        encaixe.urgente = urgente
+        encaixe.etiqueta = etiqueta
+        encaixe.save()
+
+        return JsonResponse({
+            "ok": True,
+            "mensagem": "Encaixe atualizado com sucesso.",
+            "encaixe_id": encaixe.id
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "ok": False,
+            "erro": str(e)
+        }, status=500)
+    
+
+@login_required
+@require_POST
+def excluir_encaixe_agenda(request, encaixe_id):
+    encaixe = EncaixeAgenda.objects.filter(id=encaixe_id).first()
+
+    if not encaixe:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Encaixe não encontrado."
+        }, status=404)
+
+    encaixe.delete()
+
+    return JsonResponse({
+        "ok": True,
+        "mensagem": "Encaixe excluído com sucesso."
+    })
+
+
+@login_required
+@require_POST
+def excluir_alerta_retorno(request, alerta_id):
+    alerta = AlertaRetorno.objects.filter(id=alerta_id).first()
+
+    if not alerta:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Alerta de retorno não encontrado."
+        }, status=404)
+
+    alerta.delete()
+
+    return JsonResponse({
+        "ok": True,
+        "mensagem": "Alerta de retorno excluído com sucesso."
+    })
+
+@login_required
+def dados_alerta_retorno(request, alerta_id):
+    alerta = (
+        AlertaRetorno.objects
+        .select_related("paciente", "profissional")
+        .filter(id=alerta_id)
+        .first()
+    )
+
+    if not alerta:
+        return JsonResponse({
+            "ok": False,
+            "erro": "Alerta de retorno não encontrado."
+        }, status=404)
+
+    celular = (
+        getattr(alerta.paciente, "celular", "") or
+        getattr(alerta.paciente, "telefone", "") or
+        getattr(alerta.paciente, "whatsapp", "")
+    )
+
+    return JsonResponse({
+        "ok": True,
+        "alerta": {
+            "id": alerta.id,
+            "paciente_id": alerta.paciente.id,
+            "paciente_nome": alerta.paciente.nome,
+            "paciente_celular": celular,
+
+            "profissional_id": alerta.profissional.id if alerta.profissional else "",
+            "profissional_nome": alerta.profissional.nome if alerta.profissional else "",
+
+            "tipo_retorno": alerta.tipo_retorno or "",
+            "tipo_retorno_texto": alerta.get_tipo_retorno_display(),
+
+            "data_retorno": alerta.data_retorno.strftime("%Y-%m-%d") if alerta.data_retorno else "",
+            "motivo": alerta.motivo or "",
+            "status": alerta.status,
+        }
+    })
+
 
 from django.http import HttpResponse
 def exportar_retornos(request):
@@ -2157,111 +3075,4 @@ def editar_receita(request, receita_id):
             return JsonResponse({'sucesso': False, 'erro': str(e)})
 
     return JsonResponse({'sucesso': False, 'erro': 'Método inválido'})
-
-from datetime import datetime, timedelta
-from django.http import JsonResponse
-
-@login_required
-def horarios_livres_agenda(request):
-    data_str = request.GET.get("data")
-    profissional_id = request.GET.get("profissional")
-    duracao = int(request.GET.get("duracao") or 30)
-
-    if not data_str or not profissional_id:
-        return JsonResponse({
-            "ok": False,
-            "erro": "Data e profissional são obrigatórios."
-        }, status=400)
-
-    data_consulta = datetime.strptime(data_str, "%Y-%m-%d").date()
-
-    inicio_expediente = datetime.combine(
-        data_consulta,
-        datetime.strptime("08:00", "%H:%M").time()
-    )
-
-    fim_expediente = datetime.combine(
-        data_consulta,
-        datetime.strptime("18:00", "%H:%M").time()
-    )
-
-    agendamentos = (
-        Agendamento.objects
-        .filter(
-            data=data_consulta,
-            profissional_id=profissional_id
-        )
-        .order_by("hora_inicio")
-    )
-
-    ocupados = []
-
-    for ag in agendamentos:
-        inicio = datetime.combine(data_consulta, ag.hora_inicio)
-        fim = datetime.combine(data_consulta, ag.hora_fim)
-
-        ocupados.append((inicio, fim))
-
-    horarios_livres = []
-    atual = inicio_expediente
-
-    while atual + timedelta(minutes=duracao) <= fim_expediente:
-        fim_teste = atual + timedelta(minutes=duracao)
-
-        conflito = False
-
-        for inicio_ocupado, fim_ocupado in ocupados:
-            if atual < fim_ocupado and fim_teste > inicio_ocupado:
-                conflito = True
-                break
-
-        if not conflito:
-            horarios_livres.append({
-                "inicio": atual.strftime("%H:%M"),
-                "fim": fim_teste.strftime("%H:%M"),
-                "texto": f"{atual.strftime('%H:%M')} às {fim_teste.strftime('%H:%M')}"
-            })
-
-        atual += timedelta(minutes=15)
-
-    return JsonResponse({
-        "ok": True,
-        "horarios": horarios_livres
-    })
-
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from .models import Etiqueta
-
-@login_required
-@require_POST
-def criar_etiqueta_agenda(request):
-    nome = request.POST.get("nome", "").strip()
-    cor = request.POST.get("cor", "#28a745").strip()
-
-    if not nome:
-        return JsonResponse({
-            "ok": False,
-            "erro": "Informe o nome do rótulo."
-        }, status=400)
-
-    etiqueta, criada = Etiqueta.objects.get_or_create(
-        nome=nome,
-        defaults={
-            "cor": cor or "#28a745"
-        }
-    )
-
-    if not criada:
-        etiqueta.cor = cor or etiqueta.cor
-        etiqueta.save()
-
-    return JsonResponse({
-        "ok": True,
-        "etiqueta": {
-            "id": etiqueta.id,
-            "nome": etiqueta.nome,
-            "cor": etiqueta.cor,
-        }
-    })
 

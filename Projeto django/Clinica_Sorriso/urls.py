@@ -72,6 +72,19 @@ urlpatterns = [
     path("pacientes/novo/", views.criar_paciente, name="criar_paciente"),
     path("agenda/horarios-livres/",views.horarios_livres_agenda,name="horarios_livres_agenda"),
     path("agenda/etiquetas/criar/", views.criar_etiqueta_agenda, name="criar_etiqueta_agenda"),
+    path("agenda/compromissos/<int:compromisso_id>/editar/",views.editar_compromisso_agenda,name="editar_compromisso_agenda"),
+    path("agenda/etiquetas/criar/",views.criar_etiqueta_agenda,name="criar_etiqueta_agenda"),
+    path("agenda/agendamento/<int:agendamento_id>/rotulo/",views.atualizar_rotulo_agendamento,name="atualizar_rotulo_agendamento"),
+    path("agenda/duplicar-consulta/",views.duplicar_consulta_agenda,name="duplicar_consulta_agenda"),
+    path("agenda/editar-consulta/<int:agendamento_id>/",views.editar_consulta_agenda,name="editar_consulta_agenda"),
+    path("agenda/excluir-consulta/<int:agendamento_id>/",views.excluir_consulta_agenda,name="excluir_consulta_agenda"),
+    path("agenda/encaixes/salvar/",views.salvar_encaixe_agenda,name="salvar_encaixe_agenda"),
+    path("agenda/encaixes/<int:encaixe_id>/excluir/",views.excluir_encaixe_agenda,name="excluir_encaixe_agenda"),
+    path("agenda/encaixes/<int:encaixe_id>/dados/",views.dados_encaixe_agenda,name="dados_encaixe_agenda"),
+    path("agenda/encaixes/<int:encaixe_id>/editar/", views.editar_encaixe_agenda,name="editar_encaixe_agenda"),
+    path("agenda/alertas-retorno/<int:alerta_id>/excluir/",views.excluir_alerta_retorno,name="excluir_alerta_retorno"),
+    path("agenda/alertas-retorno/<int:alerta_id>/dados/",views.dados_alerta_retorno,name="dados_alerta_retorno"),
+
 
     # Financeiro
     path("financeiro/", views.fluxo_caixa, name="financeiro"),

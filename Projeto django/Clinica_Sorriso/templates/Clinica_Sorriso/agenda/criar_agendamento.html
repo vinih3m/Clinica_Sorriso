@@ -343,13 +343,15 @@
             <h3 class="titulo-secao-compromisso">Data e hora</h3>
 
             <!-- DIA INTEIRO -->
-            <div class="linha-check-compromisso">
+            <div class="linha-check-compromisso linha-dia-inteiro-compromisso">
                 <label class="check-compromisso-custom">
                     <input type="checkbox" id="compromissoDiaInteiro" name="dia_inteiro">
                     <span class="caixa-check-compromisso"></span>
                     <span class="texto-check-compromisso">Dia inteiro</span>
                 </label>
             </div>
+
+            <div class="espaco-entre-dia-inteiro-e-data"></div>
 
             <div class="grid-data-hora-compromisso" id="gridDataHoraCompromisso">
 
@@ -383,10 +385,95 @@
                         id="repetirCompromisso"
                         name="repetir_compromisso"
                         onchange="window.toggleRepetirCompromisso(this)"
-                    >       
+                    >
                     <span class="caixa-check-compromisso"></span>
                     <span class="texto-check-compromisso">Repetir compromisso</span>
                 </label>
+            </div>
+
+            <div class="area-repeticao-compromisso" id="opcoesRepeticaoCompromisso">
+
+                <div class="campo-select-compromisso">
+                    <label>Repetir</label>
+
+                    <button
+                        type="button"
+                        class="btn-select-compromisso"
+                        onclick="window.abrirSelectCompromisso(event, 'menuRepetirCompromisso')"
+                    >
+                        <span id="textoTipoRepeticaoCompromisso">Todos os dias</span>
+                        <span>▾</span>
+                    </button>
+
+                    <input
+                        type="hidden"
+                        name="tipo_repeticao_compromisso"
+                        id="tipoRepeticaoCompromisso"
+                        value="todos_os_dias"
+                    >
+
+                    <div class="menu-select-compromisso" id="menuRepetirCompromisso">
+                        <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'todos_os_dias', 'Todos os dias', 'menuRepetirCompromisso')">
+                            Todos os dias
+                        </button>
+
+                        <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'semanalmente', 'Semanalmente', 'menuRepetirCompromisso')">
+                            Semanalmente
+                        </button>
+
+                        <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'quinzenalmente', 'Quinzenalmente', 'menuRepetirCompromisso')">
+                            Quinzenalmente
+                        </button>
+
+                        <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'mensalmente', 'Mensalmente', 'menuRepetirCompromisso')">
+                            Mensalmente
+                        </button>
+
+                        <button type="button" onclick="window.selecionarSelectCompromisso(event, 'tipoRepeticaoCompromisso', 'textoTipoRepeticaoCompromisso', 'anualmente', 'Anualmente', 'menuRepetirCompromisso')">
+                            Anualmente
+                        </button>
+                    </div>
+                </div>
+
+                <div class="campo-select-compromisso">
+                    <label>Terminar repetição</label>
+
+                    <button
+                        type="button"
+                        class="btn-select-compromisso"
+                        onclick="window.abrirSelectCompromisso(event, 'menuTerminarRepeticaoCompromisso')"
+                    >
+                        <span id="textoTerminarRepeticaoCompromisso">Nunca</span>
+                        <span>▾</span>
+                    </button>
+
+                    <input
+                        type="hidden"
+                        name="terminar_repeticao_compromisso"
+                        id="terminarRepeticaoCompromisso"
+                        value="nunca"
+                    >
+
+                    <div class="menu-select-compromisso" id="menuTerminarRepeticaoCompromisso">
+                        <button type="button" onclick="window.selecionarTerminarRepeticaoCompromisso(event, 'nunca', 'Nunca')">
+                            Nunca
+                        </button>
+
+                        <button type="button" onclick="window.selecionarTerminarRepeticaoCompromisso(event, 'data_especifica', 'Data específica')">
+                            Data específica
+                        </button>
+                    </div>
+                </div>
+
+                <div class="campo-select-compromisso campo-data-fim-repeticao" id="campoDataFimRepeticaoCompromisso">
+                    <label>Data final da repetição</label>
+                    <input
+                        type="date"
+                        name="data_fim_repeticao_compromisso"
+                        id="dataFimRepeticaoCompromisso"
+                    >
+                </div>
+
             </div>
 
             <div class="area-repeticao-compromisso" id="opcoesRepeticaoCompromisso">
